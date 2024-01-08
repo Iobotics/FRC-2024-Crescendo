@@ -8,10 +8,10 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 
-public class TeleopSwerve extends CommandBase {    
+public class TeleopSwerve extends Command {    
     protected Swerve swerve;    
     protected DoubleSupplier translationSup;
     protected DoubleSupplier strafeSup;
