@@ -7,14 +7,14 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Utils.CTREConfigs;
+import frc.robot.Utils.REVConfigs;
 
 /**
  * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
  * the code necessary to operate a robot with tank drive.
  */
 public class Robot extends TimedRobot {
-  public static CTREConfigs ctreConfigs;
+  public static REVConfigs REVConfigs;
 
   private Command m_autonomousCommand;
   
@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    ctreConfigs = new CTREConfigs();
+    REVConfigs = new REVConfigs();
 
     m_robotContainer = new RobotContainer();
     
