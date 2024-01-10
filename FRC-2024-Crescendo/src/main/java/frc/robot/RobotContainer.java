@@ -57,7 +57,7 @@ public class RobotContainer {
 
     public void configureBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+        zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
     }
 
     public Command getAutonomousCommand() {
