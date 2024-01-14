@@ -41,6 +41,13 @@ public final class Constants {
         public static int kGamepad = 4;
     }
 
+    public static final class IntakeConstants{
+        public static int kUL = 0;
+        public static int kUR = 0;
+        public static int kLL = 0;
+        public static int kLR = 0;
+    }
+
     public static final class PIDConstants {
         public static final int kPIDPrimary = 0;
     }
@@ -136,7 +143,7 @@ public final class Constants {
         public static final double maxAngularVelocity = 1; // TODO: This must be tuned to specific robot
 
         /* Neutral Modes */
-        public static final IdleMode angleNeutralMode = IdleMode.kCoast;
+        public static final IdleMode angleNeutralMode = IdleMode.kBrake;
         public static final IdleMode driveNeutralMode = IdleMode.kBrake;
 
         /* Module Specific Constants */

@@ -51,8 +51,8 @@ public class NeoSwerveConstants {
 
         InvertedValue driveMotorInvert = InvertedValue.CounterClockwise_Positive;
         InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
-        SensorDirectionValue cancoderInvert = SensorDirectionValue.CounterClockwise_Positive;
-        return new NeoSwerveConstants(wheelDiameter, angleGearRatio, driveGearRatio, angleKP, angleKI, angleKD, angleKF, driveMotorInvert, angleMotorInvert, cancoderInvert);
+        SensorDirectionValue canCoderInvert = SensorDirectionValue.CounterClockwise_Positive;
+        return new NeoSwerveConstants(wheelDiameter, angleGearRatio, driveGearRatio, angleKP, angleKI, angleKD, angleKF, driveMotorInvert, angleMotorInvert, canCoderInvert);
     }
 
     /* Drive Gear Ratios for all supported modules */
