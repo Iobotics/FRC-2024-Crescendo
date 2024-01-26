@@ -4,18 +4,15 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -52,25 +49,8 @@ public final class Constants {
     }
 
     public static final class VisionConstants {
-        public static final List<AprilTag> aprilField = new ArrayList<AprilTag>(){{
-            add(new AprilTag(1, new Pose3d(593.68, 9.68, 53.38, new Rotation3d(0., 0., Math.toRadians(120)))));
-            add(new AprilTag(2, new Pose3d(637.21, 34.79, 53.38, new Rotation3d(0., 0., Math.toRadians(120)))));
-            add(new AprilTag(3, new Pose3d(652.73, 196.17, 57.13, new Rotation3d(0., 0., Math.toRadians(180)))));
-            add(new AprilTag(4, new Pose3d(652.73, 218.42, 57.13, new Rotation3d(0., 0., Math.toRadians(180)))));
-            add(new AprilTag(5, new Pose3d(578.77, 323.00, 53.38, new Rotation3d(0., 0., Math.toRadians(270)))));
-            add(new AprilTag(6, new Pose3d(72.5, 323.00, 53.38, new Rotation3d(0., 0., Math.toRadians(270)))));
-            add(new AprilTag(7, new Pose3d(-1.50, 218.42, 57.13, new Rotation3d(0., 0., Math.toRadians(0)))));
-            add(new AprilTag(8, new Pose3d(-1.50, 196.17, 57.13, new Rotation3d(0., 0., Math.toRadians(0)))));
-            add(new AprilTag(9, new Pose3d(14.02, 34.79, 53.38, new Rotation3d(0., 0., Math.toRadians(60)))));
-            add(new AprilTag(10, new Pose3d(57.54, 9.68, 53.38, new Rotation3d(0., 0., Math.toRadians(60)))));
-            add(new AprilTag(11, new Pose3d(468.69, 146.19, 52.00, new Rotation3d(0., 0., Math.toRadians(300)))));
-            add(new AprilTag(12, new Pose3d(468.69, 177.10, 52.00, new Rotation3d(0., 0., Math.toRadians(60)))));
-            add(new AprilTag(13, new Pose3d(441.74, 161.62, 52.00, new Rotation3d(0., 0., Math.toRadians(180)))));
-            add(new AprilTag(14, new Pose3d(209.48, 161.62, 52.00, new Rotation3d(0., 0., Math.toRadians(0)))));
-            add(new AprilTag(15, new Pose3d(182.73, 177.10, 52.00, new Rotation3d(0., 0., Math.toRadians(120)))));
-            add(new AprilTag(16, new Pose3d(182.73, 146.19, 52.00, new Rotation3d(0., 0., Math.toRadians(240)))));
-        }};
-        
+        public static final Transform3d kRobotToCam = 
+                new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     }
 
     public static final class SwerveConstants {
