@@ -17,16 +17,19 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 
 public class Vision {
-    private final PhotonCamera camera;
+    public final PhotonCamera camera;
     private AprilTagFieldLayout aprilTagFieldLayout;
     private double lastEstTimestamp = 0;
-    private final PhotonPoseEstimator photonPoseEstimator;
+    public final PhotonPoseEstimator photonPoseEstimator;
 
     public Vision() {
         camera = new PhotonCamera("Front_Camera");
 
-        photonPoseEstimator = 
-            new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camera, VisionConstants.kRobotToCam);
+        photonPoseEstimator = new PhotonPoseEstimator(
+            aprilTagFieldLayout, 
+            PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
+            camera, 
+            VisionConstants.kRobotToCam);
 
         try {
             aprilTagFieldLayout = new AprilTagFieldLayout("2024-crescendo.json");
@@ -34,7 +37,6 @@ public class Vision {
             e.printStackTrace();
             aprilTagFieldLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
         }
-
     } 
 
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
