@@ -49,8 +49,21 @@ public final class Constants {
     }
 
     public static final class VisionConstants {
+        public static final String kFrontCameraName = "Front_Camera";
         public static final Transform3d kRobotToCam = 
                 new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+
+        public static final double translationKP = 0.1; // TODO: tuning
+        public static final double translationKI = 0.0;
+        public static final double translationKD = 0.0;
+
+        public static final double strafeKP = 0.1;
+        public static final double strafeKI = 0.0;
+        public static final double strafeKD = 0.0;
+
+        public static final double rotationKP = 0.1;
+        public static final double rotationKI = 0.0;
+        public static final double rotationKD = 0.0;
     }
 
     public static final class SwerveConstants {

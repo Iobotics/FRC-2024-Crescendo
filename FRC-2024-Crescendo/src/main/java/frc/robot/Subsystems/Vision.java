@@ -23,7 +23,7 @@ public class Vision {
     public final PhotonPoseEstimator photonPoseEstimator;
 
     public Vision() {
-        camera = new PhotonCamera("Front_Camera");
+        camera = new PhotonCamera(VisionConstants.kFrontCameraName);
 
         photonPoseEstimator = new PhotonPoseEstimator(
             aprilTagFieldLayout, 
