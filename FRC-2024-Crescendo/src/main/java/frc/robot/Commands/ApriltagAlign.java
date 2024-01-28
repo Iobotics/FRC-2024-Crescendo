@@ -12,19 +12,17 @@ import frc.robot.Constants.VisionConstants;
 
 public class ApriltagAlign extends Command {
     protected Vision vision;
-    private double goal;
+    private double goalMeters;
     private PIDController translationController;
     private PIDController rotationController;
     private PIDController strafeController;
 
-    public ApriltagAlign(Vision vision, double goal) {
+    public ApriltagAlign(Vision vision, double goalMeters) {
         this.vision = vision;
-        this.goal = goal;
-
+        this.goalMeters = goalMeters;
+        
         this.translationController = new PIDController(VisionConstants.translationKP, VisionConstants.translationKI, VisionConstants.translationKD);
-
         this.strafeController = new PIDController(VisionConstants.strafeKP, VisionConstants.strafeKI, VisionConstants.strafeKD);
-
         this.rotationController = new PIDController(VisionConstants.rotationKP,VisionConstants.rotationKI,VisionConstants.rotationKD);
     }
 
@@ -39,9 +37,9 @@ public class ApriltagAlign extends Command {
             PhotonTrackedTarget target = result.getBestTarget();
             Transform3d bestCamToTarget = target.getBestCameraToTarget();
 
-            translationSpeed = -translationController.calculate(bestCamToTarget.getX(), goal);
+            translationSpeed = -translationController.calculate(bestCamToTarget.getZ(), goalMeters);
 
-            strafeSpeed = -strafeController.calculate(bestCamToTarget.getY(),0);
+            strafeSpeed = -strafeController.calculate(bestCamToTarget.getX(),0);
 
             rotationSpeed = -rotationController.calculate(target.getYaw(), 0);
 
