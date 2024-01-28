@@ -19,11 +19,11 @@ public class NeoSwerveConstants {
     public final double angleKI;
     public final double angleKD;
     public final double angleKF;
-    public final InvertedValue driveMotorInvert;
-    public final InvertedValue angleMotorInvert;
+    public final boolean driveMotorInvert;
+    public final boolean angleMotorInvert;
     public final SensorDirectionValue cancoderInvert;
 
-    public NeoSwerveConstants(double wheelDiameter, double angleGearRatio, double driveGearRatio, double angleKP, double angleKI, double angleKD, double angleKF, InvertedValue driveMotorInvert, InvertedValue angleMotorInvert, SensorDirectionValue canCoderInvert){
+    public NeoSwerveConstants(double wheelDiameter, double angleGearRatio, double driveGearRatio, double angleKP, double angleKI, double angleKD, double angleKF, boolean driveMotorInvert, boolean angleMotorInvert, SensorDirectionValue canCoderInvert){
         this.wheelDiameter = wheelDiameter;
         this.wheelCircumference = wheelDiameter * Math.PI;
         this.angleGearRatio = angleGearRatio;
@@ -44,15 +44,15 @@ public class NeoSwerveConstants {
         /** (150 / 7) : 1 */
         double angleGearRatio = ((150.0 / 7.0) / 1.0);
 
-        double angleKP = 0.2;
+        double angleKP = 0.02;
         double angleKI = 0.0;
         double angleKD = 0.01;
         double angleKF = 0.0;
 
-        InvertedValue driveMotorInvert = InvertedValue.CounterClockwise_Positive;
-        InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
-        SensorDirectionValue cancoderInvert = SensorDirectionValue.CounterClockwise_Positive;
-        return new NeoSwerveConstants(wheelDiameter, angleGearRatio, driveGearRatio, angleKP, angleKI, angleKD, angleKF, driveMotorInvert, angleMotorInvert, cancoderInvert);
+        boolean driveMotorInvert = false;
+        boolean angleMotorInvert = false;
+        SensorDirectionValue canCoderInvert = SensorDirectionValue.CounterClockwise_Positive;
+        return new NeoSwerveConstants(wheelDiameter, angleGearRatio, driveGearRatio, angleKP, angleKI, angleKD, angleKF, driveMotorInvert, angleMotorInvert, canCoderInvert);
     }
 
     /* Drive Gear Ratios for all supported modules */

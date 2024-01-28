@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Swerve;
 
 
@@ -27,9 +28,14 @@ public class RobotContainer {
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
+    private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
+    // private final JoystickButton consume = new JoystickButton(joystick1, 2);
+    // private final JoystickButton eject = new JoystickButton(joystick1, 3);
+
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
+    //private final Intake intake = new Intake();
 
     //Allows for Autos to be chosen in Shuffleboard
     SendableChooser<Command> AutoChooser = new SendableChooser<>();
@@ -57,7 +63,11 @@ public class RobotContainer {
 
     public void configureBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
+        zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+        // consume.onTrue(new InstantCommand(() -> intake.setSpeed(0.5)));
+        // consume.onFalse(new InstantCommand(() -> intake.stop()));
+        // eject.onTrue(new InstantCommand(() -> intake.setSpeed(-1.0)));
+        // eject.onFalse(new InstantCommand(() -> intake.stop()));
     }
 
     public Command getAutonomousCommand() {
