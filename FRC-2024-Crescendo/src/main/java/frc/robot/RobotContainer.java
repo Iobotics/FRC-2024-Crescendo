@@ -5,11 +5,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Commands.ApriltagAlign;
+import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Swerve;
+import frc.robot.Subsystems.Vision;
 
 
 public class RobotContainer {
@@ -35,6 +38,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
+    private final Vision vision = new Vision();
     //private final Intake intake = new Intake();
 
     //Allows for Autos to be chosen in Shuffleboard
@@ -64,6 +68,10 @@ public class RobotContainer {
     public void configureBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+
+        new JoystickButton(joystick1, 8).onTrue(
+            new ApriltagAlign(vision, 1));
+
         // consume.onTrue(new InstantCommand(() -> intake.setSpeed(0.5)));
         // consume.onFalse(new InstantCommand(() -> intake.stop()));
         // eject.onTrue(new InstantCommand(() -> intake.setSpeed(-1.0)));

@@ -8,7 +8,10 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -49,6 +52,24 @@ public final class Constants {
 
     public static final class PIDConstants {
         public static final int kPIDPrimary = 0;
+    }
+
+    public static final class VisionConstants {
+        public static final String kFrontCameraName = "Front_Camera";
+        public static final Transform3d kRobotToCam = 
+                new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+
+        public static final double translationKP = 0.1; // TODO: tuning
+        public static final double translationKI = 0.0;
+        public static final double translationKD = 0.0;
+
+        public static final double strafeKP = 0.1;
+        public static final double strafeKI = 0.0;
+        public static final double strafeKD = 0.0;
+
+        public static final double rotationKP = 0.1;
+        public static final double rotationKI = 0.0;
+        public static final double rotationKD = 0.0;
     }
 
     public static final class SwerveConstants {
