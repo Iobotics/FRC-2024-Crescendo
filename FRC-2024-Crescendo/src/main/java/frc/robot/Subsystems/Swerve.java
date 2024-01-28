@@ -5,6 +5,7 @@
 package frc.robot.Subsystems;
 
 import frc.robot.Constants;
+import frc.robot.Utils.Conversions;
 import frc.robot.Utils.SwerveModuleInterface;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -29,7 +30,8 @@ public class Swerve extends SubsystemBase {
     public Swerve() {
         gyro = new Pigeon2(Constants.SwerveConstants.pigeonID);
         
-        zeroHeading();
+        //zeroHeading();
+        zeroGyro();
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.SwerveConstants.Mod0.constants),
@@ -87,17 +89,18 @@ public class Swerve extends SubsystemBase {
 
     public SwerveModulePosition[] getModulePositions(){
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
-        for(SwerveModuleInterface mod : mSwerveMods){
-            positions[mod.getModuleNumber()] = mod.getPosition();
+        for(SwerveModule mod : mSwerveMods){
+            positions[mod.moduleNumber] = mod.getPosition();
         }
         return positions;
     }
+  
 
     public Pose2d getPose() {
         return swerveOdometry.getPoseMeters();
     }
-
-    public void setPose(Pose2d pose) {
+ 
+    public void resetOdometry(Pose2d pose) {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
@@ -117,6 +120,10 @@ public class Swerve extends SubsystemBase {
         return Rotation2d.fromDegrees(gyro.getYaw().getValue());
     }
 
+    public void zeroGyro(){
+        gyro.setYaw(0);
+    }
+
     public void resetModulesToAbsolute(){
         for(SwerveModuleInterface mod : mSwerveMods){
             mod.resetToAbsolute();
@@ -126,12 +133,14 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
+        SmartDashboard.putNumber("Gyro", getGyroYaw().getDegrees());
 
         for(SwerveModuleInterface mod : mSwerveMods){
             var moduleNumber = mod.getModuleNumber();
-            SmartDashboard.putNumber("Mod " + moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
+            SmartDashboard.putNumber("Mod " + moduleNumber + " CANcoder", mod.getCANcoder().getDegrees()*360);
             SmartDashboard.putNumber("Mod " + moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("Mod " + moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+            SmartDashboard.putNumber("Mod " + moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
+            SmartDashboard.putNumber("Mod " + moduleNumber + " Absolute", Conversions.sparkToDegrees(mod.getAbsolutePosition(), Constants.SwerveConstants.angleGearRatio));
         }
     }
 }
