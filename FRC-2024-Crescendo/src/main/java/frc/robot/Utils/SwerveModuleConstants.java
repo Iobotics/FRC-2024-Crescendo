@@ -11,18 +11,25 @@ public class SwerveModuleConstants {
     public final int angleMotorID;
     public final int cancoderID;
     public final Rotation2d angleOffset;
+    public final double CANoffsets;
+    public final boolean invertedA;
+    public final boolean invertedD;
   
     /**
      * Swerve Module Constants to be used when creating swerve modules.
      * @param driveMotorID
      * @param angleMotorID
      * @param canCoderID
-     * @param angleOffset
+     * @param angleoffset2
+     * @param inverted 
      */
-    public SwerveModuleConstants(int driveMotorID, int angleMotorID, int canCoderID, Rotation2d angleOffset) {
+    public SwerveModuleConstants(int driveMotorID, int angleMotorID, int canCoderID, Rotation2d angleoffset2, double CANoffsets, boolean invertedA, boolean invertedD) {
       this.driveMotorID = driveMotorID;
       this.angleMotorID = angleMotorID;
       this.cancoderID = canCoderID;
-      this.angleOffset = angleOffset;
+      this.angleOffset = angleoffset2;
+      this.CANoffsets = CANoffsets;
+      this.invertedA = invertedA;
+      this.invertedD = invertedD;
     }
-} 
+  }
