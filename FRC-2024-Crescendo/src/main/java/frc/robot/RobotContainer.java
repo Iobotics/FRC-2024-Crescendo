@@ -64,7 +64,7 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 
         new JoystickButton(joystick1, 8).onTrue(
-            new ApriltagAlign(vision, 1));
+            new ApriltagAlign(vision, swerve, 1));
 
     }
 

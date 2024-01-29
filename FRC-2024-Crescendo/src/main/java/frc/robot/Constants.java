@@ -4,10 +4,16 @@
 
 package frc.robot;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -52,6 +58,25 @@ public final class Constants {
         public static final String kFrontCameraName = "Front_Camera";
         public static final Transform3d kRobotToCam = 
                 new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+        public static final List<AprilTag> apriltags = Arrays.asList(
+            new AprilTag(1, new Pose3d(new Translation3d(15.0795, 0.2459, 1.3559), new Rotation3d(0.0, 0.0, 120.0))),
+            new AprilTag(2, new Pose3d(new Translation3d(16.1851, 0.8837, 1.3559), new Rotation3d(0.0, 0.0, 120.0))),
+            new AprilTag(3, new Pose3d(new Translation3d(16.5793, 4.9827, 1.4511), new Rotation3d(0.0, 0.0, 180.0))),
+            new AprilTag(4, new Pose3d(new Translation3d(16.5793, 5.5479, 1.4511), new Rotation3d(0.0, 0.0, 180.0))),
+            new AprilTag(5, new Pose3d(new Translation3d(14.7008, 8.2042, 1.3559), new Rotation3d(0.0, 0.0, -90.0))),
+            new AprilTag(6, new Pose3d(new Translation3d(1.8415, 8.2042, 1.3559), new Rotation3d(0.0, 0.0, -90.0))),
+            new AprilTag(7, new Pose3d(new Translation3d(-0.0381, 5.5479, 1.4511), new Rotation3d(0.0, 0.0, 0.0))),
+            new AprilTag(8, new Pose3d(new Translation3d(-0.0381, 4.9827, 1.4511), new Rotation3d(0.0, 0.0, 0.0))),
+            new AprilTag(9, new Pose3d(new Translation3d(0.3561, 0.8837, 1.3559), new Rotation3d(0.0, 0.0, 60.0))),
+            new AprilTag(10, new Pose3d(new Translation3d(1.4615, 0.2459, 1.3559), new Rotation3d(0.0, 0.0, 60.0))),
+            new AprilTag(11, new Pose3d(new Translation3d(11.9047, 3.7132, 1.3208), new Rotation3d(0.0, 0.0, -60.0))),
+            new AprilTag(12, new Pose3d(new Translation3d(11.9047, 4.4983, 1.3208), new Rotation3d(0.0, 0.0, 60.0))),
+            new AprilTag(13, new Pose3d(new Translation3d(11.2202, 4.1051, 1.3208), new Rotation3d(0.0, 0.0, 180.0))),
+            new AprilTag(14, new Pose3d(new Translation3d(5.3208, 4.1051, 1.3208), new Rotation3d(0.0, 0.0, 0.0))),
+            new AprilTag(15, new Pose3d(new Translation3d(4.6413, 4.4983, 1.3208), new Rotation3d(0.0, 0.0, 120.0))),
+            new AprilTag(16, new Pose3d(new Translation3d(4.6413, 3.7132, 1.3208), new Rotation3d(0.0, 0.0, -120.0))));
+        public static final AprilTagFieldLayout k2024CrescendoTagField = new AprilTagFieldLayout(apriltags, 16.451, 8.211);
+
 
         public static final double translationKP = 0.1; // TODO: tuning
         public static final double translationKI = 0.0;

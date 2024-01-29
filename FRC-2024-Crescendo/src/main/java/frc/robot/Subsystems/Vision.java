@@ -24,19 +24,19 @@ public class Vision {
 
     public Vision() {
         camera = new PhotonCamera(VisionConstants.kFrontCameraName);
-
+        aprilTagFieldLayout = VisionConstants.k2024CrescendoTagField;
         photonPoseEstimator = new PhotonPoseEstimator(
             aprilTagFieldLayout, 
             PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
             camera, 
             VisionConstants.kRobotToCam);
 
-        try {
-            aprilTagFieldLayout = new AprilTagFieldLayout("2024-crescendo.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-            aprilTagFieldLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
-        }
+        // try {
+        //     aprilTagFieldLayout = new AprilTagFieldLayout("2024-crescendo.json");
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        //     aprilTagFieldLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
+        // }
     } 
 
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
