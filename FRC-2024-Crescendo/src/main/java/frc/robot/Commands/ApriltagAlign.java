@@ -5,10 +5,12 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Swerve;
 import frc.robot.Subsystems.Vision;
 import frc.robot.Constants.VisionConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class ApriltagAlign extends Command {
@@ -40,11 +42,13 @@ public class ApriltagAlign extends Command {
             PhotonTrackedTarget target = result.getBestTarget();
             Transform3d bestCamToTarget = target.getBestCameraToTarget();
 
-            translationSpeed = -translationController.calculate(bestCamToTarget.getZ(), goalMeters);
+            translationSpeed = -translationController.calculate(bestCamToTarget.getX(), goalMeters);
 
-            strafeSpeed = -strafeController.calculate(bestCamToTarget.getX(),0);
+            strafeSpeed = -strafeController.calculate(bestCamToTarget.getY(),0);
 
-            rotationSpeed = -rotationController.calculate(target.getYaw(), 0);
+            double rotation = Math.toDegrees(bestCamToTarget.getRotation().getZ());
+            if (rotation > 0) {rotation = 180-rotation;} else {rotation = -180-rotation;}
+            rotationSpeed = rotationController.calculate(rotation, 0);
 
 
         } else {
@@ -53,6 +57,9 @@ public class ApriltagAlign extends Command {
             rotationSpeed = 0;
             strafeSpeed = 0;
         }
-        // drive(translationSpeed, strafeSpeed, rotationSpeed)
+        SmartDashboard.putNumber("rotation", rotationSpeed);
+        SmartDashboard.putNumber("translation", translationSpeed);
+        SmartDashboard.putNumber("strafe", strafeSpeed);
+        swerve.drive(new Translation2d(translationSpeed, strafeSpeed), rotationSpeed, false, true);
     }
 }

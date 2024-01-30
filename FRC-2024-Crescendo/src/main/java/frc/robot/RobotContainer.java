@@ -63,14 +63,18 @@ public class RobotContainer {
 
         // Configure the controller bindings
         configureBindings();
+
+        SmartDashboard.putNumber("rotation",0);
+        SmartDashboard.putNumber("translation",0);
+        SmartDashboard.putNumber("strafe",0);
     }
 
     public void configureBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 
-        new JoystickButton(joystick1, 8).onTrue(
-            new ApriltagAlign(vision, swerve, 1));
+        new JoystickButton(joystick1, 2).whileTrue(
+            new ApriltagAlign(vision, swerve, 0.4));
 
         // consume.onTrue(new InstantCommand(() -> intake.setSpeed(0.5)));
         // consume.onFalse(new InstantCommand(() -> intake.stop()));

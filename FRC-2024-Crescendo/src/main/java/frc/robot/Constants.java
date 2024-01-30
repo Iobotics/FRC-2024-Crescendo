@@ -84,15 +84,15 @@ public final class Constants {
         public static final AprilTagFieldLayout k2024CrescendoTagField = new AprilTagFieldLayout(apriltags, 16.451, 8.211);
 
 
-        public static final double translationKP = 0.1; // TODO: tuning
+        public static final double translationKP = 0.8; // TODO: tuning
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 
-        public static final double strafeKP = 0.1;
+        public static final double strafeKP = 0.8;
         public static final double strafeKI = 0.0;
         public static final double strafeKD = 0.0;
 
-        public static final double rotationKP = 0.1;
+        public static final double rotationKP = 0.01;
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
     }
