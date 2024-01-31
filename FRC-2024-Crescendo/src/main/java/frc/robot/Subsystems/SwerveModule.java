@@ -7,14 +7,12 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Utils.CANSparkMaxUtil;
 import frc.robot.Utils.CANSparkMaxUtil.Usage;
 import frc.robot.Utils.Conversions;
@@ -22,7 +20,6 @@ import frc.robot.Utils.REVModuleState;
 import frc.robot.Utils.SwerveModuleConstants;
 import frc.robot.Utils.SwerveModuleInterface;
 import frc.robot.Constants;
-import frc.robot.Constants.SwerveConstants;
 
 public class SwerveModule implements SwerveModuleInterface{
     public int moduleNumber;

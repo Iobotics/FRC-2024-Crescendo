@@ -4,7 +4,9 @@
 
 package frc.robot.Subsystems;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 /** Add your docs here. */
-public class Shooter {
+public class Shooter extends SubsystemBase{
     
 }

@@ -40,12 +40,21 @@ public final class Constants {
         public static int kGamepad = 4;
     }
 
-    // public static final class IntakeConstants{
-    //     public static int kUL = 0;
-    //     public static int kUR = 0;
-    //     public static int kLL = 0;
-    //     public static int kLR = 0;
-    // }
+    public static final class IntakeConstants{
+        public static int kUI = 0;
+        public static int kUS = 0;
+        public static int kLI = 0;
+        public static int kLS = 0;
+        public static int RA = 0;
+        public static int LA = 0;
+
+        public static int kArmCountsPerRev = 42;
+        public static double kArmGearRatio = 20.00;
+        public static double kPulleyDiameterInches = 1.456;
+        public static double kEncoderPerInch = (kArmCountsPerRev * 2) / (Math.PI * kPulleyDiameterInches);
+        public static double kArmVelocity = 45.0;
+        public static double kArmAcceleration = 45.0;
+    }
 
     public static final class PIDConstants {
         public static final int kPIDPrimary = 0;
