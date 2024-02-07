@@ -40,7 +40,7 @@ public final class Constants {
         public static int kJoystick1 = 1;
         public static int kJoystick2 = 2;
         public static int kFlightJoystick = 3;
-        public static int kGamepad = 4;
+        public static int kGamepad = 0;
     }
 
     // public static final class IntakeConstants{
@@ -70,6 +70,15 @@ public final class Constants {
         public static final double rotationKP = 0.1;
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
+    }
+
+    public static final class SwifferConstants{
+        public static final int kArm = 21; //please change when ready
+        public static final int kWrist = 18; //please change when ready
+        public static final int kRoller = 19; //please change when ready
+
+        public static final int kDigitalInput = 5; //please change when ready
+
     }
 
     public static final class SwerveConstants {
