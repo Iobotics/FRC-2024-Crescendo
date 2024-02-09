@@ -23,8 +23,14 @@ public class RobotContainer {
     /* Controllers */
     private final Joystick joystick1 = new Joystick(OIConstants.kJoystick1);
     private final Joystick joystick2 = new Joystick(OIConstants.kJoystick2);
+<<<<<<< HEAD
     private final Joystick gamepad = new Joystick(OIConstants.kGamepad);
  
+=======
+    //private final Joystick gamepad = new Joystick(OIConstants.kGamepad);
+    private final Joystick logi = new Joystick(0);
+
+>>>>>>> cbae52df5764a70f8089490b265f650d3f3e79ff
     /* Drive Controls */
     private final int translationAxis = joystick1.getYChannel();
     private final int strafeAxis = joystick1.getXChannel();
@@ -32,8 +38,8 @@ public class RobotContainer {
     private double scalar = 1.5;
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
-    private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
+    private final JoystickButton zeroGyro = new JoystickButton(logi, 5);
+    // private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
     // private final JoystickButton consume = new JoystickButton(joystick1, 2);
     // private final JoystickButton eject = new JoystickButton(joystick1, 3);
 
@@ -49,6 +55,7 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+<<<<<<< HEAD
     //     //drivetrain
     //     swerve.setDefaultCommand(
     //         new TeleopSwerve(
@@ -60,6 +67,19 @@ public class RobotContainer {
     //             scalar
     //         )
     //     );
+=======
+        //drivetrain
+        swerve.setDefaultCommand(
+            new TeleopSwerve(
+                swerve, 
+                () -> -logi.getRawAxis(1), 
+                () -> -logi.getRawAxis(0), 
+                () -> -logi.getRawAxis(4), 
+                () -> false,
+                scalar
+            )
+        );
+>>>>>>> cbae52df5764a70f8089490b265f650d3f3e79ff
 
     //     // Put the chooser on the dashboard
     //     SmartDashboard.putData(AutoChooser);
@@ -72,8 +92,13 @@ public class RobotContainer {
     //     /* Driver Buttons */
     //     zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 
+<<<<<<< HEAD
     //     new JoystickButton(joystick1, 8).onTrue(
     //         new ApriltagAlign(vision, 1));
+=======
+        // new JoystickButton(joystick1, 8).onTrue(
+        //     new ApriltagAlign(vision, 1));
+>>>>>>> cbae52df5764a70f8089490b265f650d3f3e79ff
 
     //     // consume.onTrue(new InstantCommand(() -> intake.setSpeed(0.5)));
     //     // consume.onFalse(new InstantCommand(() -> intake.stop()));
