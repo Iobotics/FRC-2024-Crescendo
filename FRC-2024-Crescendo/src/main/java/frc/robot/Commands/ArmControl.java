@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Intake;
 
-public class Shooting extends Command {
-  Intake shooter;
+public class ArmControl extends Command {
+  Intake intake;
   boolean done;
   /** Creates a new Shooting. */
-  public Shooting(Intake shooter) {
+  public ArmControl(Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.shooter = shooter;
-    addRequirements(shooter);
+    this.intake = intake;
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
@@ -27,18 +27,14 @@ public class Shooting extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.setSSpeed(0.75);
-    Timer.delay(0.5);
-    shooter.setISpeed(.25, false, false);
-    Timer.delay(0.25);
+    intake.setArmPos(4);
     done = true;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.stopI();
-    shooter.stopS();
+    intake.stopA();
   }
 
   // Returns true when the command should end.

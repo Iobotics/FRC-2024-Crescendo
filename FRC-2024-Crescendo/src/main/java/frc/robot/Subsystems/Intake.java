@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
@@ -31,7 +32,8 @@ public class Intake extends SubsystemBase{
 
     private DigitalInput optical;
 
-    private RelativeEncoder absArmEncoder;
+    private RelativeEncoder rArmEncoder;
+    private RelativeEncoder lArmEncoder;
     private SparkPIDController rAPID;
     private SparkPIDController lAPID;
 
@@ -42,16 +44,9 @@ public class Intake extends SubsystemBase{
         upperShoot = new CANSparkMax(Constants.IntakeConstants.kUS, MotorType.kBrushless);
         lowerIntake = new CANSparkMax(Constants.IntakeConstants.kLI, MotorType.kBrushless);
         lowerShoot = new CANSparkMax(Constants.IntakeConstants.kLS, MotorType.kBrushless);
-        rightArm = new CANSparkMax(Constants.IntakeConstants.RA, MotorType.kBrushless);
-        leftArm = new CANSparkMax(Constants.IntakeConstants.LA, MotorType.kBrushless);
+        rightArm = new CANSparkMax(Constants.IntakeConstants.kRA, MotorType.kBrushless);
+        leftArm = new CANSparkMax(Constants.IntakeConstants.kLA, MotorType.kBrushless);
         optical = new DigitalInput(0);
-
-        absArmEncoder = rightArm.getEncoder();
-
-        rAPID = rightArm.getPIDController();
-        configPID(rAPID);
-        lAPID = leftArm.getPIDController();
-        configPID(lAPID);
 
         upperIntake.restoreFactoryDefaults();
         upperShoot.restoreFactoryDefaults();
@@ -65,7 +60,7 @@ public class Intake extends SubsystemBase{
         lowerIntake.setInverted(true);
         lowerShoot.setInverted(true);
         rightArm.setInverted(false);
-        leftArm.setInverted(false);
+        leftArm.setInverted(true);
 
         upperIntake.setIdleMode(IdleMode.kCoast);
         upperShoot.setIdleMode(IdleMode.kCoast);
@@ -74,13 +69,13 @@ public class Intake extends SubsystemBase{
         rightArm.setIdleMode(IdleMode.kBrake);
         leftArm.setIdleMode(IdleMode.kBrake);
 
-        rightArm.setOpenLoopRampRate(1);
-        rightArm.setClosedLoopRampRate(0.5);
-        leftArm.setOpenLoopRampRate(1);
-        leftArm.setClosedLoopRampRate(0.5);
+        rightArm.setOpenLoopRampRate(0.5);
+        rightArm.setClosedLoopRampRate(0);
+        leftArm.setOpenLoopRampRate(0.5);
+        leftArm.setClosedLoopRampRate(0);
 
-        rAPID.setFeedbackDevice(absArmEncoder);
-        lAPID.setFeedbackDevice(absArmEncoder);
+        rArmEncoder = rightArm.getEncoder();
+        lArmEncoder = leftArm.getEncoder();
 
         // PID coefficients
         kP = 5e-5; 
@@ -96,20 +91,13 @@ public class Intake extends SubsystemBase{
         maxVel = 2000; // rpm
         maxAcc = 1500;
 
-        // set PID coefficients
-        rAPID.setP(kP);
-        rAPID.setI(kI);
-        rAPID.setD(kD);
-        rAPID.setIZone(kIz);
-        rAPID.setFF(kFF);
-        rAPID.setOutputRange(kMinOutput, kMaxOutput);
+        rAPID = rightArm.getPIDController();
+        configPID(rAPID);
+        lAPID = leftArm.getPIDController();
+        configPID(lAPID);
 
-        //smart motion values
-        int smartMotionSlot = 0;
-        rAPID.setSmartMotionMaxVelocity(maxVel, smartMotionSlot);
-        rAPID.setSmartMotionMinOutputVelocity(minVel, smartMotionSlot);
-        rAPID.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
-        rAPID.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
+        rAPID.setFeedbackDevice(rArmEncoder);
+        lAPID.setFeedbackDevice(lArmEncoder);
 
         upperIntake.burnFlash();
         upperShoot.burnFlash();
@@ -120,10 +108,20 @@ public class Intake extends SubsystemBase{
     }
 
     public void configPID(SparkPIDController pid){
-        pid.setP(0.01);
-        pid.setI(0);
-        pid.setD(0);
-        pid.setFF(0);
+        // set PID coefficients
+        pid.setP(kP);
+        pid.setI(kI);
+        pid.setD(kD);
+        pid.setIZone(kIz);
+        pid.setFF(kFF);
+        pid.setOutputRange(kMinOutput, kMaxOutput);
+
+        //smart motion values
+        int smartMotionSlot = 0;
+        pid.setSmartMotionMaxVelocity(maxVel, smartMotionSlot);
+        pid.setSmartMotionMinOutputVelocity(minVel, smartMotionSlot);
+        pid.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
+        pid.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
 
     }
 
@@ -148,7 +146,7 @@ public class Intake extends SubsystemBase{
                 upperIntake.set(power);
                 Timer.delay(0.1);
             }
-            stop();
+            stopI();
         }
         else if(!enabled){
             lowerIntake.set(power);
@@ -178,20 +176,33 @@ public class Intake extends SubsystemBase{
         upperShoot.set(power);
     }
 
-    public void stop(){
+    public void stopI(){
         lowerIntake.set(0);
         upperIntake.set(0);
+    }
+        
+
+    public void stopS(){
         lowerShoot.set(0);
         upperShoot.set(0);
+    }
+
+    public void stopA(){
+        rightArm.set(0);
+        leftArm.set(0);
     }
 
     public boolean optic(){
         return(optical.get());
     }
 
+    public double getArmPos(){
+        return(rArmEncoder.getPosition() * IntakeConstants.kArmGearRatio);
+    }
+
     @Override
     public void periodic(){
-        //SmartDashboard.putNumber("Upper Intake", upperIntake.getEncoder().getPosition());
+        SmartDashboard.putNumber("Arm Pos", rightArm.getEncoder().getPosition());
     }
     
 }

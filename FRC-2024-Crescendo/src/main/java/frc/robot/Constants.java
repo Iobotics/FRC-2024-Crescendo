@@ -38,20 +38,19 @@ public final class Constants {
         public static int kJoystick2 = 2;
         public static int kFlightJoystick = 3;
         public static int kGamepad = 4;
+        public static int kFight = 5;
     }
 
     public static final class IntakeConstants{
-        public static int kUI = 0;
-        public static int kUS = 0;
-        public static int kLI = 0;
-        public static int kLS = 0;
-        public static int RA = 0;
-        public static int LA = 0;
+        public static int kUI = 15;
+        public static int kUS = 16;
+        public static int kLI = 17;
+        public static int kLS = 18;
+        public static int kRA = 19;
+        public static int kLA = 20;
 
         public static int kArmCountsPerRev = 42;
-        public static double kArmGearRatio = 20.00;
-        public static double kPulleyDiameterInches = 1.456;
-        public static double kEncoderPerInch = (kArmCountsPerRev * 2) / (Math.PI * kPulleyDiameterInches);
+        public static double kArmGearRatio = 1/36;
         public static double kArmVelocity = 45.0;
         public static double kArmAcceleration = 45.0;
     }
