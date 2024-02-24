@@ -38,7 +38,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-    private final Vision vision = new Vision();
+    private final Vision vision = new Vision(swerve);
     //private final Intake intake = new Intake();
 
     //Allows for Autos to be chosen in Shuffleboard
@@ -73,8 +73,8 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
 
-        new JoystickButton(joystick1, 2).whileTrue(
-            new ApriltagAlign(vision, swerve, 0.4));
+        // new JoystickButton(joystick1, 2).whileTrue(
+        //     new ApriltagAlign(vision, swerve, 0.4));
 
         // consume.onTrue(new InstantCommand(() -> intake.setSpeed(0.5)));
         // consume.onFalse(new InstantCommand(() -> intake.stop()));

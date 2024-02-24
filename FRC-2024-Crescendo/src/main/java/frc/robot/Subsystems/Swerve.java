@@ -5,6 +5,8 @@
 package frc.robot.Subsystems;
 
 import frc.robot.Constants;
+import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Utils.Conversions;
 import frc.robot.Utils.SwerveModuleInterface;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -12,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,7 +29,7 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
-
+    public SwerveDrivePoseEstimator poseEstimator;
     public Swerve() {
         gyro = new Pigeon2(Constants.SwerveConstants.pigeonID);
         
@@ -47,6 +50,11 @@ public class Swerve extends SubsystemBase {
         resetModulesToAbsolute();
 
         swerveOdometry = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
+        poseEstimator = new SwerveDrivePoseEstimator(
+                SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions(), getPose(),
+                VisionConstants.STATE_STANDARD_DEVIATIONS,
+                VisionConstants.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
+
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -133,6 +141,7 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
+        poseEstimator.update(getGyroYaw(), getModulePositions());
         SmartDashboard.putNumber("Gyro", getGyroYaw().getDegrees());
 
         for(SwerveModuleInterface mod : mSwerveMods){

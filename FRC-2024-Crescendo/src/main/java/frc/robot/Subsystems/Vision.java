@@ -18,19 +18,23 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class Vision extends SubsystemBase{
     public final PhotonCamera camera;
     private AprilTagFieldLayout aprilTagFieldLayout;
-    private double lastEstTimestamp = 0;
     public final PhotonPoseEstimator photonPoseEstimator;
+    private final Field2d m_field = new Field2d();
+    private Swerve swerve;
 
-    public Vision() {
+
+    public Vision(Swerve swerve) {
+        this.swerve = swerve;
         camera = new PhotonCamera(VisionConstants.kFrontCameraName);
         aprilTagFieldLayout = VisionConstants.k2024CrescendoTagField;
         photonPoseEstimator = new PhotonPoseEstimator(
             aprilTagFieldLayout, 
-            PoseStrategy.CLOSEST_TO_REFERENCE_POSE, 
+            PoseStrategy.LOWEST_AMBIGUITY, 
             camera, 
             VisionConstants.kRobotToCam);
 
@@ -42,25 +46,21 @@ public class Vision extends SubsystemBase{
         // }
     } 
 
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-        var visionEst = photonPoseEstimator.update();
-        double latestTimestamp = camera.getLatestResult().getTimestampSeconds();
-        boolean newResult = Math.abs(latestTimestamp - lastEstTimestamp) > 1e-5;
-        photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-        if (newResult) lastEstTimestamp = latestTimestamp;
-        return visionEst;
+    public Optional<EstimatedRobotPose> getEstimatedRobotPose() {
+        var result = this.camera.getLatestResult();
+        if (result.hasTargets()) {
+            return photonPoseEstimator.update(result);
+        }
+        return Optional.empty();
     }
 
     @Override
     public void periodic(){
-        var result = this.camera.getLatestResult();
-        if (result.hasTargets()) {
-            PhotonTrackedTarget target = result.getBestTarget();
-            Transform3d bestCamToTarget = target.getBestCameraToTarget();
-
-            SmartDashboard.putNumber("aprilTranslation",bestCamToTarget.getX());
-            SmartDashboard.putNumber("aprilStrafe",bestCamToTarget.getY());
-            SmartDashboard.putNumber("aprilRotation",180-Math.toDegrees(bestCamToTarget.getRotation().getZ()));
+        var estimatedPose = getEstimatedRobotPose();
+        if (estimatedPose.isPresent()){
+            swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);
+            m_field.setRobotPose(swerve.poseEstimator.getEstimatedPosition());
+            SmartDashboard.putData("Field", m_field);
         }
     }
     
