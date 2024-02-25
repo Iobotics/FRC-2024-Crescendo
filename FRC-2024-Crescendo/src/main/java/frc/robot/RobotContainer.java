@@ -1,5 +1,9 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,7 +46,7 @@ public class RobotContainer {
     //private final Intake intake = new Intake();
 
     //Allows for Autos to be chosen in Shuffleboard
-    SendableChooser<Command> AutoChooser = new SendableChooser<>();
+    SendableChooser<Command> autoChooser;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -58,8 +62,11 @@ public class RobotContainer {
             )
         );
 
+        // NamedCommands.registerCommand("exampleCommand", subsystem.exampleCommand);
+
+        autoChooser = AutoBuilder.buildAutoChooser();
         // Put the chooser on the dashboard
-        SmartDashboard.putData(AutoChooser);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
 
         // Configure the controller bindings
         configureBindings();
@@ -84,7 +91,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return AutoChooser.getSelected();
+        return autoChooser.getSelected();
     }
 
 
