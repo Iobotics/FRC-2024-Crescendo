@@ -62,14 +62,14 @@ public class Swerve extends SubsystemBase {
 
 
         AutoBuilder.configureHolonomic(
-            this::getPose, // Robot pose supplier
+            this::getEstPose, // Robot pose supplier
             this::setCurrentPose, // Me thod to reset odometry (will be called if your auto has a starting pose)
             this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(1.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(1.0, 0.0, 0.0), // Rotation PID constants
-                    Constants.SwerveConstants.maxSpeed, // Max module speed, in m/s
+                    new PIDConstants(0.1, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(0.1, 0.0, 0.0), // Rotation PID constants
+                    Constants.SwerveConstants.maxSpeed / 4, // Max module speed, in m/s
                     0.467, // Drive base radius in meters. Distance from robot center to furthest module.
                     new ReplanningConfig() // Default path replanning config. See the API for the options here
             ),
@@ -117,6 +117,7 @@ public class Swerve extends SubsystemBase {
     // test for pathplanner
     public void driveRobotRelative(ChassisSpeeds desiredChassisSpeeds) {
         SwerveModuleState[] swerveModuleStates = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(desiredChassisSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveConstants.maxSpeed / 4);
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], true);
         }

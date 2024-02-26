@@ -70,10 +70,6 @@ public class RobotContainer {
 
         // Configure the controller bindings
         configureBindings();
-
-        SmartDashboard.putNumber("rotation",0);
-        SmartDashboard.putNumber("translation",0);
-        SmartDashboard.putNumber("strafe",0);
     }
 
     public void configureBindings() {

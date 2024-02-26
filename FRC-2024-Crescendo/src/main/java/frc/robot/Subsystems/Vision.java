@@ -60,8 +60,8 @@ public class Vision extends SubsystemBase{
         if (estimatedPose.isPresent()){
             swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);
             m_field.setRobotPose(swerve.poseEstimator.getEstimatedPosition());
-            SmartDashboard.putData("Field", m_field);
         }
+        SmartDashboard.putData("Field", m_field);
     }
     
     /* tag id to location
