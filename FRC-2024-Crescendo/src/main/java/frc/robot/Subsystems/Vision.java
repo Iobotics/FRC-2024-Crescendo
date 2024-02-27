@@ -13,6 +13,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -54,13 +55,32 @@ public class Vision extends SubsystemBase{
         return Optional.empty();
     }
 
+    // public double getAngleToGoal(double goalX, double goalY) {
+    //     Pose2d goalPose = new Pose2d(goalX, goalY, new Rotation2d());
+    //     Pose2d currentPose = swerve.getEstPose();
+    //     double goalRotation = Math.toDegrees(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX())));
+    //     SmartDashboard.putNumber("toSpeaker", goalRotation);
+    //     SmartDashboard.putNumber("goalX", currentPose.minus(goalPose).getX());
+    //     SmartDashboard.putNumber("goalY", currentPose.minus(goalPose).getY());
+    //     return goalRotation;
+    // }
+
+    // public double getEstimatedYaw() {
+    //     var estimatedPose = getEstimatedRobotPose();
+    //     if (estimatedPose.isPresent()) {
+    //         SmartDashboard.putNumber("estimatedrots", estimatedPose.get().estimatedPose.getRotation().getZ());
+    //         return estimatedPose.get().estimatedPose.getRotation().getAngle();
+    //     }
+    //     return 0;
+    // }
+
     @Override
     public void periodic(){
         var estimatedPose = getEstimatedRobotPose();
-        if (estimatedPose.isPresent()){
+        if (estimatedPose.isPresent() && this.camera.getLatestResult().hasTargets()){
             swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);
-            m_field.setRobotPose(swerve.poseEstimator.getEstimatedPosition());
         }
+        m_field.setRobotPose(swerve.poseEstimator.getEstimatedPosition());
         SmartDashboard.putData("Field", m_field);
     }
     

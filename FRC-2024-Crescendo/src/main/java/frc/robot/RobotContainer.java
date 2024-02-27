@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.Optional;
+import java.util.function.DoubleSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -35,7 +38,8 @@ public class RobotContainer {
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
-    private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
+    private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
+    // private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
     // private final JoystickButton consume = new JoystickButton(joystick1, 2);
     // private final JoystickButton eject = new JoystickButton(joystick1, 3);
 
@@ -47,9 +51,11 @@ public class RobotContainer {
 
     //Allows for Autos to be chosen in Shuffleboard
     SendableChooser<Command> autoChooser;
+    
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        swerve.configureAutoBuilder();
         //drivetrain
         swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -74,7 +80,12 @@ public class RobotContainer {
 
     public void configureBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+        zeroGyro.onTrue(new InstantCommand(() -> swerve.setGyro(swerve.getEstYaw())));
+        // new JoystickButton(joystick2,1 ).whileTrue();
+
+
+
+
 
         // new JoystickButton(joystick1, 2).whileTrue(
         //     new ApriltagAlign(vision, swerve, 0.4));

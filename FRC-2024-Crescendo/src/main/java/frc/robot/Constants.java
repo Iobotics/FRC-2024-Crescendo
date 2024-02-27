@@ -100,6 +100,13 @@ public final class Constants {
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
 
+        /**
+         * Standard deviations of model states. Increase these numbers to trust your
+         * model's state estimates less. This
+         * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then
+         * meters.
+         */
+
         public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
         .fill(
             1, // x
@@ -107,17 +114,17 @@ public final class Constants {
             1 * Math.PI // theta
         );
 
-    /**
-     * Standard deviations of the vision measurements. Increase these numbers to
-     * trust global measurements from vision
-     * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
-     * radians.
-     */
-    public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
-        .fill(
-            .1, // x
-            .1, // y
-            .1);
+        /**
+         * Standard deviations of the vision measurements. Increase these numbers to
+         * trust global measurements from vision
+         * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
+         * radians.
+         */
+        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
+            .fill(
+                .5, // x
+                .5, // y
+                .5);
     }
 
     public static final class SwerveConstants {
