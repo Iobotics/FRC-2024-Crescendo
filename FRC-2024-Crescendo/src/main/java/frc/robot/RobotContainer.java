@@ -1,5 +1,12 @@
 package frc.robot;
 
+import java.util.Optional;
+import java.util.function.DoubleSupplier;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,6 +38,9 @@ public class RobotContainer {
     private double scalar = 1.5;
 
     /* Driver Buttons */
+
+    // private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
+    // private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
     private final JoystickButton zeroGyro = new JoystickButton(logi, 5);
     // private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
     // private final JoystickButton consume = new JoystickButton(joystick1, 2);
@@ -39,14 +49,16 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-    private final Vision vision = new Vision();
+    private final Vision vision = new Vision(swerve);
     //private final Intake intake = new Intake();
 
     //Allows for Autos to be chosen in Shuffleboard
-    SendableChooser<Command> AutoChooser = new SendableChooser<>();
+    SendableChooser<Command> autoChooser;
+    
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        swerve.configureAutoBuilder();
         //drivetrain
         swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -59,8 +71,11 @@ public class RobotContainer {
             )
         );
 
+        // NamedCommands.registerCommand("exampleCommand", subsystem.exampleCommand);
+
+        autoChooser = AutoBuilder.buildAutoChooser();
         // Put the chooser on the dashboard
-        SmartDashboard.putData(AutoChooser);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
 
         // Configure the controller bindings
         configureBindings();
@@ -68,8 +83,15 @@ public class RobotContainer {
 
     public void configureBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+        zeroGyro.onTrue(new InstantCommand(() -> swerve.setGyro(swerve.getEstYaw())));
+        // new JoystickButton(joystick2,1 ).whileTrue();
 
+
+
+
+
+        // new JoystickButton(joystick1, 2).whileTrue(
+        //     new ApriltagAlign(vision, swerve, 0.4));
         // new JoystickButton(joystick1, 8).onTrue(
         //     new ApriltagAlign(vision, 1));
 
@@ -81,7 +103,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return AutoChooser.getSelected();
+        return autoChooser.getSelected();
     }
 
 
