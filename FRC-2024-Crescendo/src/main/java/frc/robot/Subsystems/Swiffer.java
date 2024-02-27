@@ -6,11 +6,13 @@
 
 package frc.robot.Subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkMaxLimitSwitch;
+import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -29,8 +31,8 @@ public class Swiffer extends SubsystemBase {
   public SparkPIDController armPID;
   public SparkPIDController wristPID;
 
-  private RelativeEncoder armEncoder;
-  private RelativeEncoder wristEncoder;
+  private AbsoluteEncoder armEncoder;
+  private AbsoluteEncoder wristEncoder;
   private SparkLimitSwitch armBottomLimit;
 
   public double kPArm, kIArm, kDArm, kIzArm, kFFArm, kMaxOutputArm, kMinOutputArm, maxVelArm, maxAccArm, allowedErrArm;
@@ -52,18 +54,18 @@ public class Swiffer extends SubsystemBase {
     roller = new CANSparkMax(SwifferConstants.kRoller, MotorType.kBrushless);
     
     arm.setIdleMode(IdleMode.kBrake);
-    wrist.setIdleMode(IdleMode.kBrake);
+    wrist.setIdleMode(IdleMode.kCoast);
     roller.setIdleMode(IdleMode.kBrake);
 
     arm.restoreFactoryDefaults();
     wrist.restoreFactoryDefaults();
     roller.restoreFactoryDefaults();
 
-    //Set the ramp rate (time from 0 to full throttle)
+    // Set the ramp rate (time from 0 to full throttle)
     arm.setOpenLoopRampRate(1);
-    arm.setClosedLoopRampRate(1);
-    wrist.setOpenLoopRampRate(0.75);
-    wrist.setClosedLoopRampRate(0.75);
+    arm.setClosedLoopRampRate(0);
+    wrist.setOpenLoopRampRate(0.5);
+    wrist.setClosedLoopRampRate(1);
 
     //Set up bottom limit switch for the arm
     armBottomLimit = arm.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
@@ -76,17 +78,17 @@ public class Swiffer extends SubsystemBase {
     wristPID = wrist.getPIDController();
 
     //Set up encoders for the arm and wrist (through bore encoder)
-    armEncoder = arm.getAlternateEncoder(2048);
-    wristEncoder = wrist.getEncoder();
+    armEncoder = arm.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
+    wristEncoder = wrist.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     armPID.setFeedbackDevice(armEncoder);
     wristPID.setFeedbackDevice(wristEncoder);
 
     //Set up device current limits
-    arm.setSmartCurrentLimit(20);
-    wrist.setSmartCurrentLimit(20);
-    roller.setSmartCurrentLimit(10);
+    arm.setSmartCurrentLimit(30);
+    wrist.setSmartCurrentLimit(30);
+    roller.setSmartCurrentLimit(20);
 
-    // ---Arm PID and Smart Motion Setup--- //
+    // // ---Arm PID and Smart Motion Setup--- //
     
     kPArm = 0.000001; //proportional gain
     kIArm = 0.0; //integral gain
@@ -113,26 +115,26 @@ public class Swiffer extends SubsystemBase {
 
     // ---Wrist PID and Smart Motion Setup--- //
 
-    kPWrist = 0.010; //proportional gain
-    kIWrist = 0.00000001; //integral gain
+    kPWrist = 0.000001; //proportional gain
+    kIWrist = 0.0; //integral gain
     kDWrist = 0.0; //derivative gain
     kIzWrist = 0.0; //don't touch this
-    kFFWrist = 0.4; //don't touch this either
+    kFFWrist = 0.0; //don't touch this either
     kMaxOutputWrist = 1; //maximum power
     kMinOutputWrist = -1; //minimum power
     maxVelWrist = 5000; //rpm
     maxAccWrist = 500; //rpm per second
-    allowedErrWrist = 0.1; //inches
+    allowedErrWrist = 0.1; //revolutions
 
     wristPID.setP(kPWrist);
     wristPID.setI(kIWrist);
     wristPID.setD(kDWrist);
+    wristPID.setFF(kFFWrist);
     wristPID.setOutputRange(kMinOutputWrist, kMaxOutputWrist);
 
-    wristPID.setSmartMotionMaxVelocity(maxVelWrist, smartMotionSlotWrist); //tune the max cruise velocity (RPM)
-    wristPID.setSmartMotionMinOutputVelocity(0, smartMotionSlotWrist); //minimum output velocity is 0... duh
-    wristPID.setSmartMotionMaxAccel(maxAccWrist, smartMotionSlotWrist); //tune the max smart motion acceleration (RPM per second)
-    wristPID.setSmartMotionAllowedClosedLoopError(allowedErrWrist, smartMotionSlotWrist); //set the closed loop error
+    wristPID.setSmartMotionMaxVelocity(2500, 0); //tune the max cruise velocity (RPM)
+    wristPID.setSmartMotionMaxAccel(2500, 0); //tune the max smart motion acceleration (RPM per second)
+    wristPID.setSmartMotionAllowedClosedLoopError(allowedErrWrist, 0); //set the closed loop error
 
     wrist.burnFlash(); //flash the new parameters to the sparkmax
   }
@@ -176,28 +178,28 @@ public class Swiffer extends SubsystemBase {
 
   // ---Wrist Functions--- //
 
-  //Preset position function
-  public void presetWrist(double targetPosition){
-    wristPID.setReference(targetPosition, CANSparkMax.ControlType.kSmartMotion, smartMotionSlotWrist, kFFWrist);
+  //Raw speed function
+  public void setPowerWrist(double speed){
+    wrist.set(speed);
+  }
+
+  //Stop function
+  public void stopWrist(){
+    wrist.set(0);  
   }
 
   public double getWristPos(){
     return wristEncoder.getPosition();
   }
   
-  //Raw speed function
-  public void setPowerWrist(double speed){
-    wrist.set(speed);
+  //Preset position function
+  public void presetWrist(double rev){
+    wristPID.setReference(rev, CANSparkMax.ControlType.kSmartMotion, 0, 0);
   }
 
   //Error check function
-  public boolean isWristWithinError(double targetInch, double error){
-    return Math.abs(wristEncoder.getPosition()) <= error;
-  }
-
-  //Stop function
-  public void stopWrist(){
-    wrist.set(0);  
+  public boolean isWristWithinError(double target, double error){
+    return Math.abs(target - wristEncoder.getPosition()) <= error;
   }
 
   // ---Roller Functions---//
