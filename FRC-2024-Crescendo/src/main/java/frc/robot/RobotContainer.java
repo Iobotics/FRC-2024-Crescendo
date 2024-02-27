@@ -29,6 +29,7 @@ public class RobotContainer {
     private final Joystick joystick1 = new Joystick(OIConstants.kJoystick1);
     private final Joystick joystick2 = new Joystick(OIConstants.kJoystick2);
     //private final Joystick gamepad = new Joystick(OIConstants.kGamepad);
+    private final Joystick logi = new Joystick(0);
 
     /* Drive Controls */
     private final int translationAxis = joystick1.getYChannel();
@@ -37,8 +38,10 @@ public class RobotContainer {
     private double scalar = 1.5;
 
     /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
-    private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
+
+    // private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
+    // private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
+    private final JoystickButton zeroGyro = new JoystickButton(logi, 5);
     // private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
     // private final JoystickButton consume = new JoystickButton(joystick1, 2);
     // private final JoystickButton eject = new JoystickButton(joystick1, 3);
@@ -60,9 +63,9 @@ public class RobotContainer {
         swerve.setDefaultCommand(
             new TeleopSwerve(
                 swerve, 
-                () -> -joystick1.getRawAxis(translationAxis), 
-                () -> -joystick1.getRawAxis(strafeAxis), 
-                () -> -joystick2.getRawAxis(rotationAxis), 
+                () -> -logi.getRawAxis(1), 
+                () -> -logi.getRawAxis(0), 
+                () -> -logi.getRawAxis(4), 
                 () -> false,
                 scalar
             )
@@ -89,6 +92,8 @@ public class RobotContainer {
 
         // new JoystickButton(joystick1, 2).whileTrue(
         //     new ApriltagAlign(vision, swerve, 0.4));
+        // new JoystickButton(joystick1, 8).onTrue(
+        //     new ApriltagAlign(vision, 1));
 
         // consume.onTrue(new InstantCommand(() -> intake.setSpeed(0.5)));
         // consume.onFalse(new InstantCommand(() -> intake.stop()));
