@@ -121,13 +121,16 @@ public class Intake extends SubsystemBase{
         pid.setSmartMotionMaxVelocity(maxVel, smartMotionSlot);
         pid.setSmartMotionMinOutputVelocity(minVel, smartMotionSlot);
         pid.setSmartMotionMaxAccel(maxAcc, smartMotionSlot);
-        pid.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
+        pid.setSmartMotionAllowedClosedLoopError(0.01, smartMotionSlot);
 
     }
 
     public void armSpeed(double power){
         rightArm.set(power);
         leftArm.set(power);
+
+        // rAPID.setReference(power, ControlType.kDutyCycle);
+        // rAPID.setReference(power, ControlType.kDutyCycle);
     }
 
     public void setArmPos(double pos){

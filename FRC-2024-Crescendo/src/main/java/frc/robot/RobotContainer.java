@@ -7,9 +7,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Commands.Shooting;
+import frc.robot.Commands.Speaker;
 import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Subsystems.Intake;
+import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Swerve;
 
 
@@ -41,6 +43,8 @@ public class RobotContainer {
     private final JoystickButton armDown = new JoystickButton(gamepad, 6);
     private final JoystickButton setArm = new JoystickButton(gamepad, 1);
     private final JoystickButton setArm1 = new JoystickButton(gamepad, 4);
+    private final JoystickButton mSEjectA = new JoystickButton(fight, 6);
+    private final JoystickButton setArmSpeaker = new JoystickButton(fight, 5);
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
@@ -62,6 +66,8 @@ public class RobotContainer {
                 scalar
             )
         );
+
+        SmartDashboard.putData("Speaker", new Speaker());
 
         // Put the chooser on the dashboard
         SmartDashboard.putData(AutoChooser);
@@ -86,6 +92,9 @@ public class RobotContainer {
         mSEject.onTrue(new InstantCommand(() -> intake.setSSpeed(-1.0)));
         mSEject.onFalse(new InstantCommand(() -> intake.stopS()));
 
+        mSEjectA.onTrue(new InstantCommand(() -> intake.setSSpeed(-0.3)));
+        mSEjectA.onFalse(new InstantCommand(() -> intake.stopS()));
+
         pulse.onTrue(new InstantCommand(() -> intake.pulse(0.5, 4)));
         pulse.onTrue(new InstantCommand(() -> intake.stopI()));
 
@@ -97,8 +106,12 @@ public class RobotContainer {
         armDown.onTrue(new InstantCommand(() -> intake.armSpeed(-0.15)));
         armDown.onFalse(new InstantCommand(() -> intake.armSpeed(0)));
 
-        setArm.onTrue(new InstantCommand(() -> intake.setArmPos(1.5)));
-        setArm1.onTrue(new InstantCommand(()-> intake.setArmPos(3)));
+        //setArm.onTrue(new InstantCommand(() -> intake.setArmPos(1.5)));
+        //setArm1.onTrue(new InstantCommand(()-> intake.setArmPos(1.75)));
+        setArm.onTrue(new InstantCommand(()-> intake.setArmPos(0)));
+        setArm1.onTrue(new InstantCommand(()-> intake.setArmPos(10)));
+
+        setArmSpeaker.onTrue(new InstantCommand(() -> intake.setArmPos(1.5)));
 
     }
 
