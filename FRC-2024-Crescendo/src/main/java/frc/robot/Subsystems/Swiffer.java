@@ -141,24 +141,24 @@ public class Swiffer extends SubsystemBase {
 
   // ---Arm Functions--- //
 
-  //Preset position function
-  public void presetArm(double targetPosition){
-    armPID.setReference(targetPosition, CANSparkMax.ControlType.kSmartMotion, smartMotionSlotArm, kFFArm);
+  //Raw speed function
+  public void setPowerArm(double speed){
+    arm.set(speed);
+  }
+
+  //Stop function
+  public void stopArm(){
+    arm.set(0);
   }
 
   //Get arm position function
   public double getArmPos(){
     return armEncoder.getPosition();
-  }
+  } 
 
-  //Tapering speed function
-  public void speedArm(){
-
-  }
-
-  //Raw speed function
-  public void setPowerArm(){
-
+  //Preset position function
+  public void presetArm(double targetPosition){
+    armPID.setReference(targetPosition, CANSparkMax.ControlType.kSmartMotion, smartMotionSlotArm, kFFArm);
   }
 
   //Bottom limit switch check function
@@ -167,14 +167,9 @@ public class Swiffer extends SubsystemBase {
   }
 
   //Error check function
-  public boolean isArmWithinError(double targetInch, double error){
-      return Math.abs(armEncoder.getPosition()) <= error;
+  public boolean isArmWithinError(double target, double error){
+      return Math.abs(target = armEncoder.getPosition()) <= error;
     }
-
-  //Stop function
-  public void stopArm(){
-    arm.set(0);
-  }
 
   // ---Wrist Functions--- //
 

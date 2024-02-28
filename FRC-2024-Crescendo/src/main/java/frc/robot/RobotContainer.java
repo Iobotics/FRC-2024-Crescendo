@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Commands.PresetArm;
+// import frc.robot.Commands.PresetArm;
 // import frc.robot.Commands.ApriltagAlign;
 import frc.robot.Commands.PresetWrist;
 // import frc.robot.Commands.TeleopSwerve;
@@ -51,7 +51,7 @@ public class RobotContainer {
         // === SWIFFER === //
 
         new JoystickButton(gamepad, 1).whileTrue(
-            new RunCommand(()->swiffer.setPowerArm(gamepad.getY()), swiffer));
+            new RunCommand(()->swiffer.setPowerArm(-gamepad.getY()), swiffer));
 
         new JoystickButton(gamepad, 1).whileFalse(
             new RunCommand(()->swiffer.stopArm(), swiffer));
@@ -62,11 +62,11 @@ public class RobotContainer {
         new JoystickButton(gamepad, 2).whileFalse(
             new RunCommand(()->swiffer.stopWrist(), swiffer)); 
 
-        new JoystickButton(gamepad, 3).onTrue(
-            new PresetArm(swiffer, 15));
+        // new JoystickButton(gamepad, 3).onTrue(
+        //     new PresetArm(swiffer, 15));
         
-        new JoystickButton(gamepad, 4).onTrue(
-            new PresetArm(swiffer, 50));
+        // new JoystickButton(gamepad, 4).onTrue(
+        //     new PresetArm(swiffer, 50));
 
         new JoystickButton(gamepad, 5).whileTrue(
             new RunCommand(()->swiffer.setPowerRoller(0.75), swiffer));

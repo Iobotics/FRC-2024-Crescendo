@@ -73,8 +73,8 @@ public final class Constants {
     }
 
     public static final class SwifferConstants{
-        public static final int kArm = 21; //please change when ready
-        public static final int kWrist = 18; //please change when ready
+        public static final int kArm = 23; //please change when ready
+        public static final int kWrist = 24; //please change when ready
         public static final int kRoller = 25; //please change when ready
 
         public static final int kDigitalInput = 5; //please change when ready
