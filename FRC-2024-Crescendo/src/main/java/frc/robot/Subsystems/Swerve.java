@@ -78,7 +78,7 @@ public class Swerve extends SubsystemBase {
                     new PIDConstants(1.0, 0.0, 0.0), // Translation PID constants
                     new PIDConstants(1.0, 0.0, 0.0), // Rotation PID constants
                     Constants.SwerveConstants.maxSpeed / 4, // Max module speed, in m/s
-                    0.467, // Drive base radius in meters. Distance from robot center to furthest module.
+                    0.37268062902, // Drive base radius in meters. Distance from robot center to furthest module.
                     new ReplanningConfig() // Default path replanning config. See the API for the options here
             ),
             () -> {
