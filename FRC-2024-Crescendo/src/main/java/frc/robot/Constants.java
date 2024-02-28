@@ -46,11 +46,11 @@ public final class Constants {
     public static final double stickDeadband = 0.2;
 
     public static final class OIConstants {
-        public static int kXbox1 = 0;
+        public static int kGamepad = 0;
         public static int kJoystick1 = 1;
         public static int kJoystick2 = 2;
-        public static int kFlightJoystick = 3;
-        public static int kGamepad = 4;
+        public static int kFight = 3;
+        public static int kSwifferGamepad = 4;
     }
 
     // public static final class IntakeConstants{
@@ -125,6 +125,30 @@ public final class Constants {
                 .5, // x
                 .5, // y
                 .5);
+    }
+
+    public static final class IntakeConstants{
+        public static int kUI = 15;
+        public static int kUS = 16;
+        public static int kLI = 17;
+        public static int kLS = 18;
+        public static int kRA = 19;
+        public static int kLA = 20;
+
+        public static int kArmCountsPerRev = 42;
+        public static double kArmGearRatio = 1/36;
+        public static double kArmVelocity = 45.0;
+        public static double kArmAcceleration = 45.0;
+    }
+
+
+    public static final class SwifferConstants{
+        public static final int kArm = 23; //please change when ready
+        public static final int kWrist = 24; //please change when ready
+        public static final int kRoller = 25; //please change when ready
+
+        public static final int kDigitalInput = 5; //please change when ready
+
     }
 
     public static final class SwerveConstants {
