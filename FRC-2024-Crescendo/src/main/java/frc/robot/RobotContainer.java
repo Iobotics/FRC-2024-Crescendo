@@ -1,5 +1,12 @@
 package frc.robot;
 
+import java.util.Optional;
+import java.util.function.DoubleSupplier;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.Joystick;
 // import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,6 +38,9 @@ public class RobotContainer {
     // private double scalar = 1.5;
 
     /* Driver Buttons */
+
+    // private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
+    // private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
     //private final JoystickButton zeroGyro = new JoystickButton(logi, 5);
     // private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
     // private final JoystickButton consume = new JoystickButton(joystick1, 2);
@@ -53,11 +63,19 @@ public class RobotContainer {
         new JoystickButton(gamepad, 1).whileTrue(
             new RunCommand(()->swiffer.setPowerArm(-gamepad.getY()), swiffer));
 
-        new JoystickButton(gamepad, 1).whileFalse(
-            new RunCommand(()->swiffer.stopArm(), swiffer));
+    public void configureBindings() {
+        /* Driver Buttons */
+        //zeroGyro.onTrue(new InstantCommand(() -> swerve.setGyro(swerve.getEstYaw())));
+        // new JoystickButton(joystick2,1 ).whileTrue();
 
-        new JoystickButton(gamepad, 2).whileTrue(
-            new RunCommand(()->swiffer.setPowerWrist(gamepad.getY()), swiffer));
+
+
+
+
+        // new JoystickButton(joystick1, 2).whileTrue(
+        //     new ApriltagAlign(vision, swerve, 0.4));
+        // new JoystickButton(joystick1, 8).onTrue(
+        //     new ApriltagAlign(vision, 1));
 
         new JoystickButton(gamepad, 2).whileFalse(
             new RunCommand(()->swiffer.stopWrist(), swiffer)); 

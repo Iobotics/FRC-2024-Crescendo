@@ -3,16 +3,26 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import java.util.Arrays;
+import java.util.List;
 
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Utils.NeoSwerveConstants;
@@ -58,18 +68,63 @@ public final class Constants {
         public static final String kFrontCameraName = "Front_Camera";
         public static final Transform3d kRobotToCam = 
                 new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+        public static final List<AprilTag> apriltags = Arrays.asList(
+            new AprilTag(1, new Pose3d(new Translation3d(15.0795, 0.2459, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians(120.0)))),
+            new AprilTag(2, new Pose3d(new Translation3d(16.1851, 0.8837, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians( 120.0)))),
+            new AprilTag(3, new Pose3d(new Translation3d(16.5793, 4.9827, 1.4511), new Rotation3d(0.0, 0.0, Math.toRadians( 180.0)))),
+            new AprilTag(4, new Pose3d(new Translation3d(16.5793, 5.5479, 1.4511), new Rotation3d(0.0, 0.0, Math.toRadians( 180.0)))),
+            new AprilTag(5, new Pose3d(new Translation3d(14.7008, 8.2042, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians( -90.0)))),
+            new AprilTag(6, new Pose3d(new Translation3d(1.8415, 8.2042, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians( -90.0)))),
+            new AprilTag(7, new Pose3d(new Translation3d(-0.0381, 5.5479, 1.4511), new Rotation3d(0.0, 0.0, 0.0))),
+            new AprilTag(8, new Pose3d(new Translation3d(-0.0381, 4.9827, 1.4511), new Rotation3d(0.0, 0.0, 0.0))),
+            new AprilTag(9, new Pose3d(new Translation3d(0.3561, 0.8837, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians( 60.0)))),
+            new AprilTag(10, new Pose3d(new Translation3d(1.4615, 0.2459, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians( 60.0)))),
+            new AprilTag(11, new Pose3d(new Translation3d(11.9047, 3.7132, 1.3208), new Rotation3d(0.0, 0.0, Math.toRadians( -60.0)))),
+            new AprilTag(12, new Pose3d(new Translation3d(11.9047, 4.4983, 1.3208), new Rotation3d(0.0, 0.0, Math.toRadians( 60.0)))),
+            new AprilTag(13, new Pose3d(new Translation3d(11.2202, 4.1051, 1.3208), new Rotation3d(0.0, 0.0, Math.toRadians( 180.0)))),
+            new AprilTag(14, new Pose3d(new Translation3d(5.3208, 4.1051, 1.3208), new Rotation3d(0.0, 0.0, 0.0))),
+            new AprilTag(15, new Pose3d(new Translation3d(4.6413, 4.4983, 1.3208), new Rotation3d(0.0, 0.0, Math.toRadians( 120.0)))),
+            new AprilTag(16, new Pose3d(new Translation3d(4.6413, 3.7132, 1.3208), new Rotation3d(0.0, 0.0, Math.toRadians( -120.0)))));
+        public static final AprilTagFieldLayout k2024CrescendoTagField = new AprilTagFieldLayout(apriltags, 16.451, 8.211);
 
-        public static final double translationKP = 0.1; // TODO: tuning
+
+        public static final double translationKP = 0.8; // TODO: tuning
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 
-        public static final double strafeKP = 0.1;
+        public static final double strafeKP = 0.8;
         public static final double strafeKI = 0.0;
         public static final double strafeKD = 0.0;
 
-        public static final double rotationKP = 0.1;
+        public static final double rotationKP = 0.01;
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
+
+        /**
+         * Standard deviations of model states. Increase these numbers to trust your
+         * model's state estimates less. This
+         * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then
+         * meters.
+         */
+
+        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
+        .fill(
+            1, // x
+            1, // y
+            1 * Math.PI // theta
+        );
+
+        /**
+         * Standard deviations of the vision measurements. Increase these numbers to
+         * trust global measurements from vision
+         * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
+         * radians.
+         */
+        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
+            .fill(
+                .5, // x
+                .5, // y
+                .5);
     }
 
     public static final class SwifferConstants{
