@@ -8,110 +8,170 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
-// import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
-// import frc.robot.Commands.PresetArm;
-// import frc.robot.Commands.ApriltagAlign;
-import frc.robot.Commands.PresetWrist;
-// import frc.robot.Commands.TeleopSwerve;
-// import frc.robot.Subsystems.Intake;
-// import frc.robot.Subsystems.Swerve;
+import frc.robot.Commands.ApriltagAlign;
+import frc.robot.Commands.PresetArm;
+import frc.robot.Commands.TeleopSwerve;
+import frc.robot.Subsystems.Intake;
+import frc.robot.Subsystems.Swerve;
 import frc.robot.Subsystems.Swiffer;
-
+import frc.robot.Subsystems.Vision;
 
 
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
 
     /* Controllers */
+    private final Joystick joystick1 = new Joystick(OIConstants.kJoystick1);
+    private final Joystick joystick2 = new Joystick(OIConstants.kJoystick2);
+    private final Joystick swifferGamepad = new Joystick(OIConstants.kSwifferGamepad);
     private final Joystick gamepad = new Joystick(OIConstants.kGamepad);
- 
-    // /* Drive Controls */
-    // private final int translationAxis = joystick1.getYChannel();
-    // private final int strafeAxis = joystick1.getXChannel();
-    // private final int rotationAxis = joystick2.getXChannel();
-    // private double scalar = 1.5;
+    private final Joystick fight = new Joystick(OIConstants.kFight);
+
+    /* Drive Controls */
+    private final int translationAxis = joystick1.getYChannel();
+    private final int strafeAxis = joystick1.getXChannel();
+    private final int rotationAxis = joystick2.getXChannel();
+    private double scalar = 1.5;
 
     /* Driver Buttons */
 
     // private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
     // private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
-    //private final JoystickButton zeroGyro = new JoystickButton(logi, 5);
+    private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
     // private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
     // private final JoystickButton consume = new JoystickButton(joystick1, 2);
     // private final JoystickButton eject = new JoystickButton(joystick1, 3);
+    //private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
+    private final JoystickButton mIConsume = new JoystickButton(fight, 2);
+    private final JoystickButton mSConsume = new JoystickButton(fight, 3);
+    private final JoystickButton mIEject = new JoystickButton(fight, 4);
+    private final JoystickButton mSEject = new JoystickButton(fight, 1);
+    // private final JoystickButton shooting = new JoystickButton(gamepad, 5);
+    private final JoystickButton pulse = new JoystickButton(gamepad, 2);
+    private final JoystickButton armUp = new JoystickButton(gamepad, 5);
+    private final JoystickButton armDown = new JoystickButton(gamepad, 6);
+    private final JoystickButton setArm = new JoystickButton(gamepad, 1);
+    private final JoystickButton setArm1 = new JoystickButton(gamepad, 4);
+    private final JoystickButton mSEjectA = new JoystickButton(fight, 6);
+    private final JoystickButton setArmSpeaker = new JoystickButton(fight, 5);
 
 
     /* Subsystems */
+    private final Swerve swerve = new Swerve();
+    private final Vision vision = new Vision(swerve);
+    private final Intake intake = new Intake();
     private final Swiffer swiffer = new Swiffer();
 
-
     //Allows for Autos to be chosen in Shuffleboard
-    // SendableChooser<Command> AutoChooser = new SendableChooser<>();
+    SendableChooser<Command> autoChooser;
+    
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        // --- SWIFFER BUTTON CONTROLS --- //
+        swerve.configureAutoBuilder();
+        //drivetrain
+        swerve.setDefaultCommand(
+            new TeleopSwerve(
+                swerve, 
+                () -> -gamepad.getRawAxis(1), 
+                () -> -gamepad.getRawAxis(0), 
+                () -> -gamepad.getRawAxis(4), 
+                () -> false,
+                scalar
+            )
+        );
 
-        // === SWIFFER === //
+        // NamedCommands.registerCommand("exampleCommand", subsystem.exampleCommand);
 
-        new JoystickButton(gamepad, 1).whileTrue(
-            new RunCommand(()->swiffer.setPowerArm(-gamepad.getY()), swiffer));
+        autoChooser = AutoBuilder.buildAutoChooser();
+        // Put the chooser on the dashboard
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+
+        // Configure the controller bindings
+        configureBindings();
+    }
 
     public void configureBindings() {
+
         /* Driver Buttons */
-        //zeroGyro.onTrue(new InstantCommand(() -> swerve.setGyro(swerve.getEstYaw())));
+
+        zeroGyro.onTrue(new InstantCommand(() -> swerve.setGyro(swerve.getEstYaw())));
+        mIConsume.onTrue(new InstantCommand(() -> intake.setISpeed(0.5, false, false)));
+        mIConsume.onFalse(new InstantCommand(() -> intake.stopI()));
+
+        mSConsume.onTrue(new InstantCommand(() -> intake.setSSpeed(0.25)));
+        mSConsume.onFalse(new InstantCommand(() -> intake.stopS()));
+
+        mIEject.onTrue(new InstantCommand(() -> intake.setISpeed(-0.25, false, false)));
+        mIEject.onFalse(new InstantCommand(() -> intake.stopI()));
+
+        mSEject.onTrue(new InstantCommand(() -> intake.setSSpeed(-1.0)));
+        mSEject.onFalse(new InstantCommand(() -> intake.stopS()));
+
+        mSEjectA.onTrue(new InstantCommand(() -> intake.setSSpeed(-0.3)));
+        mSEjectA.onFalse(new InstantCommand(() -> intake.stopS()));
+
+        pulse.onTrue(new InstantCommand(() -> intake.pulse(0.5, 4)));
+        pulse.onTrue(new InstantCommand(() -> intake.stopI()));
+
+        //shooting.onTrue(new Shooting(intake));
+
+        armUp.onTrue(new InstantCommand(() -> intake.armSpeed(0.15)));
+        armUp.onFalse(new InstantCommand(() -> intake.armSpeed(0)));
+
+        armDown.onTrue(new InstantCommand(() -> intake.armSpeed(-0.15)));
+        armDown.onFalse(new InstantCommand(() -> intake.armSpeed(0)));
+
+        //setArm.onTrue(new InstantCommand(() -> intake.setArmPos(1.5)));
+        //setArm1.onTrue(new InstantCommand(()-> intake.setArmPos(1.75)));
+        setArm.onTrue(new InstantCommand(()-> intake.setArmPos(0)));
+        setArm1.onTrue(new InstantCommand(()-> intake.setArmPos(10)));
+
+        setArmSpeaker.onTrue(new InstantCommand(() -> intake.setArmPos(1.5)));
         // new JoystickButton(joystick2,1 ).whileTrue();
 
+        /* SUBSYSTEMS */
 
+        new JoystickButton(swifferGamepad, 1).whileTrue(
+            new RunCommand(()->swiffer.setPowerArm(-swifferGamepad.getY()), swiffer));
+                 
+        new JoystickButton(swifferGamepad, 1).whileFalse(
+            new RunCommand(()->swiffer.stopArm(), swiffer)); 
 
-
-
-        // new JoystickButton(joystick1, 2).whileTrue(
-        //     new ApriltagAlign(vision, swerve, 0.4));
-        // new JoystickButton(joystick1, 8).onTrue(
-        //     new ApriltagAlign(vision, 1));
-
-        new JoystickButton(gamepad, 2).whileFalse(
+        new JoystickButton(swifferGamepad, 2).whileTrue(
+            new RunCommand(()->swiffer.setPowerWrist(swifferGamepad.getY()), swiffer));
+                 
+        new JoystickButton(swifferGamepad, 2).whileFalse(
             new RunCommand(()->swiffer.stopWrist(), swiffer)); 
 
-        // new JoystickButton(gamepad, 3).onTrue(
+        // new JoystickButton(swifferGamepad, 3).onTrue(
         //     new PresetArm(swiffer, 15));
         
-        // new JoystickButton(gamepad, 4).onTrue(
+        // new JoystickButton(swifferGamepad, 4).onTrue(
         //     new PresetArm(swiffer, 50));
 
-        new JoystickButton(gamepad, 5).whileTrue(
+        new JoystickButton(swifferGamepad, 5).whileTrue(
             new RunCommand(()->swiffer.setPowerRoller(0.75), swiffer));
 
-        new JoystickButton(gamepad, 5).whileFalse(
+        new JoystickButton(swifferGamepad, 5).whileFalse(
             new RunCommand(()->swiffer.stopRoller(), swiffer));
 
-        new JoystickButton(gamepad, 6).whileTrue(
-            new RunCommand(()->swiffer.setPowerRoller(gamepad.getY()), swiffer));
+        new JoystickButton(swifferGamepad, 6).whileTrue(
+            new RunCommand(()->swiffer.setPowerRoller(-0.75), swiffer));
 
-        new JoystickButton(gamepad, 6).whileFalse(
+        new JoystickButton(swifferGamepad, 6).whileFalse(
             new RunCommand(()->swiffer.stopRoller(), swiffer));
-
-        
     }
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return null;
+        return autoChooser.getSelected();
     }
-
-
-
-
-
-
-
-
-
 }
