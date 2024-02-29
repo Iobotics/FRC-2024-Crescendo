@@ -201,7 +201,10 @@ public class Swiffer extends SubsystemBase {
 
   //Set roller power function
   public void setPowerRoller(double speed){
-    roller.set(speed);
+    //do{
+      roller.set(speed);
+    //}while(isNoteDetected() == true);
+    
   }
 
   //Note detection function

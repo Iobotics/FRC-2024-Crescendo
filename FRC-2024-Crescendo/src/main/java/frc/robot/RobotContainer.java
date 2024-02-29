@@ -12,13 +12,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Commands.ApriltagAlign;
 import frc.robot.Commands.PresetArm;
 import frc.robot.Commands.TeleopSwerve;
+import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Intake;
+import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Swerve;
 import frc.robot.Subsystems.Swiffer;
 import frc.robot.Subsystems.Vision;
@@ -44,7 +48,7 @@ public class RobotContainer {
 
     // private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
     // private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
-    private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
+    //private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
     // private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
     // private final JoystickButton consume = new JoystickButton(joystick1, 2);
     // private final JoystickButton eject = new JoystickButton(joystick1, 3);
@@ -65,8 +69,10 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-    private final Vision vision = new Vision(swerve);
+    // private final Vision vision = new Vision(swerve);
     private final Intake intake = new Intake();
+    private final Shooter shooter = new Shooter();
+    private final Arm arm = new Arm();
     private final Swiffer swiffer = new Swiffer();
 
     //Allows for Autos to be chosen in Shuffleboard
@@ -102,53 +108,63 @@ public class RobotContainer {
 
         /* Driver Buttons */
 
-        zeroGyro.onTrue(new InstantCommand(() -> swerve.setGyro(swerve.getEstYaw())));
-        mIConsume.onTrue(new InstantCommand(() -> intake.setISpeed(0.5, false, false)));
+        //zeroGyro.onTrue(new InstantCommand(() -> swerve.setGyro(swerve.getEstYaw())));
+        mIConsume.onTrue(new SequentialCommandGroup(
+            new InstantCommand(() -> intake.setISpeed(0.5, true, true)).withTimeout(0.5),
+            new InstantCommand(() -> intake.setISpeed(-0.25, true, false))));
         mIConsume.onFalse(new InstantCommand(() -> intake.stopI()));
 
-        mSConsume.onTrue(new InstantCommand(() -> intake.setSSpeed(0.25)));
-        mSConsume.onFalse(new InstantCommand(() -> intake.stopS()));
+        mSConsume.onTrue(new InstantCommand(() -> shooter.setSSpeed(0.25)));
+        mSConsume.onFalse(new InstantCommand(() -> shooter.stopS()));
 
         mIEject.onTrue(new InstantCommand(() -> intake.setISpeed(-0.25, false, false)));
         mIEject.onFalse(new InstantCommand(() -> intake.stopI()));
 
-        mSEject.onTrue(new InstantCommand(() -> intake.setSSpeed(-1.0)));
-        mSEject.onFalse(new InstantCommand(() -> intake.stopS()));
+        mSEject.onTrue(new InstantCommand(() -> shooter.setSSpeed(-1.0)));
+        mSEject.onFalse(new InstantCommand(() -> shooter.stopS()));
 
-        mSEjectA.onTrue(new InstantCommand(() -> intake.setSSpeed(-0.3)));
-        mSEjectA.onFalse(new InstantCommand(() -> intake.stopS()));
+        mSEjectA.whileTrue(new ParallelCommandGroup(
+            new InstantCommand(() -> intake.setISpeed(0.5, false, false)),
+            new InstantCommand(() -> swiffer.setPowerRoller(0.3)),
+            new InstantCommand(() -> shooter.setSSpeed(-0.3))
+        ));
+        mSEjectA.whileFalse(new ParallelCommandGroup(
+            new InstantCommand(() -> shooter.stopS()),
+            new InstantCommand(() -> intake.stopI()),
+            new InstantCommand(() -> swiffer.stopRoller())
+        ));
 
         pulse.onTrue(new InstantCommand(() -> intake.pulse(0.5, 4)));
         pulse.onTrue(new InstantCommand(() -> intake.stopI()));
 
         //shooting.onTrue(new Shooting(intake));
 
-        armUp.onTrue(new InstantCommand(() -> intake.armSpeed(0.15)));
-        armUp.onFalse(new InstantCommand(() -> intake.armSpeed(0)));
+        armUp.onTrue(new InstantCommand(() -> arm.armSpeed(0.15)));
+        armUp.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
-        armDown.onTrue(new InstantCommand(() -> intake.armSpeed(-0.15)));
-        armDown.onFalse(new InstantCommand(() -> intake.armSpeed(0)));
+        armDown.onTrue(new InstantCommand(() -> arm.armSpeed(-0.15)));
+        armDown.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
         //setArm.onTrue(new InstantCommand(() -> intake.setArmPos(1.5)));
         //setArm1.onTrue(new InstantCommand(()-> intake.setArmPos(1.75)));
-        setArm.onTrue(new InstantCommand(()-> intake.setArmPos(0)));
-        setArm1.onTrue(new InstantCommand(()-> intake.setArmPos(10)));
+        setArm.onTrue(new InstantCommand(()-> arm.setArmPos(0)));
+        setArm1.onTrue(new InstantCommand(()-> arm.setArmPos(10)));
 
-        setArmSpeaker.onTrue(new InstantCommand(() -> intake.setArmPos(1.5)));
+        setArmSpeaker.onTrue(new InstantCommand(() -> arm.setArmPos(1.5)));
         // new JoystickButton(joystick2,1 ).whileTrue();
 
         /* SUBSYSTEMS */
 
-        new JoystickButton(swifferGamepad, 1).whileTrue(
-            new RunCommand(()->swiffer.setPowerArm(-swifferGamepad.getY()), swiffer));
+        new JoystickButton(fight, 9).whileTrue(
+            new RunCommand(()->swiffer.setPowerArm(-fight.getY()), swiffer));
                  
-        new JoystickButton(swifferGamepad, 1).whileFalse(
+        new JoystickButton(fight, 9).whileFalse(
             new RunCommand(()->swiffer.stopArm(), swiffer)); 
 
-        new JoystickButton(swifferGamepad, 2).whileTrue(
-            new RunCommand(()->swiffer.setPowerWrist(swifferGamepad.getY()), swiffer));
+        new JoystickButton(fight, 10).whileTrue(
+            new RunCommand(()->swiffer.setPowerWrist(fight.getY()/5), swiffer));
                  
-        new JoystickButton(swifferGamepad, 2).whileFalse(
+        new JoystickButton(fight, 10).whileFalse(
             new RunCommand(()->swiffer.stopWrist(), swiffer)); 
 
         // new JoystickButton(swifferGamepad, 3).onTrue(
@@ -157,16 +173,16 @@ public class RobotContainer {
         // new JoystickButton(swifferGamepad, 4).onTrue(
         //     new PresetArm(swiffer, 50));
 
-        new JoystickButton(swifferGamepad, 5).whileTrue(
+        new JoystickButton(fight, 8).whileTrue(
             new RunCommand(()->swiffer.setPowerRoller(0.75), swiffer));
 
-        new JoystickButton(swifferGamepad, 5).whileFalse(
+        new JoystickButton(fight, 8).whileFalse(
             new RunCommand(()->swiffer.stopRoller(), swiffer));
 
-        new JoystickButton(swifferGamepad, 6).whileTrue(
+        new JoystickButton(fight, 7).whileTrue(
             new RunCommand(()->swiffer.setPowerRoller(-0.75), swiffer));
 
-        new JoystickButton(swifferGamepad, 6).whileFalse(
+        new JoystickButton(fight, 7).whileFalse(
             new RunCommand(()->swiffer.stopRoller(), swiffer));
     }
 

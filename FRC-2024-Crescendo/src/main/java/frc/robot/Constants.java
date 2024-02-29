@@ -52,14 +52,7 @@ public final class Constants {
         public static int kFight = 3;
         public static int kSwifferGamepad = 4;
     }
-
-    // public static final class IntakeConstants{
-    //     public static int kUL = 0;
-    //     public static int kUR = 0;
-    //     public static int kLL = 0;
-    //     public static int kLR = 0;
-    // }
-
+    
     public static final class PIDConstants {
         public static final int kPIDPrimary = 0;
     }
@@ -128,12 +121,12 @@ public final class Constants {
     }
 
     public static final class IntakeConstants{
-        public static int kUI = 15;
-        public static int kUS = 16;
-        public static int kLI = 17;
-        public static int kLS = 18;
-        public static int kRA = 19;
-        public static int kLA = 20;
+        public static int kUI = 17;
+        public static int kUS = 19;
+        public static int kLI = 18;
+        public static int kLS = 20;
+        public static int kRA = 16;
+        public static int kLA = 15;
 
         public static int kArmCountsPerRev = 42;
         public static double kArmGearRatio = 1/36;
