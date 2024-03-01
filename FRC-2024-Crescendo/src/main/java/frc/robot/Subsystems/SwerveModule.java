@@ -54,7 +54,7 @@ public class SwerveModule implements SwerveModuleInterface{
         this.CANoffsets = moduleConstants.CANoffsets;
         
         /* Angle Encoder Config */
-        angleEncoder = new CANcoder(moduleConstants.cancoderID);
+        angleEncoder = new CANcoder(moduleConstants.cancoderID, "Carnivore");
         configCAN();
 
         /* Angle Motor Config */

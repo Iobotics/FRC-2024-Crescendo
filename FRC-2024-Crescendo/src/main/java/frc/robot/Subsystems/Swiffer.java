@@ -11,7 +11,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkLimitSwitch;
-import com.revrobotics.SparkMaxLimitSwitch;
+import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -163,7 +163,7 @@ public class Swiffer extends SubsystemBase {
 
   //Bottom limit switch check function
   public boolean isArmLowerLimit(){
-    return arm.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed(); //FIX THIS
+    return arm.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed(); //FIX THIS
   }
 
   //Error check function

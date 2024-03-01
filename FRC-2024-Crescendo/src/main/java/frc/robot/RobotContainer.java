@@ -46,7 +46,7 @@ public class RobotContainer {
 
     /* Driver Buttons */
 
-    // private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
+    private final JoystickButton zeroGyro = new JoystickButton(gamepad, 7);
     // private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
     //private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
     // private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
@@ -108,10 +108,10 @@ public class RobotContainer {
 
         /* Driver Buttons */
 
-        //zeroGyro.onTrue(new InstantCommand(() -> swerve.setGyro(swerve.getEstYaw())));
-        mIConsume.onTrue(new SequentialCommandGroup(
-            new InstantCommand(() -> intake.setISpeed(0.5, true, true)).withTimeout(0.5),
-            new InstantCommand(() -> intake.setISpeed(-0.25, true, false))));
+        /* SUBSYSTEMS */
+
+        zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
+        mIConsume.onTrue(new InstantCommand(() -> intake.setISpeed(0.5, true, true)).withTimeout(1));
         mIConsume.onFalse(new InstantCommand(() -> intake.stopI()));
 
         mSConsume.onTrue(new InstantCommand(() -> shooter.setSSpeed(0.25)));
@@ -124,7 +124,7 @@ public class RobotContainer {
         mSEject.onFalse(new InstantCommand(() -> shooter.stopS()));
 
         mSEjectA.whileTrue(new ParallelCommandGroup(
-            new InstantCommand(() -> intake.setISpeed(0.5, false, false)),
+            new InstantCommand(() -> intake.setISpeed(0.6, false, false)),
             new InstantCommand(() -> swiffer.setPowerRoller(0.3)),
             new InstantCommand(() -> shooter.setSSpeed(-0.3))
         ));
@@ -134,8 +134,8 @@ public class RobotContainer {
             new InstantCommand(() -> swiffer.stopRoller())
         ));
 
-        pulse.onTrue(new InstantCommand(() -> intake.pulse(0.5, 4)));
-        pulse.onTrue(new InstantCommand(() -> intake.stopI()));
+        pulse.onTrue(new InstantCommand(() -> intake.pulse(0.5, 4)).withTimeout(1));
+        //pulse.onTrue(new InstantCommand(() -> intake.stopI()));
 
         //shooting.onTrue(new Shooting(intake));
 
@@ -153,10 +153,8 @@ public class RobotContainer {
         setArmSpeaker.onTrue(new InstantCommand(() -> arm.setArmPos(1.5)));
         // new JoystickButton(joystick2,1 ).whileTrue();
 
-        /* SUBSYSTEMS */
-
         new JoystickButton(fight, 9).whileTrue(
-            new RunCommand(()->swiffer.setPowerArm(-fight.getY()), swiffer));
+            new RunCommand(()->swiffer.setPowerArm(-fight.getY()/10), swiffer));
                  
         new JoystickButton(fight, 9).whileFalse(
             new RunCommand(()->swiffer.stopArm(), swiffer)); 
@@ -180,10 +178,16 @@ public class RobotContainer {
             new RunCommand(()->swiffer.stopRoller(), swiffer));
 
         new JoystickButton(fight, 7).whileTrue(
-            new RunCommand(()->swiffer.setPowerRoller(-0.75), swiffer));
+            new RunCommand(()->swiffer.setPowerRoller(-1.0), swiffer));
 
         new JoystickButton(fight, 7).whileFalse(
             new RunCommand(()->swiffer.stopRoller(), swiffer));
+
+        new JoystickButton(gamepad, 3).whileTrue(
+            new RunCommand(()->intake.setIntakeRaw(0.3), swiffer));
+
+        new JoystickButton(gamepad, 3).whileFalse(
+            new RunCommand(()->intake.stopI()));
     }
 
     public Command getAutonomousCommand() {

@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.SparkPIDController;
-
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
@@ -22,17 +22,20 @@ import frc.robot.Constants.IntakeConstants;
 public class Arm extends SubsystemBase{
     private CANSparkMax rightArm;
     private CANSparkMax leftArm;
-
-    private RelativeEncoder rArmEncoder;
-    private RelativeEncoder lArmEncoder;
     private SparkPIDController rAPID;
     private SparkPIDController lAPID;
 
     public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
 
+    private static final SparkMaxAlternateEncoder.Type kAltEncType = SparkMaxAlternateEncoder.Type.kQuadrature;
+    private static final int kCPR = 8192;
+    private RelativeEncoder absEncoder;
+
     public Arm(){
         rightArm = new CANSparkMax(Constants.IntakeConstants.kRA, MotorType.kBrushless);
         leftArm = new CANSparkMax(Constants.IntakeConstants.kLA, MotorType.kBrushless);
+
+        absEncoder = leftArm.getAlternateEncoder(kAltEncType, kCPR);
 
         rightArm.restoreFactoryDefaults();
         leftArm.restoreFactoryDefaults();
@@ -47,9 +50,6 @@ public class Arm extends SubsystemBase{
         rightArm.setClosedLoopRampRate(0);
         leftArm.setOpenLoopRampRate(0.5);
         leftArm.setClosedLoopRampRate(0);
-
-        rArmEncoder = rightArm.getEncoder();
-        lArmEncoder = leftArm.getEncoder();
 
         // PID coefficients
         kP = 5e-5; 
@@ -70,8 +70,7 @@ public class Arm extends SubsystemBase{
         lAPID = leftArm.getPIDController();
         configPID(lAPID);
 
-        rAPID.setFeedbackDevice(rArmEncoder);
-        lAPID.setFeedbackDevice(lArmEncoder);
+        lAPID.setFeedbackDevice(absEncoder);
 
         rightArm.burnFlash();
         leftArm.burnFlash();
@@ -109,7 +108,7 @@ public class Arm extends SubsystemBase{
     }
 
     public double getArmPos(){
-        return(rArmEncoder.getPosition() * IntakeConstants.kArmGearRatio);
+        return(absEncoder.getPosition() * IntakeConstants.kArmGearRatio);
     }
 
     public void stopA(){
@@ -119,6 +118,6 @@ public class Arm extends SubsystemBase{
 
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("Arm Pos", rightArm.getEncoder().getPosition());
+        SmartDashboard.putNumber("Arm Pos", getArmPos());
     }
 }
