@@ -5,15 +5,29 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.Subsystems.Extension;
+import frc.robot.Subsystems.Roller;
+import frc.robot.Subsystems.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AmpScore extends ParallelCommandGroup {
+  Extension ext;
+  Wrist wrist;
+  
   /** Creates a new AmpScore. */
-  public AmpScore() {
+  public AmpScore(Extension ext, Wrist wrist) {
+    this.ext = ext;
+    this.wrist = wrist;
+
+    addRequirements(ext);
+    addRequirements(wrist);
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands();
+    addCommands(
+      new PresetArm(ext, 0),
+      new PresetWrist(wrist, 0)
+    );
   }
 }

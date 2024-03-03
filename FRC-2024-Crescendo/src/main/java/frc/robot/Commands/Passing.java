@@ -41,10 +41,10 @@ public class Passing extends SequentialCommandGroup {
     addRequirements(arm);
 
     addCommands(
-      new ParallelCommandGroup(
+      //new ParallelCommandGroup(
         new MoveArm(arm, -2.33),
-        new PresetWrist(wrist, 2.48)
-      ),
+        //new PresetWrist(wrist, 2.48)
+      //),
       new ParallelCommandGroup(
         new InstantCommand(() -> roller.setPowerRoller(0.3, true)),
         new InstantCommand(() -> shooter.setSSpeed(-0.3)),
