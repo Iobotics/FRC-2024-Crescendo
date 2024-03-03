@@ -11,8 +11,10 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.SparkPIDController;
 import frc.robot.Constants;
@@ -27,15 +29,13 @@ public class Arm extends SubsystemBase{
 
     public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
 
-    private static final SparkMaxAlternateEncoder.Type kAltEncType = SparkMaxAlternateEncoder.Type.kQuadrature;
-    private static final int kCPR = 8192;
-    private RelativeEncoder absEncoder;
+    private AbsoluteEncoder absEncoder;
 
     public Arm(){
         rightArm = new CANSparkMax(Constants.IntakeConstants.kRA, MotorType.kBrushless);
         leftArm = new CANSparkMax(Constants.IntakeConstants.kLA, MotorType.kBrushless);
 
-        absEncoder = leftArm.getAlternateEncoder(kAltEncType, kCPR);
+        absEncoder = leftArm.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
 
         rightArm.restoreFactoryDefaults();
         leftArm.restoreFactoryDefaults();
@@ -70,7 +70,7 @@ public class Arm extends SubsystemBase{
         lAPID = leftArm.getPIDController();
         configPID(lAPID);
 
-        lAPID.setFeedbackDevice(absEncoder);
+        lAPID.setFeedbackDevice(leftArm.getEncoder());
 
         rightArm.burnFlash();
         leftArm.burnFlash();
@@ -116,8 +116,12 @@ public class Arm extends SubsystemBase{
         leftArm.set(0);
     }
 
+    public boolean isArmWithinError(double target, double error){
+        return (Math.abs(target - leftArm.getEncoder().getPosition()) <= error);
+    }
+
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("Arm Pos", getArmPos());
+        SmartDashboard.putNumber("Arm Pos", leftArm.getEncoder().getPosition());
     }
 }

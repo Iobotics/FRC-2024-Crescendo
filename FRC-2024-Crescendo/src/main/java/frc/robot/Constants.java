@@ -52,7 +52,7 @@ public final class Constants {
         public static int kFight = 3;
         public static int kSwifferGamepad = 4;
     }
-    
+
     public static final class PIDConstants {
         public static final int kPIDPrimary = 0;
     }
@@ -140,7 +140,7 @@ public final class Constants {
         public static final int kWrist = 24; //please change when ready
         public static final int kRoller = 25; //please change when ready
 
-        public static final int kDigitalInput = 5; //please change when ready
+        public static final int kDigitalInput = 1; //please change when ready
 
     }
 

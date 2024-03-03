@@ -18,6 +18,8 @@ import frc.robot.Constants;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import java.util.concurrent.CompletableFuture;
+
 
 /** Add your docs here. */
 public class Intake extends SubsystemBase{
@@ -48,12 +50,11 @@ public class Intake extends SubsystemBase{
     public void setISpeed(double power, boolean enabled, boolean direction){
         //executorService.shutdownNow();
         if(enabled){
-            executorService.execute(() -> {
+            CompletableFuture.runAsync(() -> {
                 while (optic() == direction) {
                     lowerIntake.set(power);
                     upperIntake.set(power);
                 }
-                executorService.shutdownNow();
                 stopI();
             });
         }
@@ -66,6 +67,7 @@ public class Intake extends SubsystemBase{
     public void pulse(double power, double repeat){
         //executorService.shutdownNow();
         //executorService.execute(() -> {
+        CompletableFuture.runAsync(() -> {
             for(int i = 0; i < repeat; i++){
                 lowerIntake.set(power);
                 upperIntake.set(power);
@@ -80,7 +82,7 @@ public class Intake extends SubsystemBase{
                 upperIntake.set(0);
                 Timer.delay(0.225);
             }
-        // });
+        });
         // executorService.shutdownNow();
 
         // for(int i = 0; i < repeat; i++){
@@ -91,7 +93,7 @@ public class Intake extends SubsystemBase{
     }
 
     public void stopI(){
-        executorService.shutdownNow();
+        //executorService.shutdownNow();
         lowerIntake.set(0);
         upperIntake.set(0);
     }

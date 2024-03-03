@@ -17,15 +17,21 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Commands.AmpScore;
 import frc.robot.Commands.ApriltagAlign;
+import frc.robot.Commands.MoveArm;
+import frc.robot.Commands.Passing;
 import frc.robot.Commands.PresetArm;
+import frc.robot.Commands.PresetWrist;
 import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Subsystems.Arm;
+import frc.robot.Subsystems.Extension;
 import frc.robot.Subsystems.Intake;
+import frc.robot.Subsystems.Roller;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Swerve;
-import frc.robot.Subsystems.Swiffer;
 import frc.robot.Subsystems.Vision;
+import frc.robot.Subsystems.Wrist;
 
 
 public class RobotContainer {
@@ -47,17 +53,17 @@ public class RobotContainer {
     /* Driver Buttons */
 
     private final JoystickButton zeroGyro = new JoystickButton(gamepad, 7);
-    // private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
+    //private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
     //private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
-    // private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
-    // private final JoystickButton consume = new JoystickButton(joystick1, 2);
-    // private final JoystickButton eject = new JoystickButton(joystick1, 3);
+    //private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
+    //private final JoystickButton consume = new JoystickButton(joystick1, 2);
+    //private final JoystickButton eject = new JoystickButton(joystick1, 3);
     //private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
     private final JoystickButton mIConsume = new JoystickButton(fight, 2);
     private final JoystickButton mSConsume = new JoystickButton(fight, 3);
     private final JoystickButton mIEject = new JoystickButton(fight, 4);
     private final JoystickButton mSEject = new JoystickButton(fight, 1);
-    // private final JoystickButton shooting = new JoystickButton(gamepad, 5);
+    //private final JoystickButton shooting = new JoystickButton(gamepad, 5);
     private final JoystickButton pulse = new JoystickButton(gamepad, 2);
     private final JoystickButton armUp = new JoystickButton(gamepad, 5);
     private final JoystickButton armDown = new JoystickButton(gamepad, 6);
@@ -73,7 +79,15 @@ public class RobotContainer {
     private final Intake intake = new Intake();
     private final Shooter shooter = new Shooter();
     private final Arm arm = new Arm();
-    private final Swiffer swiffer = new Swiffer();
+    private final Extension ext = new Extension();
+    private final Wrist wrist = new Wrist();
+    private final Roller roller = new Roller();
+    
+
+    private ParallelCommandGroup Collapse = new ParallelCommandGroup(
+        new MoveArm(arm, -2.33),
+        new PresetWrist(wrist, 2.48)
+    );
 
     //Allows for Autos to be chosen in Shuffleboard
     SendableChooser<Command> autoChooser;
@@ -100,6 +114,8 @@ public class RobotContainer {
         // Put the chooser on the dashboard
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
+        SmartDashboard.putBoolean("arm", false);
+
         // Configure the controller bindings
         configureBindings();
     }
@@ -123,15 +139,15 @@ public class RobotContainer {
         mSEject.onTrue(new InstantCommand(() -> shooter.setSSpeed(-1.0)));
         mSEject.onFalse(new InstantCommand(() -> shooter.stopS()));
 
-        mSEjectA.whileTrue(new ParallelCommandGroup(
+        mSEjectA.onTrue(new ParallelCommandGroup(
             new InstantCommand(() -> intake.setISpeed(0.6, false, false)),
-            new InstantCommand(() -> swiffer.setPowerRoller(0.3)),
+            new InstantCommand(() -> roller.setPowerRoller(0.3, true)),
             new InstantCommand(() -> shooter.setSSpeed(-0.3))
         ));
-        mSEjectA.whileFalse(new ParallelCommandGroup(
+        mSEjectA.onFalse(new ParallelCommandGroup(
             new InstantCommand(() -> shooter.stopS()),
             new InstantCommand(() -> intake.stopI()),
-            new InstantCommand(() -> swiffer.stopRoller())
+            new InstantCommand(() -> roller.stopRoller())
         ));
 
         pulse.onTrue(new InstantCommand(() -> intake.pulse(0.5, 4)).withTimeout(1));
@@ -145,49 +161,59 @@ public class RobotContainer {
         armDown.onTrue(new InstantCommand(() -> arm.armSpeed(-0.15)));
         armDown.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
-        //setArm.onTrue(new InstantCommand(() -> intake.setArmPos(1.5)));
-        //setArm1.onTrue(new InstantCommand(()-> intake.setArmPos(1.75)));
-        setArm.onTrue(new InstantCommand(()-> arm.setArmPos(0)));
-        setArm1.onTrue(new InstantCommand(()-> arm.setArmPos(10)));
+        // setArm.onTrue(new InstantCommand(() -> arm.setArmPos(1.5)));
+        // setArm1.onTrue(new InstantCommand(()-> arm.setArmPos(1.75)));
+        setArm.onTrue(new InstantCommand(()-> arm.setArmPos(-2.33)));
+        setArm1.onTrue(new InstantCommand(()-> arm.setArmPos(-9.8)));
 
-        setArmSpeaker.onTrue(new InstantCommand(() -> arm.setArmPos(1.5)));
-        // new JoystickButton(joystick2,1 ).whileTrue();
+
+        setArmSpeaker.onTrue(new Passing(intake, roller, wrist, shooter, arm));
+        // setArmSpeaker.onFalse(new ParallelCommandGroup(
+        //     new InstantCommand(() -> shooter.stopS()),
+        //     new InstantCommand(() -> intake.stopI())
+        // ));
+
+        // new JoystickButton(fight, 9).whileTrue(
+        //     new RunCommand(()->ext.setPowerArm(-fight.getY()/5), ext));
 
         new JoystickButton(fight, 9).whileTrue(
-            new RunCommand(()->swiffer.setPowerArm(-fight.getY()/10), swiffer));
+            new RunCommand(()->ext.presetArm(13)));
                  
         new JoystickButton(fight, 9).whileFalse(
-            new RunCommand(()->swiffer.stopArm(), swiffer)); 
+            new RunCommand(()->ext.stopArm(), ext)); 
+
+        // new JoystickButton(fight, 10).whileTrue(
+        //     new RunCommand(()->ext.setPowerWrist(fight.getY()/5), ext));
 
         new JoystickButton(fight, 10).whileTrue(
-            new RunCommand(()->swiffer.setPowerWrist(fight.getY()/5), swiffer));
+            new RunCommand(()->wrist.presetWrist(24)));
                  
         new JoystickButton(fight, 10).whileFalse(
-            new RunCommand(()->swiffer.stopWrist(), swiffer)); 
+            new RunCommand(()->wrist.stopWrist(), wrist)); 
 
         // new JoystickButton(swifferGamepad, 3).onTrue(
-        //     new PresetArm(swiffer, 15));
+        //     new PresetArm(ext, 0));
         
         // new JoystickButton(swifferGamepad, 4).onTrue(
-        //     new PresetArm(swiffer, 50));
+        //     new PresetArm(ext, -20));
 
-        new JoystickButton(fight, 8).whileTrue(
-            new RunCommand(()->swiffer.setPowerRoller(0.75), swiffer));
+        new JoystickButton(fight, 8).onTrue(
+            new RunCommand(()->roller.setPowerRoller(0.75, false), roller));
 
-        new JoystickButton(fight, 8).whileFalse(
-            new RunCommand(()->swiffer.stopRoller(), swiffer));
+        new JoystickButton(fight, 8).onFalse(
+            new RunCommand(()->roller.stopRoller(), roller));
 
         new JoystickButton(fight, 7).whileTrue(
-            new RunCommand(()->swiffer.setPowerRoller(-1.0), swiffer));
+            new RunCommand(()->roller.setPowerRoller(-1.0, false), roller));
 
         new JoystickButton(fight, 7).whileFalse(
-            new RunCommand(()->swiffer.stopRoller(), swiffer));
+            new RunCommand(()->roller.stopRoller(), roller));
 
-        new JoystickButton(gamepad, 3).whileTrue(
-            new RunCommand(()->intake.setIntakeRaw(0.3), swiffer));
+        // new JoystickButton(gamepad, 3).whileTrue(
+        //     new RunCommand(()->intake.setIntakeRaw(0.3), swiffer));
 
-        new JoystickButton(gamepad, 3).whileFalse(
-            new RunCommand(()->intake.stopI()));
+        // new JoystickButton(gamepad, 3).whileFalse(
+        //     new RunCommand(()->intake.stopI()));
     }
 
     public Command getAutonomousCommand() {

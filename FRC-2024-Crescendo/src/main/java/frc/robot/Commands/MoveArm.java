@@ -4,43 +4,40 @@
 
 package frc.robot.Commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Subsystems.Extension;
+import frc.robot.Subsystems.Arm;
 
-public class PresetArm extends Command {
-
-  private Extension ext;
-  private double targetPos;
-  
-  /** Creates a new PresetArm. */
-  public PresetArm(Extension ext, double targetPos) {
+public class MoveArm extends Command {
+  Arm arm;
+  double pos;
+  /** Creates a new MoveArm. */
+  public MoveArm(Arm arm, double pos) {
     // Use addRequirements() here to declare subsystem dependencies.
-    ext = this.ext;
-    addRequirements(ext);
+    this.arm = arm;
+    this.pos = pos;
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putBoolean("Arm Reached?", false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    ext.presetArm(targetPos);
+    arm.setArmPos(pos);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("Arm Reached?", true);
+    arm.stopA();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ext.isArmWithinError(targetPos, 0.05);
+    return arm.isArmWithinError(pos, 0.1);
   }
 }
