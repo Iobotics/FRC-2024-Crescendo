@@ -173,22 +173,22 @@ public class RobotContainer {
         //     new InstantCommand(() -> intake.stopI())
         // ));
 
-        // new JoystickButton(fight, 9).whileTrue(
+        // new JoystickButton(fight, 9).onTrue(
         //     new RunCommand(()->ext.setPowerArm(-fight.getY()/5), ext));
 
-        new JoystickButton(fight, 9).whileTrue(
+        new JoystickButton(fight, 9).onTrue(
             new RunCommand(()->ext.presetArm(13)));
                  
-        new JoystickButton(fight, 9).whileFalse(
+        new JoystickButton(fight, 9).onFalse(
             new RunCommand(()->ext.stopArm(), ext)); 
 
-        // new JoystickButton(fight, 10).whileTrue(
+        // new JoystickButton(fight, 10).onTrue(
         //     new RunCommand(()->ext.setPowerWrist(fight.getY()/5), ext));
 
-        new JoystickButton(fight, 10).whileTrue(
+        new JoystickButton(fight, 10).onTrue(
             new RunCommand(()->wrist.presetWrist(24)));
                  
-        new JoystickButton(fight, 10).whileFalse(
+        new JoystickButton(fight, 10).onFalse(
             new RunCommand(()->wrist.stopWrist(), wrist)); 
 
         // new JoystickButton(swifferGamepad, 3).onTrue(
@@ -203,16 +203,16 @@ public class RobotContainer {
         new JoystickButton(fight, 8).onFalse(
             new RunCommand(()->roller.stopRoller(), roller));
 
-        new JoystickButton(fight, 7).whileTrue(
+        new JoystickButton(fight, 7).onTrue(
             new RunCommand(()->roller.setPowerRoller(-1.0, false), roller));
 
-        new JoystickButton(fight, 7).whileFalse(
+        new JoystickButton(fight, 7).onFalse(
             new RunCommand(()->roller.stopRoller(), roller));
 
-        // new JoystickButton(gamepad, 3).whileTrue(
+        // new JoystickButton(gamepad, 3).onTrue(
         //     new RunCommand(()->intake.setIntakeRaw(0.3), swiffer));
 
-        // new JoystickButton(gamepad, 3).whileFalse(
+        // new JoystickButton(gamepad, 3).onFalse(
         //     new RunCommand(()->intake.stopI()));
     }
 
