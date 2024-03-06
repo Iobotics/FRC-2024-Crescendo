@@ -26,8 +26,8 @@ public class AmpScore extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new PresetArm(ext, 0),
-      new PresetWrist(wrist, 0)
+      new PresetArm(ext, -13),
+      new PresetWrist(wrist, 24)
     );
   }
 }
