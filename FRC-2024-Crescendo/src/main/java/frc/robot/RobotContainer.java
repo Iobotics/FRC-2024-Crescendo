@@ -27,7 +27,7 @@ import frc.robot.Commands.MoveArm;
 import frc.robot.Commands.Passing;
 import frc.robot.Commands.PresetArm;
 import frc.robot.Commands.PresetWrist;
-import frc.robot.Commands.SpeakerAutoAim;
+import frc.robot.Commands.TeleopRotationOverride;
 import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Extension;
@@ -113,7 +113,7 @@ public class RobotContainer {
                 scalar
             );
 
-    public SpeakerAutoAim speakerAutoAim = new SpeakerAutoAim(swerve::getPoseToSpeaker, intake, swerve, teleopSwerve);
+    public TeleopRotationOverride teleopRotationOverride = new TeleopRotationOverride(swerve::getRotationToSpeaker, swerve, teleopSwerve);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -179,10 +179,8 @@ public class RobotContainer {
 
         speaker.onTrue(SpeakerScore);
 
-        alignSpeaker.whileTrue(new InstantCommand(() -> speakerAutoAim.run()));
-        alignSpeaker.onFalse(new InstantCommand(() -> speakerAutoAim.stop(true)));
-
-        
+        alignSpeaker.whileTrue(new InstantCommand(() -> teleopRotationOverride.run()));
+        alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
 
 
         // new JoystickButton(fight, 9).whileTrue(

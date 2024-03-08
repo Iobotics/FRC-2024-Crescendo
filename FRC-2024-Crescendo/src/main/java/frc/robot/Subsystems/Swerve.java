@@ -42,13 +42,9 @@ public class Swerve extends SubsystemBase {
     public Pigeon2 gyro;
     public SwerveDrivePoseEstimator poseEstimator;
     public Vision vision;
-    public PIDController rotationController;
     public Swerve() {
-        rotationController = new PIDController(2.0, 0.0, 0.0);
-        rotationController.enableContinuousInput(-180, 180);
         gyro = new Pigeon2(Constants.SwerveConstants.pigeonID, "Carnivore");
         
-        //zeroHeading();
         zeroGyro();
 
         mSwerveMods = new SwerveModule[] {
@@ -244,11 +240,9 @@ public class Swerve extends SubsystemBase {
     public Pose2d getPoseToSpeaker() {
         return getPoseToGoal(16.5793, 5.5479);
     }
-
-    public double rotateToSpeaker() {
-        Pose2d poseToGoal = getPoseToGoal(16.5793, 5.5479);
-        SmartDashboard.putNumber("goalrot", poseToGoal.getRotation().getDegrees());
-        return Math.toRadians(rotationController.calculate(getEstYaw(),poseToGoal.getRotation().getDegrees()));
+    
+    public double getRotationToSpeaker() {
+        return getPoseToSpeaker().getRotation().getDegrees();
     }
 
     @Override
