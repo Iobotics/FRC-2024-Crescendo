@@ -49,7 +49,7 @@ public class Extension extends SubsystemBase{
 
         arm.setSmartCurrentLimit(30);
 
-        kPArm = 0.0001; //proportional gain
+        kPArm = 0.01; //proportional gain
         kIArm = 0.0; //integral gain
         kDArm = 0.0; //derivative gain
         kIzArm = 0.0; //don't touch this

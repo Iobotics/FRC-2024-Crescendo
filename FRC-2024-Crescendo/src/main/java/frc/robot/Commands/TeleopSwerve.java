@@ -5,6 +5,7 @@ import frc.robot.Subsystems.Swerve;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,6 +17,8 @@ public class TeleopSwerve extends Command {
     protected DoubleSupplier rotationSup;
     protected BooleanSupplier robotCentricSup;
     private double scalar;
+    Supplier<Double> rotationOverride;
+    Supplier<Boolean> getIfOverriding;
 
     public TeleopSwerve(Swerve swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, double scalar) {
         this.swerve = swerve;
@@ -26,6 +29,8 @@ public class TeleopSwerve extends Command {
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
         this.scalar = scalar;
+        this.getIfOverriding = () -> false;
+        this.rotationOverride = () -> 0.0;
     }
 
     @Override
@@ -34,6 +39,10 @@ public class TeleopSwerve extends Command {
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
+
+        if (getIfOverriding.get()) {
+            rotationVal = rotationOverride.get();
+        }
 
         /* Drive */
         swerve.drive(

@@ -14,16 +14,12 @@ import frc.robot.Subsystems.Intake;
 public class Intaking2 extends Command {
   /** Creates a new Intaking2. */
   Intake intake;
-  Arm arm;
-  double speed;
   boolean enabled;
   boolean direction;
 
-  public Intaking2(Intake intake, Arm arm, double speed, boolean enabled, boolean direction) {
+  public Intaking2(Intake intake, boolean enabled, boolean direction) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
-    this.arm = arm;
-    this.speed = speed;
     this.enabled = enabled;
     this.direction = direction;
 
@@ -40,19 +36,19 @@ public class Intaking2 extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   intake.setISpeed(speed, enabled, direction);
+   intake.setISpeed(0.5, enabled, direction);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    new MoveArm(arm, -2.33);
     SmartDashboard.putBoolean("done", true);
+    intake.stopI();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.optic();
+    return !intake.optic();
   }
 }

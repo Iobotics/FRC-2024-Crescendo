@@ -27,6 +27,7 @@ import frc.robot.Commands.MoveArm;
 import frc.robot.Commands.Passing;
 import frc.robot.Commands.PresetArm;
 import frc.robot.Commands.PresetWrist;
+import frc.robot.Commands.SpeakerAutoAim;
 import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Extension;
@@ -75,6 +76,7 @@ public class RobotContainer {
     private final JoystickButton armIntake = new JoystickButton(gamepad, 4);
     private final JoystickButton pass = new JoystickButton(fight, 6);
     private final JoystickButton speaker = new JoystickButton(fight, 5);
+    private final JoystickButton alignSpeaker = new JoystickButton(gamepad, 3);
 
 
     /* Subsystems */
@@ -97,24 +99,27 @@ public class RobotContainer {
         new MoveArm(arm, -5)
     );
 
+
+
     //Allows for Autos to be chosen in Shuffleboard
     SendableChooser<Command> autoChooser;
     
-
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
-        swerve.configureAutoBuilder();
-        //drivetrain
-        swerve.setDefaultCommand(
-            new TeleopSwerve(
+    TeleopSwerve teleopSwerve = new TeleopSwerve(
                 swerve, 
                 () -> -gamepad.getRawAxis(1), 
                 () -> -gamepad.getRawAxis(0), 
                 () -> -gamepad.getRawAxis(4), 
                 () -> false,
                 scalar
-            )
-        );
+            );
+
+    public SpeakerAutoAim speakerAutoAim = new SpeakerAutoAim(swerve::getPoseToSpeaker, intake, swerve, teleopSwerve);
+
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+        swerve.configureAutoBuilder();
+        //drivetrain
+        swerve.setDefaultCommand(teleopSwerve);
 
         // NamedCommands.registerCommand("exampleCommand", subsystem.exampleCommand);
 
@@ -134,20 +139,23 @@ public class RobotContainer {
 
         /* SUBSYSTEMS */
 
-        zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro()));
-        mIConsume.onTrue(new Intaking2(intake, arm, 0.25, true, true));
-        mIConsume.onFalse(new InstantCommand(() -> intake.stopI()));
+        zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
+        mIConsume.onTrue(new SequentialCommandGroup(
+            new Intaking2(intake, false, false),
+            new MoveArm(arm, -2.33)
+        ));
+        //mIConsume.onFalse(new InstantCommand(() -> intake.stopI())); // fight 2
 
         mSConsume.onTrue(new InstantCommand(() -> shooter.setSSpeed(0.25)));
         mSConsume.onFalse(new InstantCommand(() -> shooter.stopS()));
 
         mIEject.onTrue(new InstantCommand(() -> intake.setISpeed(-0.25, false, false)));
-        mIEject.onFalse(new InstantCommand(() -> intake.stopI()));
+        mIEject.onFalse(new InstantCommand(() -> intake.stopI())); // fight 4
 
         mSEject.onTrue(new InstantCommand(() -> shooter.setSSpeed(-1.0)));
         mSEject.onFalse(new InstantCommand(() -> shooter.stopS()));
 
-        pass.onTrue(new Passing(intake, roller, shooter));
+        pass.onTrue(new Passing(intake, roller, shooter)); // fight 6
         pass.onFalse(new ParallelCommandGroup(
             new InstantCommand(() -> shooter.stopS()),
             new InstantCommand(() -> intake.stopI()),
@@ -159,10 +167,10 @@ public class RobotContainer {
 
         //shooting.onTrue(new Shooting(intake));
 
-        armUp.onTrue(new InstantCommand(() -> arm.armSpeed(0.15)));
+        armUp.onTrue(new InstantCommand(() -> arm.armSpeed(0.15))); // logi 5
         armUp.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
-        armDown.onTrue(new InstantCommand(() -> arm.armSpeed(-0.15)));
+        armDown.onTrue(new InstantCommand(() -> arm.armSpeed(-0.15))); // logi 6
         armDown.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
         collapsing.onTrue(Collapse);
@@ -171,12 +179,17 @@ public class RobotContainer {
 
         speaker.onTrue(SpeakerScore);
 
+        alignSpeaker.whileTrue(new InstantCommand(() -> speakerAutoAim.run()));
+        alignSpeaker.onFalse(new InstantCommand(() -> speakerAutoAim.stop(true)));
+
+        
+
 
         // new JoystickButton(fight, 9).whileTrue(
         //     new RunCommand(()->ext.setPowerArm(-fight.getY()/5), ext));
 
         new JoystickButton(fight, 9).onTrue(
-            new RunCommand(()->ext.setPowerArm(fight.getY())));
+            new RunCommand(()->ext.setPowerArm(-fight.getY()/4)));
                  
         new JoystickButton(fight, 9).whileFalse(
             new RunCommand(()->ext.stopArm(), ext)); 
@@ -184,11 +197,11 @@ public class RobotContainer {
         // new JoystickButton(fight, 10).whileTrue(
         //     new RunCommand(()->ext.setPowerWrist(fight.getY()/5), ext));
 
-        new JoystickButton(fight, 10).whileTrue(
-            new RunCommand(()->wrist.presetWrist(24)));
+        new JoystickButton(fight, 10).onTrue(
+            new RunCommand(()->ext.presetArm(13)));
                  
-        new JoystickButton(fight, 10).whileFalse(
-            new RunCommand(()->wrist.stopWrist(), wrist)); 
+        new JoystickButton(fight, 10).onFalse(
+            new RunCommand(()->ext.stopArm(), ext)); 
 
         // new JoystickButton(swifferGamepad, 3).onTrue(
         //     new PresetArm(ext, 0));

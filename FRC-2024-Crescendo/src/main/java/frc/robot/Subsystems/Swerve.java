@@ -31,10 +31,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Swerve extends SubsystemBase {
+    private final Field2d m_field = new Field2d();
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
@@ -42,7 +44,8 @@ public class Swerve extends SubsystemBase {
     public Vision vision;
     public PIDController rotationController;
     public Swerve() {
-        rotationController = new PIDController(1.0, 0.0, 0.0);
+        rotationController = new PIDController(2.0, 0.0, 0.0);
+        rotationController.enableContinuousInput(-180, 180);
         gyro = new Pigeon2(Constants.SwerveConstants.pigeonID, "Carnivore");
         
         //zeroHeading();
@@ -66,6 +69,7 @@ public class Swerve extends SubsystemBase {
                 SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions(), getPose(),
                 VisionConstants.STATE_STANDARD_DEVIATIONS,
                 VisionConstants.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
+        poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(13.5, 5.5, new Rotation2d(Math.PI)));
     }
 
     public void configureAutoBuilder() {
@@ -203,7 +207,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public double getEstYaw() {
-        return getEstPose().getRotation().getDegrees();
+        double rotation = MathUtil.inputModulus(getEstPose().getRotation().getDegrees(),-180,180);
+        // if (rotation > 180 || rotation < -180) {
+        //     return (rotation + 180) % 360 - 180;
+        // }
+        return rotation;
     }
 
     public void zeroGyro(){
@@ -223,19 +231,24 @@ public class Swerve extends SubsystemBase {
     public Pose2d getPoseToGoal(double goalX, double goalY) {
         Pose2d goalPose = new Pose2d(goalX, goalY, new Rotation2d());
         Pose2d currentPose = this.getEstPose();
-        double goalRotation = Math.toDegrees(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX())));
-        SmartDashboard.putNumber("goalrot", goalRotation);
+        double goalRotation = MathUtil.inputModulus(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX()))+Math.PI,-Math.PI,Math.PI);
+        SmartDashboard.putNumber("goalrot", Math.toDegrees(goalRotation));
         SmartDashboard.putNumber("goalX", currentPose.minus(goalPose).getX());
         SmartDashboard.putNumber("goalY", currentPose.minus(goalPose).getY());
         return new Pose2d(currentPose.minus(goalPose).getTranslation(),new Rotation2d(goalRotation));
     }
-    public void getPoseToGoal(Pose2d goalPose) {
-        getPoseToGoal(goalPose.getX(),goalPose.getY());
+    public Pose2d getPoseToGoal(Pose2d goalPose) {
+        return getPoseToGoal(goalPose.getX(),goalPose.getY());
+    }
+
+    public Pose2d getPoseToSpeaker() {
+        return getPoseToGoal(16.5793, 5.5479);
     }
 
     public double rotateToSpeaker() {
         Pose2d poseToGoal = getPoseToGoal(16.5793, 5.5479);
-        return rotationController.calculate(getEstYaw(),poseToGoal.getRotation().getDegrees())/180;
+        SmartDashboard.putNumber("goalrot", poseToGoal.getRotation().getDegrees());
+        return Math.toRadians(rotationController.calculate(getEstYaw(),poseToGoal.getRotation().getDegrees()));
     }
 
     @Override
@@ -247,6 +260,9 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Y",getEstPose().getY());
         SmartDashboard.putNumber("Rotation",getEstPose().getRotation().getDegrees());
         SmartDashboard.putNumber("Gyro", MathUtil.inputModulus(getGyroYaw().getDegrees(),-180,180));
+        m_field.setRobotPose(poseEstimator.getEstimatedPosition());
+        SmartDashboard.putData("Field", m_field);
+        
 
         // for(SwerveModuleInterface mod : mSwerveMods){
         //     var moduleNumber = mod.getModuleNumber();
