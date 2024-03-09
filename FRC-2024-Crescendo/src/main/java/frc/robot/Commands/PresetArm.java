@@ -16,7 +16,9 @@ public class PresetArm extends Command {
   /** Creates a new PresetArm. */
   public PresetArm(Extension ext, double targetPos) {
     // Use addRequirements() here to declare subsystem dependencies.
-    ext = this.ext;
+    this.ext = ext;
+    this.targetPos = targetPos;
+
     addRequirements(ext);
   }
 

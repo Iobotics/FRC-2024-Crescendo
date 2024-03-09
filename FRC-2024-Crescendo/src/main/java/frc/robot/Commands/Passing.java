@@ -6,7 +6,6 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Roller;
 import frc.robot.Subsystems.Shooter;
@@ -14,7 +13,7 @@ import frc.robot.Subsystems.Shooter;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class Passing extends SequentialCommandGroup {
+public class Passing extends ParallelCommandGroup {
   Intake intake;
   Roller roller;
   Shooter shooter;
@@ -31,16 +30,9 @@ public class Passing extends SequentialCommandGroup {
     addRequirements(shooter);
 
     addCommands(
-      new ParallelCommandGroup(
-        new InstantCommand(() -> roller.setPowerRoller(0.3, true)),
-        new InstantCommand(() -> shooter.setSSpeed(-0.3)),
-        new InstantCommand(() -> intake.setISpeed(0.6, false, false))  
-      ), 
-      new ParallelCommandGroup(
-        new InstantCommand(() -> shooter.stopS()),
-        new InstantCommand(() -> intake.stopI())
-      )
+      new InstantCommand(() -> roller.setPowerRoller(-0.3, true)),
+      new InstantCommand(() -> shooter.setSSpeed(-0.3)),
+      new InstantCommand(() -> intake.setISpeed(0.6, false, false))  
     );
-    
   }
 }

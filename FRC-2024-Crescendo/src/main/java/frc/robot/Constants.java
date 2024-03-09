@@ -60,7 +60,7 @@ public final class Constants {
     public static final class VisionConstants {
         public static final String kFrontCameraName = "Front_Camera";
         public static final Transform3d kRobotToCam = 
-                new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+                new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
         public static final List<AprilTag> apriltags = Arrays.asList(
             new AprilTag(1, new Pose3d(new Translation3d(15.0795, 0.2459, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians(120.0)))),
             new AprilTag(2, new Pose3d(new Translation3d(16.1851, 0.8837, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians( 120.0)))),
@@ -140,7 +140,7 @@ public final class Constants {
         public static final int kWrist = 24; //please change when ready
         public static final int kRoller = 25; //please change when ready
 
-        public static final int kDigitalInput = 1; //please change when ready
+        public static final int kDigitalInput = 2; //please change when ready
 
     }
 

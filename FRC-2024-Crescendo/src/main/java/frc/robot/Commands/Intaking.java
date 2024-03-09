@@ -11,13 +11,13 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Intake;
 
-public class Intaking2 extends Command {
+public class Intaking extends Command {
   /** Creates a new Intaking2. */
   Intake intake;
   boolean enabled;
   boolean direction;
 
-  public Intaking2(Intake intake, boolean enabled, boolean direction) {
+  public Intaking(Intake intake, boolean enabled, boolean direction) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.enabled = enabled;

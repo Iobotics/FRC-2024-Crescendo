@@ -25,7 +25,7 @@ public class Vision extends SubsystemBase{
     public final PhotonCamera camera;
     private AprilTagFieldLayout aprilTagFieldLayout;
     public final PhotonPoseEstimator photonPoseEstimator;
-    private final Field2d m_field = new Field2d();
+    // private final Field2d m_field = new Field2d();
     private Swerve swerve;
 
 
@@ -80,8 +80,8 @@ public class Vision extends SubsystemBase{
         if (estimatedPose.isPresent() && this.camera.getLatestResult().hasTargets()){
             swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);
         }
-        m_field.setRobotPose(swerve.poseEstimator.getEstimatedPosition());
-        SmartDashboard.putData("Field", m_field);
+        // m_field.setRobotPose(swerve.poseEstimator.getEstimatedPosition());
+        // SmartDashboard.putData("Field", m_field);
     }
     
     /* tag id to location

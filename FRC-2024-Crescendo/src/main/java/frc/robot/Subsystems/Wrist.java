@@ -91,7 +91,7 @@ public class Wrist extends SubsystemBase{
 
     //Error check function
     public boolean isWristWithinError(double target, double error){
-        return(Math.abs(target - wristEncoder.getPosition()) <= error);
+        return(Math.abs(target - wrist.getEncoder().getPosition()) <= error);
     }
 
     @Override

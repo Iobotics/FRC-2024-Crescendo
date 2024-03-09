@@ -24,7 +24,7 @@ public class Extension extends SubsystemBase{
     private RelativeEncoder armEncoder;
     private SparkLimitSwitch armBottomLimit;
     public double kPArm, kIArm, kDArm, kIzArm, kFFArm, kMaxOutputArm, kMinOutputArm, maxVelArm, maxAccArm, allowedErrArm;
-    int smartMotionSlotArm = 1;
+    int smartMotionSlotArm = 0;
 
     public Extension(){
         arm = new CANSparkMax(SwifferConstants.kArm, MotorType.kBrushless);
@@ -37,10 +37,10 @@ public class Extension extends SubsystemBase{
         arm.setClosedLoopRampRate(0);
 
         //Set up bottom limit switch for the arm
-        armBottomLimit = arm.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
-        arm.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
-        arm.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-        armBottomLimit.enableLimitSwitch(false);
+        // armBottomLimit = arm.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
+        // arm.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
+        // arm.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+        // armBottomLimit.enableLimitSwitch(false);
 
         armPID = arm.getPIDController();
 
@@ -49,7 +49,7 @@ public class Extension extends SubsystemBase{
 
         arm.setSmartCurrentLimit(30);
 
-        kPArm = 0.01; //proportional gain
+        kPArm = 0.001; //proportional gain
         kIArm = 0.0; //integral gain
         kDArm = 0.0; //derivative gain
         kIzArm = 0.0; //don't touch this
@@ -60,7 +60,7 @@ public class Extension extends SubsystemBase{
         maxAccArm = 500; //rpm per second
         allowedErrArm = 0.1; //inches
 
-        armPID.setP(kDArm);
+        armPID.setP(kPArm);
         armPID.setI(kIArm);
         armPID.setD(kDArm);
         armPID.setOutputRange(kMinOutputArm, kMaxOutputArm);

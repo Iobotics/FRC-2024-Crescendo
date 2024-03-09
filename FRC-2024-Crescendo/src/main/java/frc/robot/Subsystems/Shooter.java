@@ -25,8 +25,8 @@ public class Shooter extends SubsystemBase{
         upperShoot.restoreFactoryDefaults();
         lowerShoot.restoreFactoryDefaults();
 
-        upperShoot.setInverted(true);
-        lowerShoot.setInverted(true);
+        upperShoot.setInverted(false);
+        lowerShoot.setInverted(false);
 
         upperShoot.setIdleMode(IdleMode.kCoast);
         lowerShoot.setIdleMode(IdleMode.kCoast);
