@@ -35,7 +35,7 @@ public class Arm extends SubsystemBase{
         rightArm = new CANSparkMax(Constants.IntakeConstants.kRA, MotorType.kBrushless);
         leftArm = new CANSparkMax(Constants.IntakeConstants.kLA, MotorType.kBrushless);
 
-        absEncoder = leftArm.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
+        //absEncoder = leftArm.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
 
         rightArm.restoreFactoryDefaults();
         leftArm.restoreFactoryDefaults();

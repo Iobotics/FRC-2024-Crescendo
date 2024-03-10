@@ -23,7 +23,7 @@ public class PresetWrist extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putBoolean("Wrist Reached?", false);
+    //SmartDashboard.putBoolean("Wrist Reached?", false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,7 +35,7 @@ public class PresetWrist extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("Wrist Reached?", true);
+    //SmartDashboard.putBoolean("Wrist Reached?", true);
     wrist.stopWrist();
   }
 

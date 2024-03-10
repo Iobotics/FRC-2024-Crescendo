@@ -5,6 +5,7 @@
 package frc.robot.Subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -26,12 +27,12 @@ public class Wrist extends SubsystemBase{
     public Wrist(){
         wrist = new CANSparkMax(SwifferConstants.kWrist, MotorType.kBrushless);
 
-        wrist.setIdleMode(IdleMode.kCoast);
+        wrist.setIdleMode(IdleMode.kBrake);
 
         wrist.restoreFactoryDefaults();
 
         wrist.setOpenLoopRampRate(0.5);
-        wrist.setClosedLoopRampRate(1);
+        wrist.setClosedLoopRampRate(0);
 
         wristPID = wrist.getPIDController();
 
@@ -53,7 +54,7 @@ public class Wrist extends SubsystemBase{
         kMinOutputWrist = -1; //minimum power
         maxVelWrist = 2000; //rpm
         maxAccWrist = 1500; //rpm per second
-        allowedErrWrist = 0.1; //revolutions
+        allowedErrWrist = 0.01; //revolutions
 
         wristPID.setP(kPWrist);
         wristPID.setI(kIWrist);
@@ -61,8 +62,8 @@ public class Wrist extends SubsystemBase{
         wristPID.setFF(kFFWrist);
         wristPID.setOutputRange(kMinOutputWrist, kMaxOutputWrist);
 
-        wristPID.setSmartMotionMaxVelocity(2500, 0); //tune the max cruise velocity (RPM)
-        wristPID.setSmartMotionMaxAccel(2500, 0); //tune the max smart motion acceleration (RPM per second)
+        wristPID.setSmartMotionMaxVelocity(2000, 0); //tune the max cruise velocity (RPM)
+        wristPID.setSmartMotionMaxAccel(1500, 0); //tune the max smart motion acceleration (RPM per second)
         wristPID.setSmartMotionAllowedClosedLoopError(allowedErrWrist, 0); //set the closed loop error
 
         wrist.burnFlash(); //flash the new parameters to the sparkmax
@@ -86,12 +87,12 @@ public class Wrist extends SubsystemBase{
     
     //Preset position function
     public void presetWrist(double rev){
-        wristPID.setReference(rev, CANSparkMax.ControlType.kSmartMotion);
+        wristPID.setReference(rev, ControlType.kSmartMotion);
     }
 
     //Error check function
     public boolean isWristWithinError(double target, double error){
-        return(Math.abs(target - wrist.getEncoder().getPosition()) <= error);
+        return (Math.abs(target - wrist.getEncoder().getPosition()) <= error);
     }
 
     @Override

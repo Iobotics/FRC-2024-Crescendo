@@ -55,7 +55,6 @@ public class RobotContainer {
     private double scalar = 1.5;
 
     /* Driver Buttons */
-
     private final JoystickButton zeroGyro = new JoystickButton(gamepad, 7);
     //private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
     //private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
@@ -99,8 +98,8 @@ public class RobotContainer {
     );
 
     private ParallelCommandGroup AmpScore = new ParallelCommandGroup(
-        new PresetArm(ext, 13),
-        new PresetWrist(wrist, 26.5)
+        new PresetArm(ext, 19),
+        new PresetWrist(wrist, 44)
     );
 
 
@@ -189,8 +188,10 @@ public class RobotContainer {
             new InstantCommand(()->arm.stopA())
         );
 
-        alignSpeaker.whileTrue(new InstantCommand(() -> teleopRotationOverride.run()));
-        alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
+        // alignSpeaker.whileTrue(new InstantCommand(() -> teleopRotationOverride.run()));
+        // alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
+
+        alignSpeaker.onTrue(new InstantCommand(() -> wrist.presetWrist(44)));
 
 
         // new JoystickButton(fight, 9).whileTrue(
@@ -200,7 +201,7 @@ public class RobotContainer {
             new RunCommand(()->ext.setPowerArm(-fight.getY())));
                  
         new JoystickButton(fight, 9).onFalse(
-            new RunCommand(()->ext.stopArm(), ext)); 
+            new InstantCommand(()->ext.stopArm(), ext)); 
 
         // new JoystickButton(fight, 10).whileTrue(
         //    new PresetWrist(wrist, 2.4));
@@ -208,7 +209,7 @@ public class RobotContainer {
         new JoystickButton(fight, 10).whileTrue(
             //new InstantCommand(()->ext.presetArm(13))
             //AmpScore
-            new InstantCommand(() -> wrist.setPowerWrist(fight.getY()/5), wrist)
+            new RunCommand(() -> wrist.setPowerWrist(fight.getY()/5), wrist)
         );
         new JoystickButton(fight, 10).onFalse(
             new InstantCommand(() -> wrist.setPowerWrist(0), wrist)

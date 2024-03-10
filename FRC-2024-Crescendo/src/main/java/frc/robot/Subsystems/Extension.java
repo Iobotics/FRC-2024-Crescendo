@@ -49,11 +49,11 @@ public class Extension extends SubsystemBase{
 
         arm.setSmartCurrentLimit(30);
 
-        kPArm = 0.001; //proportional gain
-        kIArm = 0.0; //integral gain
+        kPArm = 5e-5; //proportional gain
+        kIArm = 1e-6; //integral gain
         kDArm = 0.0; //derivative gain
         kIzArm = 0.0; //don't touch this
-        kFFArm = 0.0; //don't touch this either
+        kFFArm = 0.000156; //don't touch this either
         kMaxOutputArm = 1; //maximum power
         kMinOutputArm = -1; //minimum power
         maxVelArm = 1000; //rpm
@@ -100,13 +100,13 @@ public class Extension extends SubsystemBase{
 
     //Error check function
     public boolean isArmWithinError(double target, double error){
-        return(Math.abs(target - armEncoder.getPosition()) <= error);
+        return(Math.abs(target - arm.getEncoder().getPosition()) <= error);
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("ArmPos", getArmPos()); //Update arm position
+        SmartDashboard.putNumber("ArmPos", arm.getEncoder().getPosition()); //Update arm position
     }
 
 }
