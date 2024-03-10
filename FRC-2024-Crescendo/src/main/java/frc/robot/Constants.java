@@ -60,7 +60,7 @@ public final class Constants {
     public static final class VisionConstants {
         public static final String kFrontCameraName = "Front_Camera";
         public static final Transform3d kRobotToCam = 
-                new Transform3d(new Translation3d(0.2079244, 0.0, 0.2940558), new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
+                new Transform3d(new Translation3d(0.0, 0.2079244, 0.2940558), new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
         public static final List<AprilTag> apriltags = Arrays.asList(
             new AprilTag(1, new Pose3d(new Translation3d(15.0795, 0.2459, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians(120.0)))),
             new AprilTag(2, new Pose3d(new Translation3d(16.1851, 0.8837, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians( 120.0)))),
@@ -102,9 +102,9 @@ public final class Constants {
 
         public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
         .fill(
-            1, // x
-            1, // y
-            1 * Math.PI // theta
+            0.2, // x
+            0.2, // y
+            0.2 * Math.PI // theta
         );
 
         /**
@@ -115,9 +115,9 @@ public final class Constants {
          */
         public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
             .fill(
-                .5, // x
-                .5, // y
-                .5);
+                1, // x
+                1, // y
+                1);
     }
 
     public static final class IntakeConstants{

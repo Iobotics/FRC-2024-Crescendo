@@ -99,8 +99,8 @@ public class RobotContainer {
     // );
 
     private ParallelCommandGroup AmpScore = new ParallelCommandGroup(
-        new PresetExt(ext, 13).withTimeout(3),
-        new PresetWrist(wrist, 24).withTimeout(3)
+        new PresetExt(ext, 20).withTimeout(3),
+        new PresetWrist(wrist, 44).withTimeout(3)
     );
 
 
@@ -184,10 +184,12 @@ public class RobotContainer {
 
         // speaker.onTrue(SpeakerScore);
 
-        // alignSpeaker.whileTrue(new InstantCommand(() -> teleopRotationOverride.run()));
-        // alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
+        alignSpeaker.whileTrue(new ParallelCommandGroup(
+            new InstantCommand(() -> teleopRotationOverride.run()),
+            new InstantCommand(()->arm.setArmPos(swerve.getShootingAngle()))));
+        alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
 
-        alignSpeaker.onTrue(AmpScore);
+        // alignSpeaker.onTrue(AmpScore);
 
 
         // new JoystickButton(fight, 9).whileTrue(

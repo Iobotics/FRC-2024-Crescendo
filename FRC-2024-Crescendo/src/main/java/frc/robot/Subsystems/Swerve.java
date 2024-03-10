@@ -233,6 +233,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("goalY", currentPose.minus(goalPose).getY());
         return new Pose2d(currentPose.minus(goalPose).getTranslation(),new Rotation2d(goalRotation));
     }
+
     public Pose2d getPoseToGoal(Pose2d goalPose) {
         return getPoseToGoal(goalPose.getX(),goalPose.getY());
     }
@@ -243,6 +244,15 @@ public class Swerve extends SubsystemBase {
     
     public double getRotationToSpeaker() {
         return getPoseToSpeaker().getRotation().getDegrees();
+    }
+
+    public double getShootingAngle() {
+        double shootingAngle = 0;
+        Pose2d poseToSpeaker = getPoseToSpeaker();
+        double distanceToSpeaker = Math.hypot(poseToSpeaker.getX(),poseToSpeaker.getY());
+        shootingAngle = -0.8*(distanceToSpeaker-2.8)-9.0;
+        SmartDashboard.putNumber("Estimated Shooter", shootingAngle);
+        return shootingAngle;
     }
 
     @Override
