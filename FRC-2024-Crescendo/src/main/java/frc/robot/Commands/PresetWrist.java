@@ -17,13 +17,15 @@ public class PresetWrist extends Command {
   public PresetWrist(Wrist wrist, double targetPos) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.wrist = wrist;
+    this.targetPos = targetPos;
+
     addRequirements(wrist);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //SmartDashboard.putBoolean("Wrist Reached?", false);
+    SmartDashboard.putBoolean("Wrist Reached?", false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,7 +37,7 @@ public class PresetWrist extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //SmartDashboard.putBoolean("Wrist Reached?", true);
+    SmartDashboard.putBoolean("Wrist Reached?", true);
     wrist.stopWrist();
   }
 

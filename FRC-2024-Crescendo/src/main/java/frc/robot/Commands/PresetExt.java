@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Extension;
 
-public class PresetArm extends Command {
+public class PresetExt extends Command {
 
   private Extension ext;
   private double targetPos;
   
   /** Creates a new PresetArm. */
-  public PresetArm(Extension ext, double targetPos) {
+  public PresetExt(Extension ext, double targetPos) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.ext = ext;
     this.targetPos = targetPos;

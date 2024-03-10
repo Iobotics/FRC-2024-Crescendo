@@ -52,8 +52,8 @@ public class Arm extends SubsystemBase{
         leftArm.setClosedLoopRampRate(0);
 
         // PID coefficients
-        kP = 5e-5; 
-        kI = 1e-6;
+        kP = 4e-2; 
+        kI = 4e-5;
         kD = 0; 
         kIz = 0; 
         kFF = 0.000156; 
@@ -103,8 +103,8 @@ public class Arm extends SubsystemBase{
     }
 
     public void setArmPos(double pos){
-        rAPID.setReference(pos, ControlType.kSmartMotion);
-        lAPID.setReference(pos, ControlType.kSmartMotion);
+        rAPID.setReference(pos, ControlType.kPosition);
+        lAPID.setReference(pos, ControlType.kPosition);
     }
 
     public double getArmPos(){
@@ -118,6 +118,11 @@ public class Arm extends SubsystemBase{
 
     public boolean isArmWithinError(double target, double error){
         return (Math.abs(target - leftArm.getEncoder().getPosition()) <= error);
+    }
+
+    public void brake(){
+        rightArm.setIdleMode(IdleMode.kBrake);
+        leftArm.setIdleMode(IdleMode.kBrake);
     }
 
     @Override

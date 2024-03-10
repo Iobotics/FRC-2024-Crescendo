@@ -24,7 +24,7 @@ import frc.robot.Commands.ApriltagAlign;
 import frc.robot.Commands.Intaking;
 import frc.robot.Commands.MoveArm;
 import frc.robot.Commands.Passing;
-import frc.robot.Commands.PresetArm;
+import frc.robot.Commands.PresetExt;
 import frc.robot.Commands.PresetWrist;
 import frc.robot.Commands.TeleopRotationOverride;
 import frc.robot.Commands.TeleopSwerve;
@@ -73,13 +73,13 @@ public class RobotContainer {
     private final JoystickButton collapsing = new JoystickButton(gamepad, 1);
     private final JoystickButton armIntake = new JoystickButton(gamepad, 4);
     private final JoystickButton pass = new JoystickButton(fight, 6);
-    private final JoystickButton speaker = new JoystickButton(fight, 5);
+    // private final JoystickButton speaker = new JoystickButton(fight, 5);
     private final JoystickButton alignSpeaker = new JoystickButton(gamepad, 3);
 
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-    // private final Vision vision = new Vision(swerve);
+    private final Vision vision = new Vision(swerve);
     private final Intake intake = new Intake();
     private final Shooter shooter = new Shooter();
     private final Arm arm = new Arm();
@@ -89,17 +89,18 @@ public class RobotContainer {
     
 
     private ParallelCommandGroup Collapse = new ParallelCommandGroup(
-        new MoveArm(arm, -1.48),
-        new PresetWrist(wrist, 2.16)
+        new MoveArm(arm, -2.02).withTimeout(3),
+        new PresetWrist(wrist, 2.0).withTimeout(3),
+        new PresetExt(ext, 1).withTimeout(3)
     );
 
-    private Command SpeakerScore = new RunCommand(() ->
-        new MoveArm(arm, -5.00)
-    );
+    // private Command SpeakerScore = new RunCommand(() ->
+    //     new MoveArm(arm, -7.00)
+    // );
 
     private ParallelCommandGroup AmpScore = new ParallelCommandGroup(
-        new PresetArm(ext, 19),
-        new PresetWrist(wrist, 44)
+        new PresetExt(ext, 13).withTimeout(3),
+        new PresetWrist(wrist, 24).withTimeout(3)
     );
 
 
@@ -123,6 +124,7 @@ public class RobotContainer {
         swerve.configureAutoBuilder();
         //drivetrain
         swerve.setDefaultCommand(teleopSwerve);
+        arm.setDefaultCommand(new InstantCommand(() -> arm.brake(), arm));
 
         // NamedCommands.registerCommand("exampleCommand", subsystem.exampleCommand);
 
@@ -145,7 +147,7 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
         mIConsume.onTrue(new SequentialCommandGroup(
             new Intaking(intake, false, false),
-            new MoveArm(arm, -1.48)
+            new MoveArm(arm, -1.02)
         ));
         //mIConsume.onFalse(new InstantCommand(() -> intake.stopI())); // fight 2
 
@@ -176,22 +178,16 @@ public class RobotContainer {
         armDown.onTrue(new InstantCommand(() -> arm.armSpeed(-0.15))); // logi 6
         armDown.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
-        collapsing.onTrue(Collapse);
+        collapsing.onTrue(Collapse.withTimeout(2));
 
-        armIntake.onTrue(new InstantCommand(()-> arm.setArmPos(-9.8)));
+        armIntake.onTrue(new InstantCommand(()-> arm.setArmPos(-9.6)).withTimeout(2));
 
-        new JoystickButton(fight, 5).onTrue(
-            new InstantCommand(()->arm.setArmPos(-5))
-        );
-
-        new JoystickButton(fight, 5).whileFalse(
-            new InstantCommand(()->arm.stopA())
-        );
+        // speaker.onTrue(SpeakerScore);
 
         // alignSpeaker.whileTrue(new InstantCommand(() -> teleopRotationOverride.run()));
         // alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
 
-        alignSpeaker.onTrue(new InstantCommand(() -> wrist.presetWrist(44)));
+        alignSpeaker.onTrue(AmpScore);
 
 
         // new JoystickButton(fight, 9).whileTrue(
@@ -241,6 +237,12 @@ public class RobotContainer {
 
         // new JoystickButton(gamepad, 3).whileFalse(
         //     new RunCommand(()->intake.stopI()));
+
+        new JoystickButton(fight, 5).onTrue(
+            new InstantCommand(()->arm.setArmPos(-7)));
+
+        new JoystickButton(fight, 5).onFalse(
+            new InstantCommand(()->arm.stopA()));
     }
 
     public Command getAutonomousCommand() {
