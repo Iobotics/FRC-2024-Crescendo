@@ -71,7 +71,7 @@ public class Swerve extends SubsystemBase {
     public void configureAutoBuilder() {
         AutoBuilder.configureHolonomic(
             this::getEstPose, // Robot pose supplier
-            this::setCurrentPose, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::setCurrentEstPose, // Method to reset odometry (will be called if your auto has a starting pose)
             this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
@@ -94,7 +94,9 @@ public class Swerve extends SubsystemBase {
             },
             this // Reference to this subsystem to set requirements
         );
+
     }
+
     // for path planner
     public ChassisSpeeds getChassisSpeeds() {
         return SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates());
@@ -126,16 +128,7 @@ public class Swerve extends SubsystemBase {
 
     // test for pathplanner
     public void driveRobotRelative(ChassisSpeeds desiredChassisSpeeds) {
-        // SwerveModuleState[] swerveModuleStates = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(desiredChassisSpeeds);
-        // SmartDashboard.putNumber("desiredrotpre",desiredChassisSpeeds.omegaRadiansPerSecond);
-        // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveConstants.maxSpeed / 4);
-        // SmartDashboard.putNumber("desiredrot",desiredChassisSpeeds.omegaRadiansPerSecond);
-
-        // for(SwerveModule mod : mSwerveMods){
-        //     mod.setDesiredState(swerveModuleStates[mod.moduleNumber], true);
-        // }
         desiredChassisSpeeds.omegaRadiansPerSecond *= SwerveConstants.maxAngularVelocity;
-
         setModuleStates(Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(desiredChassisSpeeds));
     }
 
@@ -163,51 +156,25 @@ public class Swerve extends SubsystemBase {
         }
         return positions;
     }
-  
 
     public Pose2d getPose() {
         return swerveOdometry.getPoseMeters();
-    }
-
-    public Pose2d getEstPose() {
-        SmartDashboard.putNumber("estrot",poseEstimator.getEstimatedPosition().getRotation().getDegrees());
-        return poseEstimator.getEstimatedPosition();
     }
 
     public void resetOdometry(Pose2d pose) {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
-    public void setCurrentPose(Pose2d newPose) {
-        poseEstimator.resetPosition(getGyroYaw(),getModulePositions(),newPose);
-    } 
-
-    public void resetPose() {
-        setCurrentPose(new Pose2d());
+    public void setHeading(Rotation2d heading){
+        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
     }
 
     public Rotation2d getHeading(){
         return getPose().getRotation();
     }
 
-    public void setHeading(Rotation2d heading){
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
-    }
-
-    // public void zeroHeading(){
-    //     swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
-    // }
-
     public Rotation2d getGyroYaw() {
         return Rotation2d.fromDegrees(gyro.getYaw().getValue());
-    }
-
-    public double getEstYaw() {
-        double rotation = MathUtil.inputModulus(getEstPose().getRotation().getDegrees(),-180,180);
-        // if (rotation > 180 || rotation < -180) {
-        //     return (rotation + 180) % 360 - 180;
-        // }
-        return rotation;
     }
 
     public void zeroGyro(){
@@ -218,24 +185,61 @@ public class Swerve extends SubsystemBase {
         gyro.setYaw(newValue);
     }
 
+    /** calls pose estimator for latest position
+     * @return Pose2d in meters*/
+    public Pose2d getEstPose() {
+        SmartDashboard.putNumber("estrot",poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+        return poseEstimator.getEstimatedPosition();
+    }
+
+    public void setCurrentEstPose(Pose2d newPose) {
+        poseEstimator.resetPosition(getGyroYaw(),getModulePositions(),newPose);
+    }
+
+    public void resetEstPose() {
+        setCurrentEstPose(new Pose2d());
+    }
+
+    // public void zeroHeading(){
+    //     swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+    // }
+
+    /** @return estimated heading in deg -180 to 180 */
+    public double getEstYaw() {
+        double rotation = MathUtil.inputModulus(getEstPose().getRotation().getDegrees(),-180,180);
+        return rotation;
+    }
+
     public void resetModulesToAbsolute(){
         for(SwerveModuleInterface mod : mSwerveMods){
             mod.resetToAbsolute();
         }
     }
 
-    public Pose2d getPoseToGoal(double goalX, double goalY) {
-        Pose2d goalPose = new Pose2d(goalX, goalY, new Rotation2d());
+    /** field relative pose from bot to goal, bot position taken from pose estimator
+     * @param goalPose field pose of goal
+     * @param returnParallelAngle return a rotation paralell to given goal, if false rotation is heading needed to look at goal
+     * @return field relative pose to goal and rotation
+     */ 
+    public Pose2d getPoseToGoal(Pose2d goalPose, boolean returnParallelAngle) {
         Pose2d currentPose = this.getEstPose();
-        double goalRotation = MathUtil.inputModulus(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX()))+Math.PI,-Math.PI,Math.PI);
+        double goalRotation = goalPose.getRotation().getRadians();
+        if (!returnParallelAngle) {
+            // arctan(y1-y2/x1-x2)
+            goalRotation = MathUtil.inputModulus(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX()))+Math.PI,-Math.PI,Math.PI);
+        }
         SmartDashboard.putNumber("goalrot", Math.toDegrees(goalRotation));
         SmartDashboard.putNumber("goalX", currentPose.minus(goalPose).getX());
         SmartDashboard.putNumber("goalY", currentPose.minus(goalPose).getY());
         return new Pose2d(currentPose.minus(goalPose).getTranslation(),new Rotation2d(goalRotation));
     }
-
-    public Pose2d getPoseToGoal(Pose2d goalPose) {
-        return getPoseToGoal(goalPose.getX(),goalPose.getY());
+    /**
+     * @param goalX x value of goal 
+     * @param goalY y value of goal 
+     * @return
+     */
+    public Pose2d getPoseToGoal(double goalX, double goalY) {
+        return getPoseToGoal(new Pose2d(goalX,goalY, new Rotation2d()), false);
     }
 
     public Pose2d getPoseToSpeaker() {
@@ -246,12 +250,13 @@ public class Swerve extends SubsystemBase {
         return getPoseToSpeaker().getRotation().getDegrees();
     }
 
+    /**move this to diff subsystem later */
     public double getShootingAngle() {
         double shootingAngle = 0;
         Pose2d poseToSpeaker = getPoseToSpeaker();
         double distanceToSpeaker = Math.hypot(poseToSpeaker.getX(),poseToSpeaker.getY());
         shootingAngle = -0.8*(distanceToSpeaker-2.8)-9.0;
-        SmartDashboard.putNumber("Estimated Shooter", shootingAngle);
+        SmartDashboard.putNumber("Estimated Shooter Angle", shootingAngle);
         return shootingAngle;
     }
 

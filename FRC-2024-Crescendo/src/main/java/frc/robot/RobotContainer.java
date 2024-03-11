@@ -62,6 +62,7 @@ public class RobotContainer {
     //private final JoystickButton consume = new JoystickButton(joystick1, 2);
     //private final JoystickButton eject = new JoystickButton(joystick1, 3);
     //private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
+
     private final JoystickButton mIConsume = new JoystickButton(fight, 2);
     private final JoystickButton mSConsume = new JoystickButton(fight, 3);
     private final JoystickButton mIEject = new JoystickButton(fight, 4);
