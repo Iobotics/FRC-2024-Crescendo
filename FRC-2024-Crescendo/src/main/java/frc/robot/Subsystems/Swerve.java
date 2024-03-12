@@ -243,7 +243,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPoseToSpeaker() {
-        return getPoseToGoal(16.5793, 5.5479);
+        return getPoseToGoal(Constants.VisionConstants.redSpeaker,false);
     }
     
     public double getRotationToSpeaker() {
@@ -255,7 +255,16 @@ public class Swerve extends SubsystemBase {
         double shootingAngle = 0;
         Pose2d poseToSpeaker = getPoseToSpeaker();
         double distanceToSpeaker = Math.hypot(poseToSpeaker.getX(),poseToSpeaker.getY());
-        shootingAngle = -0.8*(distanceToSpeaker-2.8)-9.0;
+        shootingAngle = 1.0*(distanceToSpeaker-0.8)-9.0;
+        /*
+         * 0.8, -9
+         * 2.79240671479449, -6.409871270767164 too high, 
+         * 3.015658735575344, -6.119643643752052
+         * 4.118724891630674, -4.685657640880123 too low
+         * 4.284403100159929, -5.51559689984007 too high
+         * 5.073239844268676, -4.299436171304455
+         */
+        SmartDashboard.putNumber("distanceToSpeaker", distanceToSpeaker);
         SmartDashboard.putNumber("Estimated Shooter Angle", shootingAngle);
         return shootingAngle;
     }

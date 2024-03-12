@@ -72,6 +72,7 @@ public class RobotContainer {
     private final JoystickButton armUp = new JoystickButton(gamepad, 5);
     private final JoystickButton armDown = new JoystickButton(gamepad, 6);
     private final JoystickButton collapsing = new JoystickButton(gamepad, 1);
+    //** gamepad 4 */
     private final JoystickButton armIntake = new JoystickButton(gamepad, 4);
     private final JoystickButton pass = new JoystickButton(fight, 6);
     // private final JoystickButton speaker = new JoystickButton(fight, 5);
@@ -158,7 +159,7 @@ public class RobotContainer {
         mIEject.onTrue(new InstantCommand(() -> intake.setISpeed(-0.25, false, false)));
         mIEject.onFalse(new InstantCommand(() -> intake.stopI())); // fight 4
 
-        mSEject.onTrue(new InstantCommand(() -> shooter.setSSpeed(-1.0)));
+        mSEject.onTrue(new InstantCommand(() -> shooter.setSSpeed(-1.0))); // fight 1
         mSEject.onFalse(new InstantCommand(() -> shooter.stopS()));
 
         pass.onTrue(new Passing(intake, roller, shooter)); // fight 6
@@ -173,11 +174,11 @@ public class RobotContainer {
 
         //shooting.onTrue(new Shooting(intake));
 
-        armUp.onTrue(new InstantCommand(() -> arm.armSpeed(0.15))); // logi 5
-        armUp.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
+        armUp.onTrue(new InstantCommand(() -> swerve.zeroGyro())); // logi 5
+        // armUp.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
-        armDown.onTrue(new InstantCommand(() -> arm.armSpeed(-0.15))); // logi 6
-        armDown.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
+        // armDown.onTrue(new InstantCommand(() -> arm.armSpeed(-0.15))); // logi 6
+        // armDown.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
         collapsing.onTrue(Collapse.withTimeout(2));
 

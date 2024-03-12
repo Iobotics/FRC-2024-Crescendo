@@ -59,7 +59,7 @@ public final class Constants {
     }
 
     public static final class VisionConstants {
-        public static final Pose2d redSpeaker = new Pose2d(16.5793, 5.5479, new Rotation2d(Math.toRadians(180)));
+        public static final Pose2d redSpeaker = new Pose2d(16.5293, 5.4579, new Rotation2d(Math.toRadians(180)));
         public static final Pose2d redAmp = new Pose2d(14.7008, 8.2042, new Rotation2d(Math.toRadians(-90)));
         public static final Pose2d redSource = new Pose2d(0.9088,0.5648,   new Rotation2d(Math.toRadians(-120)));
         public static final Pose2d redStageCenter = new Pose2d(11.2202, 4.1051, new Rotation2d(Math.toRadians(180)));
@@ -75,7 +75,8 @@ public final class Constants {
 
         public static final String kFrontCameraName = "Front_Camera";
         public static final Transform3d kRobotToCam = 
-                new Transform3d(new Translation3d(0.0, 0.2079244, 0.2940558), new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
+                new Transform3d(new Translation3d(0.0, 0.2079244, 0.0), new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
+        // 0.2079244, 0.2940558
         public static final List<AprilTag> apriltags = Arrays.asList(
             new AprilTag(1, new Pose3d(new Translation3d(15.0795, 0.2459, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians(120.0)))),
             new AprilTag(2, new Pose3d(new Translation3d(16.1851, 0.8837, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians( 120.0)))),
@@ -117,8 +118,8 @@ public final class Constants {
 
         public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
         .fill(
-            0.2, // x
-            0.2, // y
+            0.1, // x
+            0.1, // y
             0.2 * Math.PI // theta
         );
 
@@ -198,13 +199,13 @@ public final class Constants {
         public static final SensorDirectionValue canCoderInvert = chosenModule.cancoderInvert;
 
         /* Swerve Current Limiting */
-        public static final int angleContinuousCurrentLimit = 25;
-        public static final int anglePeakCurrentLimit = 40;
+        public static final int angleContinuousCurrentLimit = 15;
+        public static final int anglePeakCurrentLimit = 30;
         public static final double anglePeakCurrentDuration = 0.1;
         public static final boolean angleEnableCurrentLimit = true;
 
-        public static final int driveContinuousCurrentLimit = 35;
-        public static final int drivePeakCurrentLimit = 60;
+        public static final int driveContinuousCurrentLimit = 25;
+        public static final int drivePeakCurrentLimit = 40;
         public static final double drivePeakCurrentDuration = 0.1;
         public static final boolean driveEnableCurrentLimit = true;
 
