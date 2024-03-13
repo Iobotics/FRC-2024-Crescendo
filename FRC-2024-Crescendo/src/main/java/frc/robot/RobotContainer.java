@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Commands.ApriltagAlign;
+// import frc.robot.Commands.ApriltagAlign;
 import frc.robot.Commands.Intaking;
 import frc.robot.Commands.MoveArm;
 import frc.robot.Commands.Passing;
@@ -29,6 +29,7 @@ import frc.robot.Commands.PresetWrist;
 import frc.robot.Commands.TeleopRotationOverride;
 import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Subsystems.Arm;
+import frc.robot.Subsystems.Climber;
 import frc.robot.Subsystems.Extension;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Roller;
@@ -88,11 +89,12 @@ public class RobotContainer {
     private final Extension ext = new Extension();
     private final Wrist wrist = new Wrist();
     private final Roller roller = new Roller();
+    private final Climber climber = new Climber();
     
 
-    private ParallelCommandGroup Collapse = new ParallelCommandGroup(
-        new MoveArm(arm, -2.02).withTimeout(3),
-        new PresetWrist(wrist, 2.0).withTimeout(3),
+    private ParallelCommandGroup PassPos = new ParallelCommandGroup(
+        new MoveArm(arm, -2.2).withTimeout(3),
+        new PresetWrist(wrist, 5).withTimeout(3),
         new PresetExt(ext, 1).withTimeout(3)
     );
 
@@ -101,8 +103,8 @@ public class RobotContainer {
     // );
 
     private ParallelCommandGroup AmpScore = new ParallelCommandGroup(
-        new PresetExt(ext, 20).withTimeout(3),
-        new PresetWrist(wrist, 44).withTimeout(3)
+        new PresetExt(ext, 14).withTimeout(3),
+        new PresetWrist(wrist, 25).withTimeout(3)
     );
 
 
@@ -149,7 +151,8 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
         mIConsume.onTrue(new SequentialCommandGroup(
             new Intaking(intake, false, false),
-            new MoveArm(arm, -1.02)
+            new MoveArm(arm, -1.02),
+            new InstantCommand(() -> intake.pulse(0.5, 4))
         ));
         //mIConsume.onFalse(new InstantCommand(() -> intake.stopI())); // fight 2
 
@@ -180,18 +183,18 @@ public class RobotContainer {
         // armDown.onTrue(new InstantCommand(() -> arm.armSpeed(-0.15))); // logi 6
         // armDown.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
-        collapsing.onTrue(Collapse.withTimeout(2));
+        collapsing.onTrue(PassPos.withTimeout(2));
 
         armIntake.onTrue(new InstantCommand(()-> arm.setArmPos(-9.6)).withTimeout(2));
 
         // speaker.onTrue(SpeakerScore);
 
-        alignSpeaker.whileTrue(new ParallelCommandGroup(
-            new InstantCommand(() -> teleopRotationOverride.run()),
-            new InstantCommand(()->arm.setArmPos(swerve.getShootingAngle()))));
-        alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
+        // alignSpeaker.whileTrue(new ParallelCommandGroup(
+        //     new InstantCommand(() -> teleopRotationOverride.run()),
+        //     new InstantCommand(()->arm.setArmPos(swerve.getShootingAngle()))));
+        // alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
 
-        // alignSpeaker.onTrue(AmpScore);
+        alignSpeaker.onTrue(AmpScore);
 
 
         // new JoystickButton(fight, 9).whileTrue(
@@ -247,6 +250,18 @@ public class RobotContainer {
 
         new JoystickButton(fight, 5).onFalse(
             new InstantCommand(()->arm.stopA()));
+
+        new JoystickButton(gamepad, 5).onTrue(
+            new InstantCommand(()->climber.setPower(0.15)));
+        
+        new JoystickButton(gamepad, 5).onFalse(
+            new InstantCommand(()->climber.stop()));
+
+        new JoystickButton(gamepad, 6).onTrue(
+            new InstantCommand(()->climber.setPower(-0.15)));
+        
+        new JoystickButton(gamepad, 6).onFalse(
+            new InstantCommand(()->climber.stop()));
     }
 
     public Command getAutonomousCommand() {

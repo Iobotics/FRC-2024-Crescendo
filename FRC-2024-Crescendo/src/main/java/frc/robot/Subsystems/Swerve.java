@@ -180,7 +180,7 @@ public class Swerve extends SubsystemBase {
     public void zeroGyro(){
         gyro.setYaw(0);
     }
-
+    
     public void setGyro(double newValue){
         gyro.setYaw(newValue);
     }
@@ -255,7 +255,12 @@ public class Swerve extends SubsystemBase {
         double shootingAngle = 0;
         Pose2d poseToSpeaker = getPoseToSpeaker();
         double distanceToSpeaker = Math.hypot(poseToSpeaker.getX(),poseToSpeaker.getY());
-        shootingAngle = 1.0*(distanceToSpeaker-0.8)-9.0;
+        if (distanceToSpeaker < 2.0) {
+            shootingAngle = 2.0*(distanceToSpeaker-0.8)-9.0;
+        }
+        else {
+            shootingAngle = 1.3*(distanceToSpeaker-0.8)-9.0;
+        }
         /*
          * 0.8, -9
          * 2.79240671479449, -6.409871270767164 too high, 

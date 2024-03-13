@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Intake;
+import frc.robot.Subsystems.Swerve;
 
 /**
  * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
@@ -20,8 +21,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   
   private RobotContainer m_robotContainer;
-  private Intake intake;
-  private Arm arm;
+
 
   @Override
   public void robotInit() {

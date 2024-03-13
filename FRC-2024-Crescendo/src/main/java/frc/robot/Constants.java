@@ -153,11 +153,16 @@ public final class Constants {
 
     public static final class SwifferConstants{
         public static final int kArm = 23; //please change when ready
-        public static final int kWrist = 24; //please change when ready
-        public static final int kRoller = 25; //please change when ready
+        public static final int kWrist = 25; //please change when ready
+        public static final int kRoller = 24; //please change when ready
 
         public static final int kDigitalInput = 2; //please change when ready
+    }
 
+    public static final class ClimberConstants{
+        public static final int kClimber1 = 21; //left
+        public static final int kClimber2 = 22; //right 
+        public static final int kCGearRatio = 18;
     }
 
     public static final class SwerveConstants {
