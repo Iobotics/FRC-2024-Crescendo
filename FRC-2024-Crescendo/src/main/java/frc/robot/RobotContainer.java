@@ -127,6 +127,7 @@ public class RobotContainer {
     public RobotContainer() {
         swerve.configureAutoBuilder();
         //drivetrain
+        swerve.resetModulesToAbsolute();
         swerve.setDefaultCommand(teleopSwerve);
         arm.setDefaultCommand(new InstantCommand(() -> arm.brake(), arm));
 
