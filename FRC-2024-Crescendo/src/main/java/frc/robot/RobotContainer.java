@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Commands.AutoIntakeNote;
 // import frc.robot.Commands.ApriltagAlign;
 import frc.robot.Commands.Intaking;
 import frc.robot.Commands.MoveArm;
@@ -181,7 +182,12 @@ public class RobotContainer {
 
         //shooting.onTrue(new Shooting(intake));
 
-        armUp.onTrue(new InstantCommand(() -> swerve.zeroGyro())); // logi 5
+        armUp.onTrue(new SequentialCommandGroup(
+            new ParallelCommandGroup(new AutoIntakeNote(vision.intakeCamera,swerve,intake), 
+            new Intaking(intake, false, false)),
+            new InstantCommand(() -> intake.pulse(0.5, 4)),
+            new MoveArm(arm, -2.2)
+        )); // logi 5
         // armUp.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
         // armDown.onTrue(new InstantCommand(() -> arm.armSpeed(-0.15))); // logi 6
@@ -255,17 +261,17 @@ public class RobotContainer {
         new JoystickButton(fight, 5).onFalse(
             new InstantCommand(()->arm.stopA()));
 
-        new JoystickButton(gamepad, 5).onTrue(
-            new InstantCommand(()->climber.setPower(0.20)));
+        // new JoystickButton(gamepad, 5).onTrue(
+        //     new InstantCommand(()->climber.setPower(0.20)));
         
-        new JoystickButton(gamepad, 5).onFalse(
-            new InstantCommand(()->climber.stopClimber()));
+        // new JoystickButton(gamepad, 5).onFalse(
+        //     new InstantCommand(()->climber.stopClimber()));
 
-        new JoystickButton(gamepad, 6).onTrue(
-            new InstantCommand(()->climber.setPower(-0.20)));
+        // new JoystickButton(gamepad, 6).onTrue(
+        //     new InstantCommand(()->climber.setPower(-0.20)));
         
-        new JoystickButton(gamepad, 6).onFalse(
-            new InstantCommand(()->climber.stopClimber()));
+        // new JoystickButton(gamepad, 6).onFalse(
+        //     new InstantCommand(()->climber.stopClimber()));
 
         // new JoystickButton(swifferGamepad, 2).onTrue(
         //     new InstantCommand(()->climber.setPowerL(0.30)));
