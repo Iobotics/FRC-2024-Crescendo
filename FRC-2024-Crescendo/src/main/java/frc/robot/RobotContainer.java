@@ -149,7 +149,7 @@ public class RobotContainer {
 
         /* SUBSYSTEMS */
 
-        zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
+        zeroGyro.onTrue(new InstantCommand(() -> swerve.setGyro(vision.latestAngle))); 
         mIConsume.onTrue(new SequentialCommandGroup(
             new Intaking(intake, false, false),
             new MoveArm(arm, -1.02),
@@ -190,12 +190,12 @@ public class RobotContainer {
 
         // speaker.onTrue(SpeakerScore);
 
-        // alignSpeaker.whileTrue(new ParallelCommandGroup(
-        //     new InstantCommand(() -> teleopRotationOverride.run()),
-        //     new InstantCommand(()->arm.setArmPos(swerve.getShootingAngle()))));
-        // alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
+        alignSpeaker.whileTrue(new ParallelCommandGroup(
+            new InstantCommand(() -> teleopRotationOverride.run()),
+            new InstantCommand(()->arm.setArmPos(swerve.getShootingAngle()))));
+        alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
 
-        alignSpeaker.onTrue(AmpScore);
+        // alignSpeaker.onTrue(AmpScore);
 
 
         // new JoystickButton(fight, 9).whileTrue(
@@ -263,6 +263,12 @@ public class RobotContainer {
         
         new JoystickButton(gamepad, 6).onFalse(
             new InstantCommand(()->climber.stop()));
+        
+        new JoystickButton(swifferGamepad, 5).onTrue(
+            new InstantCommand(()->climber.lock()));
+
+        new JoystickButton(swifferGamepad, 6).onTrue(
+            new InstantCommand(()->climber.unlock()));
     }
 
     public Command getAutonomousCommand() {

@@ -25,8 +25,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class Vision extends SubsystemBase{
     public final PhotonCamera swifferCamera;
-    // public final PhotonCamera intakeCamera;
+    public final PhotonCamera intakeCamera;
     private int intakeCameraPipeline;
+    public double latestAngle;
 
     private AprilTagFieldLayout aprilTagFieldLayout;
     public final PhotonPoseEstimator photonPoseEstimator;
@@ -37,7 +38,7 @@ public class Vision extends SubsystemBase{
     public Vision(Swerve swerve) {
         this.swerve = swerve;
         this.swifferCamera = new PhotonCamera(VisionConstants.kFrontCameraName);
-        // this.intakeCamera = new PhotonCamera(VisionConstants.)
+        this.intakeCamera = new PhotonCamera(VisionConstants.kIntakeCameraName);
         aprilTagFieldLayout = VisionConstants.k2024CrescendoTagField;
         photonPoseEstimator = new PhotonPoseEstimator(
             aprilTagFieldLayout, 
@@ -94,8 +95,11 @@ public class Vision extends SubsystemBase{
 
         if (result.hasTargets()) {
             var target = result.getBestTarget();
-            // Pose3d bestEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToCam);
+            Pose3d bestEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToCam);
             // Pose3d altEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getAlternateCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToCam);
+            
+            this.latestAngle = bestEstimate.toPose2d().getRotation().getDegrees();
+            SmartDashboard.putNumber("latestEstAngle", this.latestAngle);
             var estimatedPose = photonPoseEstimator.update(result);
         
             if (estimatedPose.isPresent() && this.swifferCamera.getLatestResult().hasTargets()){

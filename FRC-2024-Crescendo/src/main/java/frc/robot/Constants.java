@@ -73,7 +73,10 @@ public final class Constants {
         public static final Pose2d blueStageRight = new Pose2d(4.6413, 3.713, new Rotation2d(Math.toRadians(-120)));
 
 
-        public static final String kFrontCameraName = "Front_Camera";
+        public static final String kFrontCameraName = "Swiffer_Camera";
+        public static final String kIntakeCameraName = "Intake_Camera";
+        public static final int COLORED_SHAPE_PIPELINE = 0;
+        public static final int APRILTAG_PIPELINE = 1;
         public static final Transform3d kRobotToCam = 
                 new Transform3d(new Translation3d(0.0, 0.2079244, 0.0), new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
         // 0.2079244, 0.2940558
