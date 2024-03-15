@@ -4,6 +4,7 @@
 
 package frc.robot.Subsystems;
 
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -91,7 +92,7 @@ public class Extension extends SubsystemBase{
 
     //Preset position function
     public void presetArm(double targetPosition){
-        armPID.setReference(targetPosition, CANSparkMax.ControlType.kSmartMotion, smartMotionSlotArm, kFFArm);
+        armPID.setReference(targetPosition, ControlType.kSmartMotion, smartMotionSlotArm, kFFArm);
     }
 
     //Bottom limit switch check function

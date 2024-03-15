@@ -20,7 +20,7 @@ import frc.robot.Constants.SwifferConstants;
 public class Wrist extends SubsystemBase{
     private CANSparkMax wrist;
     public SparkPIDController wristPID;
-    private AbsoluteEncoder wristEncoder;
+    private SparkAbsoluteEncoder wristEncoder;
     public double kPWrist, kIWrist, kDWrist, kIzWrist, kFFWrist, kMaxOutputWrist, kMinOutputWrist, maxVelWrist, maxAccWrist, allowedErrWrist;
     int smartMotionSlotWrist = 0;
 
@@ -82,7 +82,7 @@ public class Wrist extends SubsystemBase{
     }
 
     public double getWristPos(){
-        return wristEncoder.getPosition();
+        return (wristEncoder.getPosition() * 15);
     }
     
     //Preset position function
@@ -92,13 +92,13 @@ public class Wrist extends SubsystemBase{
 
     //Error check function
     public boolean isWristWithinError(double target, double error){
-        return (Math.abs(target - wrist.getEncoder().getPosition()) <= error);
+        return (Math.abs(target - getWristPos()) <= error);
     }
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("WristPos", wrist.getEncoder().getPosition());  //Update wrist position
+        SmartDashboard.putNumber("WristPos", getWristPos());  //Update wrist position
     }
 
 }
