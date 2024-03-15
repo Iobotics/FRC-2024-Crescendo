@@ -105,19 +105,35 @@ public class Climber extends SubsystemBase {
     climber2.set(speed);
   }
 
-  public void stop(){
+  public void stopClimber(){
     climber1.set(0);
     climber2.set(0);
   }
 
+  //public void setPowerL(double speed){
+  //  climber1.set(-speed);
+  // }
+
+  // public void stopL(){
+  //   climber1.set(0);
+  // }
+
+  // public void setPowerR(double speed){
+  //   climber2.set(speed);
+  // }
+
+  // public void stopR(){
+  //   climber2.set(0);
+  // }
+
   public void lock(){
-    servo1.setAngle(120);
-    servo2.setAngle(60);
+    servo1.setPulseTimeMicroseconds(1475);
+    servo2.setPulseTimeMicroseconds(1525);
   }
 
   public void unlock(){
-    servo1.setAngle(0); //R
-    servo2.setAngle(90); //L
+    servo1.setPulseTimeMicroseconds(1600); //L
+    servo2.setPulseTimeMicroseconds(1400); //R
   }
 
   @Override
