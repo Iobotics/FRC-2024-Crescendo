@@ -70,8 +70,8 @@ public class RobotContainer {
     private final JoystickButton mIEject = new JoystickButton(fight, 4);
     private final JoystickButton mSEject = new JoystickButton(fight, 1);
     //private final JoystickButton shooting = new JoystickButton(gamepad, 5);
-    // private final JoystickButton pulse = new JoystickButton(gamepad, 2);
-    private final JoystickButton speaker = new JoystickButton(gamepad, 2);
+    private final JoystickButton pulse = new JoystickButton(gamepad, 2);
+    //private final JoystickButton speaker = new JoystickButton(gamepad, 2);
     private final JoystickButton armUp = new JoystickButton(gamepad, 5);
     private final JoystickButton armDown = new JoystickButton(gamepad, 6);
     private final JoystickButton collapsing = new JoystickButton(gamepad, 1);
@@ -109,6 +109,15 @@ public class RobotContainer {
         new PresetWrist(wrist, 25).withTimeout(3)
     );
 
+    private SequentialCommandGroup autonomousIntakeNote = new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new AutoIntakeNote(vision.intakeCamera,swerve,intake),
+            new InstantCommand(() ->arm.setArmPos(-9.6)),
+            new Intaking(intake, false, false)
+        ),
+        new InstantCommand(() -> arm.setArmPos(-2.0)),
+        new InstantCommand(() -> intake.pulse(0.5, 2))
+    );
 
 
     //Allows for Autos to be chosen in Shuffleboard
@@ -129,7 +138,7 @@ public class RobotContainer {
     public RobotContainer() {
         swerve.configureAutoBuilder();
         //drivetrain
-        swerve.resetModulesToAbsolute();
+        
         swerve.setDefaultCommand(teleopSwerve);
         arm.setDefaultCommand(new InstantCommand(() -> arm.brake(), arm));
 
@@ -175,10 +184,10 @@ public class RobotContainer {
             new InstantCommand(() -> roller.stopRoller())
         ));
 
-        // pulse.onTrue(new InstantCommand(() -> intake.pulse(0.5, 4)).withTimeout(1));
+        pulse.onTrue(new InstantCommand(() -> intake.pulse(0.5, 4)).withTimeout(1));
         //pulse.onTrue(new InstantCommand(() -> intake.stopI()));
 
-        speaker.onTrue(new MoveArm(arm, -9.0));
+        //speaker.onTrue(new MoveArm(arm, -9.0));
 
         //shooting.onTrue(new Shooting(intake));
 
@@ -199,12 +208,12 @@ public class RobotContainer {
 
         // speaker.onTrue(SpeakerScore);
 
-        // alignSpeaker.whileTrue(new ParallelCommandGroup(
-        //     new InstantCommand(() -> teleopRotationOverride.run()),
-        //     new InstantCommand(()->arm.setArmPos(swerve.getShootingAngle()))));
-        // alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
+        alignSpeaker.whileTrue(new ParallelCommandGroup(
+            new InstantCommand(() -> teleopRotationOverride.run()),
+            new InstantCommand(()->arm.setArmPos(swerve.getShootingAngle()))));
+        alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
 
-        alignSpeaker.onTrue(AmpScore);
+        // alignSpeaker.onTrue(AmpScore);
 
 
         // new JoystickButton(fight, 9).whileTrue(
@@ -312,6 +321,8 @@ public class RobotContainer {
         if(gamepad.getRawAxis(6) < -0.5){
             new InstantCommand(()->climber.lock());
         }
+
+        swerve.resetModulesToAbsolute();
     }
 
     public Command getAutonomousCommand() {
