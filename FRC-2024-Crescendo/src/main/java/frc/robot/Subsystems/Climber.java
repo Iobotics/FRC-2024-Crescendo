@@ -90,15 +90,12 @@ public class Climber extends SubsystemBase {
   public void climbPOS(double pos){
   climb1P.setReference(pos, ControlType.kSmartMotion);
   climb2P.setReference(pos, ControlType.kSmartMotion);
-
   }
 
   public double climbValue(){
     return(climber1E.getPosition()*Constants.ClimberConstants.kCGearRatio);
 
   }
-
-
 
   public void setPower(double speed){
     climber1.set(-speed);
