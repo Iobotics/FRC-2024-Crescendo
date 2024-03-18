@@ -102,6 +102,10 @@ public class Climber extends SubsystemBase {
     climber2.set(speed);
   }
 
+  public boolean isClimbWithinError(double target, double error){
+    return (Math.abs(target - climbValue()) <= error);
+  }
+
   public void stopClimber(){
     climber1.set(0);
     climber2.set(0);
