@@ -184,6 +184,8 @@ public class RobotContainer {
         armUp.onTrue(new InstantCommand(() -> swerve.zeroGyro())); // logi 5
         // armUp.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
+        armDown.onTrue(new InstantCommand(() -> swerve.resetModulesToAbsolute()));
+
         // armDown.onTrue(new InstantCommand(() -> arm.armSpeed(-0.15))); // logi 6
         // armDown.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
 
