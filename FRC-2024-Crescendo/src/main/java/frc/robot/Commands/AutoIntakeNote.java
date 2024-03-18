@@ -15,14 +15,15 @@ import frc.robot.Subsystems.Swerve;
 public class AutoIntakeNote extends Command{
     private PhotonCamera camera;
     private Swerve swerve;
-    // private Intake intake;
+    private Intake intake;
     // private Arm arm;
     private PIDController translationController;
     private PIDController strafeController;
 
-    public AutoIntakeNote(PhotonCamera camera, Swerve swerve) {
+    public AutoIntakeNote(PhotonCamera camera, Swerve swerve, Intake intake) {
         this.camera = camera;
         this.swerve = swerve;
+        this.intake = intake;
         // this.arm = arm;
 
         this.translationController = new PIDController(0.1, 0, 0);
@@ -61,10 +62,11 @@ public class AutoIntakeNote extends Command{
     @Override
     public void end(boolean interrupted) {
         this.camera.setPipelineIndex(VisionConstants.APRILTAG_PIPELINE);
+        
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        return intake.optic();
     }
 }

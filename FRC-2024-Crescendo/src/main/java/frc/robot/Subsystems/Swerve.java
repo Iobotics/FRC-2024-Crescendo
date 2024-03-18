@@ -129,7 +129,7 @@ public class Swerve extends SubsystemBase {
     // test for pathplanner
     public void driveRobotRelative(ChassisSpeeds desiredChassisSpeeds) {
         desiredChassisSpeeds.omegaRadiansPerSecond *= SwerveConstants.maxAngularVelocity;
-        setModuleStates(Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(desiredChassisSpeeds));
+        setModuleStates(Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(ChassisSpeeds.discretize(desiredChassisSpeeds, 0.02)));
     }
 
     /* Used by SwerveControllerCommand in Auto */
