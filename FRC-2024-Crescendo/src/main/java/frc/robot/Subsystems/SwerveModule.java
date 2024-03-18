@@ -62,6 +62,7 @@ public class SwerveModule implements SwerveModuleInterface{
         integratedAngleEncoder = mAngleMotor.getEncoder();
         mAnglePID = mAngleMotor.getPIDController();
         configAngle();
+        resetToAbsolute();
 
         /* Drive Motor Config */
         mDriveMotor = new CANSparkMax(moduleConstants.driveMotorID, MotorType.kBrushless);
@@ -147,21 +148,17 @@ public class SwerveModule implements SwerveModuleInterface{
     private void setAngle(SwerveModuleState desiredState){
         Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.SwerveConstants.maxSpeed * 0.01)) ? lastAngle : desiredState.angle; //Prevent rotating module if speed is less then 1%. Prevents Jittering.
         
-        mAnglePID.setReference(angle.getDegrees(), ControlType.kPosition);
+        mAnglePID.setReference(angle.getRotations(), ControlType.kPosition);
         lastAngle = angle;
-    }
-
-    private Rotation2d getAngle(){
-        return Rotation2d.fromDegrees(Conversions.sparkToDegrees(integratedAngleEncoder.getPosition(), Constants.SwerveConstants.angleGearRatio));
     }
 
     public Rotation2d getCANcoder(){
         angleEncoder.getAbsolutePosition().refresh();
-        return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition().getValue());
+        return Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValue());
     }
 
     public void resetToAbsolute(){
-        double absolutePosition = Conversions.degreesToSpark((getCANcoder().getDegrees() - angleOffset.getDegrees()) * 360, Constants.SwerveConstants.angleGearRatio);
+        double absolutePosition = getCANcoder().getRotations() - angleOffset.getRotations();
         abs = absolutePosition;
         mAnglePID.setReference(absolutePosition, ControlType.kPosition);
     }
@@ -172,15 +169,15 @@ public class SwerveModule implements SwerveModuleInterface{
 
     public SwerveModuleState getState(){
         return new SwerveModuleState(
-            driveEncoder.getVelocity(), 
-            getAngle()
+            Conversions.RPSToMPS(driveEncoder.getVelocity(), Constants.SwerveConstants.wheelCircumference), 
+            Rotation2d.fromRotations(integratedAngleEncoder.getPosition())
         );
     }
 
     public SwerveModulePosition getPosition(){
         return new SwerveModulePosition(
-            driveEncoder.getPosition(), 
-            getAngle()
+            Conversions.rotationsToMeters(driveEncoder.getPosition(), Constants.SwerveConstants.wheelCircumference), 
+            Rotation2d.fromRotations(integratedAngleEncoder.getPosition())
         );
     }
 

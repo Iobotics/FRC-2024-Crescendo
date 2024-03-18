@@ -22,12 +22,14 @@ public class Robot extends TimedRobot {
   
   private RobotContainer m_robotContainer;
 
+  private Swerve swerve;
+
 
   @Override
   public void robotInit() {
 
     m_robotContainer = new RobotContainer();
-    
+    swerve = new Swerve();
   }
 
   /**
@@ -62,11 +64,15 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    swerve.resetModulesToAbsolute();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    
+  }
 
   @Override
   public void teleopInit() {
@@ -77,6 +83,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    swerve.resetModulesToAbsolute();
   }
 
   /** This function is called periodically during operator control. */
