@@ -73,6 +73,7 @@ public class AutoIntakeNote extends Command{
     @Override
     public void end(boolean interrupted) {
         this.camera.setPipelineIndex(VisionConstants.APRILTAG_PIPELINE);
+        
     }
 
     @Override
