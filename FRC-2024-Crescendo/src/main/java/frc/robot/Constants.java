@@ -50,11 +50,11 @@ public final class Constants {
     public static final double stickDeadband = 0.2;
 
     public static final class OIConstants {
-        public static int kGamepad = 2;
-        public static int kJoystick1 = 4;
-        public static int kJoystick2 = 3;
-        public static int kFight = 0;
-        public static int kSwifferGamepad = 1;
+        public static int kGamepad = 0;
+        public static int kJoystick1 = 1;
+        public static int kJoystick2 = 2;
+        public static int kFight = 3;
+        public static int kSwifferGamepad = 4;
     }
 
     public static final class PIDConstants {
