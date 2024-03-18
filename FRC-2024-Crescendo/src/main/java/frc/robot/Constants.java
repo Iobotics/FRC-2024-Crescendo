@@ -6,15 +6,12 @@ package frc.robot;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -80,10 +77,8 @@ public final class Constants {
         public static final String kIntakeCameraName = "Intake_Camera";
         public static final int COLORED_SHAPE_PIPELINE = 0;
         public static final int APRILTAG_PIPELINE = 1;
-        public static final Transform3d kRobotToSwifferCam = 
+        public static final Transform3d kRobotToCam = 
                 new Transform3d(new Translation3d(0.0, 0.2079244, 0.0), new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
-        public static final Transform3d kRobotToIntakeCam = // change to actual value
-        new Transform3d(new Translation3d(0.0, -0.2, 0.0), new Rotation3d(0, 0, 0));
         // 0.2079244, 0.2940558
         public static final List<AprilTag> apriltags = Arrays.asList(
             new AprilTag(1, new Pose3d(new Translation3d(15.0795, 0.2459, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians(120.0)))),
@@ -171,7 +166,6 @@ public final class Constants {
     }
 
     public static final class SwerveConstants {
-
         public static final int pigeonID = 14;
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
@@ -186,7 +180,7 @@ public final class Constants {
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         
-        
+
         /*
          * Swerve Kinematics
          * No need to ever change this unless you are not doing a traditional
@@ -265,14 +259,6 @@ public final class Constants {
         /* Neutral Modes */
         public static final IdleMode angleNeutralMode = IdleMode.kCoast;
         public static final IdleMode driveNeutralMode = IdleMode.kBrake;
-
-        public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(5.0, 0.0, 0.0), // Translation constants 
-            new PIDConstants(5.0, 0.0, 0.0), // Rotation constants 
-            maxSpeed, 
-            MathUtil.hypot(trackWidth,wheelBase), // Drive base radius (distance from center to furthest module) 
-            new ReplanningConfig()
-        );
 
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
