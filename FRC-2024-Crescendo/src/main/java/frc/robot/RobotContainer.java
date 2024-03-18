@@ -70,7 +70,7 @@ public class RobotContainer {
     private final JoystickButton mSEject = new JoystickButton(fight, 1);
     //private final JoystickButton shooting = new JoystickButton(gamepad, 5);
     // private final JoystickButton pulse = new JoystickButton(gamepad, 2);
-    private final JoystickButton speaker = new JoystickButton(gamepad, 2);
+    private final JoystickButton alignSpeaker = new JoystickButton(gamepad, 2);
     private final JoystickButton armUp = new JoystickButton(gamepad, 5);
     private final JoystickButton armDown = new JoystickButton(gamepad, 6);
     private final JoystickButton collapsing = new JoystickButton(gamepad, 1);
@@ -78,7 +78,7 @@ public class RobotContainer {
     private final JoystickButton armIntake = new JoystickButton(gamepad, 4);
     private final JoystickButton pass = new JoystickButton(fight, 6);
     // private final JoystickButton speaker = new JoystickButton(fight, 5);
-    private final JoystickButton alignSpeaker = new JoystickButton(gamepad, 3);
+    private final JoystickButton ampScore = new JoystickButton(gamepad, 3);
 
 
     /* Subsystems */
@@ -177,7 +177,7 @@ public class RobotContainer {
         // pulse.onTrue(new InstantCommand(() -> intake.pulse(0.5, 4)).withTimeout(1));
         //pulse.onTrue(new InstantCommand(() -> intake.stopI()));
 
-        speaker.onTrue(new MoveArm(arm, -9.0));
+        // speaker.onTrue(new MoveArm(arm, -9.0));
 
         //shooting.onTrue(new Shooting(intake));
 
@@ -193,16 +193,12 @@ public class RobotContainer {
 
         // speaker.onTrue(SpeakerScore);
 
-        // alignSpeaker.whileTrue(new ParallelCommandGroup(
-        //     new InstantCommand(() -> teleopRotationOverride.run()),
-        //     new InstantCommand(()->arm.setArmPos(swerve.getShootingAngle()))));
-        // alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
+        alignSpeaker.whileTrue(new ParallelCommandGroup(
+            new InstantCommand(() -> teleopRotationOverride.run()),
+            new InstantCommand(()->arm.setArmPos(swerve.getShootingAngle()))));
+        alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
 
-        alignSpeaker.onTrue(AmpScore);
-
-
-        // new JoystickButton(fight, 9).whileTrue(
-        //     new RunCommand(()->ext.setPowerArm(-fight.getY()/5), ext));
+        ampScore.onTrue(AmpScore);
 
         new JoystickButton(fight, 9).whileTrue(
             new RunCommand(()->ext.setPowerArm(-fight.getY())));

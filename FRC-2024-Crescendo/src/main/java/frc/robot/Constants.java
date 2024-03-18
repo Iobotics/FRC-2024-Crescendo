@@ -152,10 +152,7 @@ public final class Constants {
         public static int kRA = 16;
         public static int kLA = 15;
 
-        public static int kArmCountsPerRev = 42;
-        public static double kArmGearRatio = 1/36;
-        public static double kArmVelocity = 45.0;
-        public static double kArmAcceleration = 45.0;
+        public static double kArmGearRatio = 12;
     }
 
 

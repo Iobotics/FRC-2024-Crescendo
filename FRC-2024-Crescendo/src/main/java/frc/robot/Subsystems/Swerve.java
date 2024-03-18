@@ -128,7 +128,8 @@ public class Swerve extends SubsystemBase {
 
     // test for pathplanner
     public void driveRobotRelative(ChassisSpeeds desiredChassisSpeeds) {
-        desiredChassisSpeeds.omegaRadiansPerSecond *= SwerveConstants.maxAngularVelocity;
+        desiredChassisSpeeds.omegaRadiansPerSecond *= 200.0;
+        SmartDashboard.putNumber("swerverotationout", desiredChassisSpeeds.omegaRadiansPerSecond);
         setModuleStates(Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(ChassisSpeeds.discretize(desiredChassisSpeeds, 0.02)));
     }
 
