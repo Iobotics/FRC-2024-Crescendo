@@ -63,6 +63,7 @@ public class RobotContainer {
 
     private final JoystickButton armIntake = new JoystickButton(joystick2, 1);
     private final JoystickButton mIConsume = new JoystickButton(joystick2, 3);
+    private final JoystickButton resetWheels = new JoystickButton(joystick1, 6);
     //private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
     //private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
     //private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
@@ -182,6 +183,8 @@ public class RobotContainer {
         /* Driver Buttons */
 
         /* SUBSYSTEMS */
+
+        resetWheels.onTrue(new InstantCommand(() -> swerve.resetModulesToAbsolute()));
 
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
 

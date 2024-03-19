@@ -23,6 +23,7 @@ import frc.robot.Utils.SwerveModuleConstants;
 import frc.robot.Utils.SwerveModuleInterface;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Robot;
 
 public class SwerveModule implements SwerveModuleInterface{
     public int moduleNumber;
@@ -161,10 +162,10 @@ public class SwerveModule implements SwerveModuleInterface{
     }
 
     public void resetToAbsolute(){ 
-        double absolutePosition = Conversions.degreesToSpark((getCANcoder().getDegrees() - angleOffset.getDegrees()), Constants.SwerveConstants.angleGearRatio);
+        //double absolutePosition = Conversions.degreesToSpark(getCANcoder().getDegrees() - angleOffset.getDegrees(), Constants.SwerveConstants.angleGearRatio);
+        double absolutePosition = getCANcoder().getDegrees() - angleOffset.getDegrees();
         abs = absolutePosition;
-        //integratedAngleEncoder.setPosition(absolutePosition);
-        //mAnglePID.setReference(absolutePosition, ControlType.kPosition);
+        integratedAngleEncoder.setPosition(absolutePosition);
     }
 
     public double getAbsolutePosition(){
