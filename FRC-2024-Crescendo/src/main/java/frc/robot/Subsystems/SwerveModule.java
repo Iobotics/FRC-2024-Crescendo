@@ -158,9 +158,10 @@ public class SwerveModule implements SwerveModuleInterface{
     }
 
     public void resetToAbsolute(){
-        double absolutePosition = getCANcoder().getRotations() - angleOffset.getRotations();
+        double absolutePosition = getCANcoder().getDegrees() - angleOffset.getDegrees();
         abs = absolutePosition;
-        mAnglePID.setReference(absolutePosition, ControlType.kPosition);
+        integratedAngleEncoder.setPosition(absolutePosition);
+        //mAnglePID.setReference(absolutePosition, ControlType.kPosition);
     }
 
     public double getAbsolutePosition(){
