@@ -44,15 +44,15 @@ public class Climber extends SubsystemBase {
     servo2 = new Servo(1);
 
     climber1.setInverted(false);
-    climber2.setInverted(false);
+    climber2.setInverted(true);
 
     climber1.setIdleMode(IdleMode.kBrake);
     climber2.setIdleMode(IdleMode.kBrake);
 
     climber1.setClosedLoopRampRate(0);
-    climber1.setOpenLoopRampRate(.5);
+    climber1.setOpenLoopRampRate(1);
     climber2.setClosedLoopRampRate(0);
-    climber2.setOpenLoopRampRate(.5);
+    climber2.setOpenLoopRampRate(1);
 
     climber1E = climber1.getEncoder();
     climber2E = climber2.getEncoder();
@@ -73,8 +73,8 @@ public class Climber extends SubsystemBase {
 
   public void PIDConfiguration(SparkPIDController pid){
 
-    pid.setP(5e-5);
-    pid.setI(1e-6);
+    pid.setP(1e-7);
+    pid.setI(0);
     pid.setD(0);
     pid.setIZone(0);
     pid.setFF(0);
@@ -87,14 +87,13 @@ public class Climber extends SubsystemBase {
 
   }
 
-  public void climbPOS(double pos){
-  climb1P.setReference(pos, ControlType.kSmartMotion);
-  climb2P.setReference(pos, ControlType.kSmartMotion);
+  public void climbPOS(double posL, double posR){
+  climb1P.setReference(posL, ControlType.kSmartMotion);
+  climb2P.setReference(posR, ControlType.kSmartMotion);
   }
 
   public double climbValue(){
     return(climber1E.getPosition()*Constants.ClimberConstants.kCGearRatio);
-
   }
 
   public boolean isClimbWithinError(double target, double error){
@@ -111,21 +110,21 @@ public class Climber extends SubsystemBase {
     climber2.set(0);
   }
 
-  //public void setPowerL(double speed){
-  //  climber1.set(-speed);
-  // }
+  public void setPowerL(double speed){
+   climber1.set(-speed);
+  }
 
-  // public void stopL(){
-  //   climber1.set(0);
-  // }
+  public void stopL(){
+    climber1.set(0);
+  }
 
-  // public void setPowerR(double speed){
-  //   climber2.set(speed);
-  // }
+  public void setPowerR(double speed){
+    climber2.set(speed);
+  }
 
-  // public void stopR(){
-  //   climber2.set(0);
-  // }
+  public void stopR(){
+    climber2.set(0);
+  }
 
   public void lock(){
     servo1.setPulseTimeMicroseconds(1475);
@@ -141,6 +140,7 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Climb Position", climber1E.getPosition());
+    SmartDashboard.putNumber("LClimb", climber1E.getPosition());
+    SmartDashboard.putNumber("RClimb", climber2E.getPosition());
   }
 }

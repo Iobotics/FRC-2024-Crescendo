@@ -10,11 +10,14 @@ import frc.robot.Subsystems.Climber;
 public class PresetClimb extends Command {
 
   Climber climber;
-  double pos;
+  double posL;
+  double posR;
+
   /** Creates a new PresetClimb. */
-  public PresetClimb(Climber climber, double pos) {
+  public PresetClimb(Climber climber, double posL, double posR) {
     this.climber = climber;
-    this.pos = pos;
+    this.posL = posL;
+    this.posR = posR;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -25,7 +28,7 @@ public class PresetClimb extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climber.climbPOS(pos);
+    climber.climbPOS(posL, posR);
   }
 
   // Called once the command ends or is interrupted.
@@ -37,6 +40,6 @@ public class PresetClimb extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return climber.isClimbWithinError(pos, 0.1);
+    return (climber.isClimbWithinError(posL, 0.1) || climber.isClimbWithinError(posR, 0.1));
   }
 }
