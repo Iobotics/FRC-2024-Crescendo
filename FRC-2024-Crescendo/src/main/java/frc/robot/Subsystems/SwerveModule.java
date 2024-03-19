@@ -62,7 +62,6 @@ public class SwerveModule implements SwerveModuleInterface{
         integratedAngleEncoder = mAngleMotor.getEncoder();
         mAnglePID = mAngleMotor.getPIDController();
         configAngle();
-        resetToAbsolute();
 
         /* Drive Motor Config */
         mDriveMotor = new CANSparkMax(moduleConstants.driveMotorID, MotorType.kBrushless);
@@ -148,19 +147,24 @@ public class SwerveModule implements SwerveModuleInterface{
     private void setAngle(SwerveModuleState desiredState){
         Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.SwerveConstants.maxSpeed * 0.01)) ? lastAngle : desiredState.angle; //Prevent rotating module if speed is less then 1%. Prevents Jittering.
         
-        mAnglePID.setReference(angle.getRotations(), ControlType.kPosition);
+        mAnglePID.setReference(angle.getDegrees(), ControlType.kPosition);
         lastAngle = angle;
+    }
+
+    private Rotation2d getAngle(){
+        return Rotation2d.fromDegrees(Conversions.sparkToDegrees(integratedAngleEncoder.getPosition(), Constants.SwerveConstants.angleGearRatio));
     }
 
     public Rotation2d getCANcoder(){
         angleEncoder.getAbsolutePosition().refresh();
-        return Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValue());
+        return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition().getValue() * 360);
     }
 
-    public void resetToAbsolute(){
-        double absolutePosition = getCANcoder().getRotations() - angleOffset.getRotations();
+    public void resetToAbsolute(){ 
+        double absolutePosition = Conversions.degreesToSpark((getCANcoder().getDegrees() - angleOffset.getDegrees()), Constants.SwerveConstants.angleGearRatio);
         abs = absolutePosition;
-        mAnglePID.setReference(absolutePosition, ControlType.kPosition);
+        //integratedAngleEncoder.setPosition(absolutePosition);
+        //mAnglePID.setReference(absolutePosition, ControlType.kPosition);
     }
 
     public double getAbsolutePosition(){
@@ -169,15 +173,15 @@ public class SwerveModule implements SwerveModuleInterface{
 
     public SwerveModuleState getState(){
         return new SwerveModuleState(
-            Conversions.RPSToMPS(driveEncoder.getVelocity(), Constants.SwerveConstants.wheelCircumference), 
-            Rotation2d.fromRotations(integratedAngleEncoder.getPosition())
+            driveEncoder.getVelocity(), 
+            getAngle()
         );
     }
 
     public SwerveModulePosition getPosition(){
         return new SwerveModulePosition(
-            Conversions.rotationsToMeters(driveEncoder.getPosition(), Constants.SwerveConstants.wheelCircumference), 
-            Rotation2d.fromRotations(integratedAngleEncoder.getPosition())
+            driveEncoder.getPosition(), 
+            getAngle()
         );
     }
 
