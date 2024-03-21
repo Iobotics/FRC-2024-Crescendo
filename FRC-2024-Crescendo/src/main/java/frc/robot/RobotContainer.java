@@ -103,6 +103,7 @@ public class RobotContainer {
     private final Arm arm = new Arm();
     private final Extension ext = new Extension();
     private final Wrist wrist = new Wrist();
+    
     private final Roller roller = new Roller();
     private final Climber climber = new Climber();
     
@@ -111,7 +112,7 @@ public class RobotContainer {
         new MoveArm(arm, -2.2).withTimeout(3),
         new PresetWrist(wrist, 5).withTimeout(3),
         new PresetExt(ext, 1).withTimeout(3)
-    );
+    ); 
 
     // private Command SpeakerScore = new RunCommand(() ->
     //     new MoveArm(arm, -7.00)
