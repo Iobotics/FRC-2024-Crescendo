@@ -139,31 +139,31 @@ public final class Constants {
                 1);
     }
 
-    public static final class IntakeConstants{
-        public static int kUI = 17;
-        public static int kUS = 19;
-        public static int kLI = 18;
-        public static int kLS = 20;
-        public static int kRA = 16;
-        public static int kLA = 15;
+    // public static final class IntakeConstants{
+    //     public static int kUI = 17;
+    //     public static int kUS = 19;
+    //     public static int kLI = 18;
+    //     public static int kLS = 20;
+    //     public static int kRA = 16;
+    //     public static int kLA = 15;
 
-        public static double kArmGearRatio = 12;
-    }
+    //     public static double kArmGearRatio = 12;
+    // }
 
 
-    public static final class SwifferConstants{
-        public static final int kArm = 23; //please change when ready
-        public static final int kWrist = 25; //please change when ready
-        public static final int kRoller = 24; //please change when ready
+    // public static final class SwifferConstants{
+    //     public static final int kArm = 23; //please change when ready
+    //     public static final int kWrist = 25; //please change when ready
+    //     public static final int kRoller = 24; //please change when ready
 
-        public static final int kDigitalInput = 2; //please change when ready
-    }
+    //     public static final int kDigitalInput = 2; //please change when ready
+    // }
 
-    public static final class ClimberConstants{
-        public static final int kClimber1 = 21; //left
-        public static final int kClimber2 = 22; //right 
-        public static final int kCGearRatio = 18;
-    }
+    // public static final class ClimberConstants{
+    //     public static final int kClimber1 = 21; //left
+    //     public static final int kClimber2 = 22; //right 
+    //     public static final int kCGearRatio = 18;
+    // }
 
     public static final class SwerveConstants {
         public static final int pigeonID = 14;
