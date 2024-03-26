@@ -139,31 +139,31 @@ public final class Constants {
                 1);
     }
 
-    // public static final class IntakeConstants{
-    //     public static int kUI = 17;
-    //     public static int kUS = 19;
-    //     public static int kLI = 18;
-    //     public static int kLS = 20;
-    //     public static int kRA = 16;
-    //     public static int kLA = 15;
+    public static final class IntakeConstants{
+        public static int kUI = 17;
+        public static int kUS = 19;
+        public static int kLI = 18;
+        public static int kLS = 20;
+        public static int kRA = 16;
+        public static int kLA = 15;
 
-    //     public static double kArmGearRatio = 12;
-    // }
+        public static double kArmGearRatio = 12;
+    }
 
 
-    // public static final class SwifferConstants{
-    //     public static final int kArm = 23; //please change when ready
-    //     public static final int kWrist = 25; //please change when ready
-    //     public static final int kRoller = 24; //please change when ready
+    public static final class SwifferConstants{
+        public static final int kArm = 23; //please change when ready
+        public static final int kWrist = 25; //please change when ready
+        public static final int kRoller = 24; //please change when ready
 
-    //     public static final int kDigitalInput = 2; //please change when ready
-    // }
+        public static final int kDigitalInput = 2; //please change when ready
+    }
 
-    // public static final class ClimberConstants{
-    //     public static final int kClimber1 = 21; //left
-    //     public static final int kClimber2 = 22; //right 
-    //     public static final int kCGearRatio = 18;
-    // }
+    public static final class ClimberConstants{
+        public static final int kClimber1 = 21; //left
+        public static final int kClimber2 = 22; //right 
+        public static final int kCGearRatio = 18;
+    }
 
     public static final class SwerveConstants {
         public static final int pigeonID = 14;
@@ -266,8 +266,8 @@ public final class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 3;
             public static final int canCoderID = 10;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
-            public static final double CANoffsets = 0.054688;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(19.86);
+            public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = true;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
@@ -279,8 +279,8 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 11;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
-            public static final double CANoffsets = 0.046143;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(16.17);
+            public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = false;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
@@ -292,8 +292,8 @@ public final class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
-            public static final double CANoffsets = 0.371582;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(132.80);
+            public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = true;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
@@ -305,8 +305,8 @@ public final class Constants {
             public static final int driveMotorID = 8;
             public static final int angleMotorID = 9;
             public static final int canCoderID = 13;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
-            public static final double CANoffsets = 0.975342;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(351.29);
+            public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = false;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
