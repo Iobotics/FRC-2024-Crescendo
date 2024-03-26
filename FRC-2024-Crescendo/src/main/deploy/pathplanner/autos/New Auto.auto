@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 11.016976018914443,
-      "y": 6.684414386640477
+      "x": 12.0,
+      "y": 7.0
     },
-    "rotation": -179.01494766555024
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1upperNote"
+            "pathName": "1A.Middle Note"
           }
         }
       ]

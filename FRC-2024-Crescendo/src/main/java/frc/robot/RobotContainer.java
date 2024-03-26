@@ -94,7 +94,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-    //private final Vision vision = new Vision(swerve);
+    private final Vision vision = new Vision(swerve);
     // private final Intake intake = new Intake();
     // private final Shooter shooter = new Shooter();
     // private final Arm arm = new Arm();
@@ -165,9 +165,13 @@ public class RobotContainer {
 
         // NamedCommands.registerCommand("exampleCommand", subsystem.exampleCommand);
 
-        //autoChooser = AutoBuilder.buildAutoChooser();
+        // autoChooser = AutoBuilder.buildAutoChooser();
+
+        // autoChooser = AutoBuilder.buildAutoChooser("red");
         // Put the chooser on the dashboard
-        //SmartDashboard.putData("Auto Chooser", autoChooser);
+        // SmartDashboard.putData("Auto Chooser", autoChooser);
+
+        
 
         SmartDashboard.putBoolean("arm", false);
 
@@ -343,6 +347,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return autoChooser.getSelected();
+        return new PathPlannerAuto("red");
+        // return autoChooser.getSelected()
     }
 }
