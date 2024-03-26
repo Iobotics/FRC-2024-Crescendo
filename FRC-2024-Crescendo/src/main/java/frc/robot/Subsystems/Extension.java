@@ -108,7 +108,7 @@ public class Extension extends SubsystemBase{
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("ArmPos", arm.getEncoder().getPosition()); //Update arm position
+        SmartDashboard.putNumber("Ext Pos", arm.getEncoder().getPosition()); //Update arm position
     }
 
 }

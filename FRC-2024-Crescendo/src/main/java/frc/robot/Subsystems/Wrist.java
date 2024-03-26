@@ -82,7 +82,7 @@ public class Wrist extends SubsystemBase{
     }
 
     public double getWristPos(){
-        return (wristEncoder.getPosition() * 15);
+        return (wrist.getEncoder().getPosition());
     }
     
     //Preset position function
@@ -98,7 +98,7 @@ public class Wrist extends SubsystemBase{
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("WristPos", getWristPos());  //Update wrist position
+        SmartDashboard.putNumber("Wrist Pos", getWristPos());  //Update wrist position
     }
 
 }

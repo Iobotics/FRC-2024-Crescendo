@@ -162,7 +162,6 @@ public class SwerveModule implements SwerveModuleInterface{
     }
 
     public void resetToAbsolute(){ 
-        //double absolutePosition = Conversions.degreesToSpark(getCANcoder().getDegrees() - angleOffset.getDegrees(), Constants.SwerveConstants.angleGearRatio);
         double absolutePosition = getCANcoder().getDegrees() - angleOffset.getDegrees();
         abs = absolutePosition;
         integratedAngleEncoder.setPosition(absolutePosition);

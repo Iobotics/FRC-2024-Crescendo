@@ -189,11 +189,14 @@ public class RobotContainer {
 
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
 
-        mIConsume.onTrue(new SequentialCommandGroup(
-            new Intaking(intake, false, false),
-            new MoveArm(arm, -2.2),
-            new InstantCommand(() -> intake.pulse(0.5, 4)),
-            new InstantCommand(()->intake.setIntakeRaw(-0.3)).withTimeout(0.5)));
+        mIConsume.onTrue(
+            new SequentialCommandGroup(
+                new Intaking(intake, false, false),
+                new MoveArm(arm, 0),
+                new InstantCommand(() -> intake.pulse(0.5, 4)),
+                new InstantCommand(()->intake.setIntakeRaw(-0.3)).withTimeout(0.5)
+            )
+        );
 
         //mIConsume.onFalse(new InstantCommand(() -> intake.stopI())); // fight 2
 
@@ -233,7 +236,7 @@ public class RobotContainer {
 
         collapsing.onTrue(PassPos.withTimeout(2));
 
-        armIntake.onTrue(new InstantCommand(()-> arm.setArmPos(-9.6)).withTimeout(2));
+        armIntake.onTrue(new InstantCommand(()-> arm.setArmPos(-20.7)).withTimeout(2));
 
         // speaker.onTrue(SpeakerScore);
 

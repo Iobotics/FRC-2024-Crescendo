@@ -39,7 +39,7 @@ public class Arm extends SubsystemBase{
         leftArm.restoreFactoryDefaults();
 
         rightArm.setInverted(false);
-        leftArm.setInverted(true);
+        leftArm.setInverted(false);
 
         rightArm.setIdleMode(IdleMode.kBrake);
         leftArm.setIdleMode(IdleMode.kBrake);
@@ -103,7 +103,7 @@ public class Arm extends SubsystemBase{
     }
 
     public double getArmPos(){
-        return(armEncoder.getPosition() * IntakeConstants.kArmGearRatio);
+        return(rightArm.getEncoder().getPosition());
     }
 
     public void stopA(){

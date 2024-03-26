@@ -31,8 +31,8 @@ public class Intake extends SubsystemBase{
         upperIntake.restoreFactoryDefaults();
         lowerIntake.restoreFactoryDefaults();
 
-        upperIntake.setInverted(true);
-        lowerIntake.setInverted(true);
+        upperIntake.setInverted(false);
+        lowerIntake.setInverted(false);
 
         upperIntake.setIdleMode(IdleMode.kCoast);
         lowerIntake.setIdleMode(IdleMode.kCoast);

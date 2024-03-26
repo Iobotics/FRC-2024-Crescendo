@@ -266,7 +266,7 @@ public final class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 3;
             public static final int canCoderID = 10;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(19.86);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(72.68);
             public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = true;
@@ -279,7 +279,7 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 11;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(16.17);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(94.48);
             public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = false;
@@ -292,7 +292,7 @@ public final class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(132.80);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(73.04);
             public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = true;
@@ -305,7 +305,7 @@ public final class Constants {
             public static final int driveMotorID = 8;
             public static final int angleMotorID = 9;
             public static final int canCoderID = 13;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(351.29);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(345.45);
             public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = false;
