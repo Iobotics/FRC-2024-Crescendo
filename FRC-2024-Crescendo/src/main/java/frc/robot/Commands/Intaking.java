@@ -36,7 +36,7 @@ public class Intaking extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   intake.setISpeed(0.5, enabled, direction);
+   intake.setISpeed(-0.5, enabled, direction);
   }
 
   // Called once the command ends or is interrupted.

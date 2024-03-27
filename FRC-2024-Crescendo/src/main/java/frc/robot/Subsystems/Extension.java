@@ -30,18 +30,20 @@ public class Extension extends SubsystemBase{
     public Extension(){
         arm = new CANSparkMax(SwifferConstants.kArm, MotorType.kBrushless);
 
-        arm.setIdleMode(IdleMode.kBrake);
-        
         arm.restoreFactoryDefaults();
+
+        arm.setInverted(false);
+
+        arm.setIdleMode(IdleMode.kBrake);
 
         arm.setOpenLoopRampRate(1);
         arm.setClosedLoopRampRate(0);
 
         //Set up bottom limit switch for the arm
-        // armBottomLimit = arm.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
-        // arm.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, 0);
-        // arm.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-        // armBottomLimit.enableLimitSwitch(false);
+        armBottomLimit = arm.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+        // arm.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 0);
+        // arm.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        armBottomLimit.enableLimitSwitch(true);
 
         armPID = arm.getPIDController();
 
@@ -50,7 +52,7 @@ public class Extension extends SubsystemBase{
 
         arm.setSmartCurrentLimit(30);
 
-        kPArm = 4e-7; //proportional gain
+        kPArm = 1e-5; //proportional gain
         kIArm = 1e-6; //integral gain
         // kIArm = 0.0;
         kDArm = 0.0; //derivative gain
@@ -77,7 +79,7 @@ public class Extension extends SubsystemBase{
 
     //Raw speed function
     public void setPowerArm(double speed){
-        arm.set(speed);
+        arm.set(-speed);
     }
 
     //Stop function

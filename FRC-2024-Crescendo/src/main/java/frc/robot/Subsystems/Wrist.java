@@ -45,9 +45,9 @@ public class Wrist extends SubsystemBase{
 
         // ---Wrist PID and Smart Motion Setup--- //
 
-        kPWrist = 5e-5; //proportional gain
+        kPWrist = 9e-4; //proportional gain
         kIWrist = 0; //integral gain
-        kDWrist = 0.0; //derivative gain
+        kDWrist = 4e-5; //derivative gain
         kIzWrist = 0.0; //don't touch this
         kFFWrist = 0.000156; //don't touch this either
         kMaxOutputWrist = 1; //maximum power

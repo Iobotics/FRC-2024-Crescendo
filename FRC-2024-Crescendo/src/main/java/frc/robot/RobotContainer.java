@@ -85,7 +85,7 @@ public class RobotContainer {
     // private final JoystickButton climberDown = new JoystickButton(gamepad, 10);
 
 
-    private final JoystickButton mSConsume = new JoystickButton(fight, 3);
+    //private final JoystickButton mSConsume = new JoystickButton(fight, 3);
     //private final JoystickButton shooting = new JoystickButton(gamepad, 5);
     //private final JoystickButton pulse = new JoystickButton(gamepad, 2);
     // private final JoystickButton armUp = new JoystickButton(gamepad, 5);
@@ -109,9 +109,9 @@ public class RobotContainer {
     
 
     private ParallelCommandGroup PassPos = new ParallelCommandGroup(
-        new MoveArm(arm, -2.2).withTimeout(3),
-        new PresetWrist(wrist, 5).withTimeout(3),
-        new PresetExt(ext, 1).withTimeout(3)
+        new MoveArm(arm, -2.0).withTimeout(3),
+        new PresetWrist(wrist, 0.9).withTimeout(3),
+        new PresetExt(ext,0).withTimeout(3)
     ); 
 
     // private Command SpeakerScore = new RunCommand(() ->
@@ -119,8 +119,8 @@ public class RobotContainer {
     // );
 
     private ParallelCommandGroup AmpScore = new ParallelCommandGroup(
-        new PresetExt(ext, 14).withTimeout(3),
-        new PresetWrist(wrist, 25).withTimeout(3)
+        new PresetExt(ext, -30).withTimeout(3),
+        new PresetWrist(wrist, 25.9).withTimeout(3)
     );
 
     private ParallelCommandGroup TrapScore = new ParallelCommandGroup(
@@ -193,21 +193,36 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new Intaking(intake, false, false),
                 new MoveArm(arm, 0),
-                new InstantCommand(() -> intake.pulse(0.5, 4)),
-                new InstantCommand(()->intake.setIntakeRaw(-0.3)).withTimeout(0.5)
+                new InstantCommand(() -> intake.pulse(-0.5, 4))
             )
         );
 
         //mIConsume.onFalse(new InstantCommand(() -> intake.stopI())); // fight 2
 
-        mSConsume.onTrue(new InstantCommand(() -> shooter.setSSpeed(0.25)));
-        mSConsume.onFalse(new InstantCommand(() -> shooter.stopS()));
+        // mSConsume.onTrue(new InstantCommand(() -> shooter.setSSpeed(0.25)));
+        // mSConsume.onFalse(new InstantCommand(() -> shooter.stopS()));
 
-        mIEject.onTrue(new InstantCommand(() -> intake.setISpeed(0.25, false, false)));
-        mIEject.onFalse(new InstantCommand(() -> intake.stopI())); // fight 4
+        mIEject.onTrue(new InstantCommand(() -> 
+            //intake.setISpeed(0.25, false, false)
+            ext.setPowerArm(0.25)
+            //wrist.setPowerWrist(0.25)
+            ));
+        mIEject.onFalse(new InstantCommand(() -> 
+            //intake.stopI()
+            ext.stopArm()
+            //wrist.stopWrist()
+        )); // fight 4
 
-        mSEject.onTrue(new InstantCommand(() -> shooter.setSSpeed(-1.0))); // fight 1
-        mSEject.onFalse(new InstantCommand(() -> shooter.stopS()));
+        mSEject.onTrue(new InstantCommand(() -> 
+            // shooter.setSSpeed(-1.0)
+            ext.setPowerArm(-0.25)
+            //wrist.setPowerWrist(-0.25)
+        )); // fight 1
+        mSEject.onFalse(new InstantCommand(() -> 
+            //shooter.stopS()
+            ext.stopArm()
+            //wrist.stopWrist()
+        ));
 
         pass.onTrue(new Passing(intake, roller, shooter)); // fight 6
         pass.onFalse(new ParallelCommandGroup(
@@ -254,23 +269,23 @@ public class RobotContainer {
         // climberUp.onTrue(ClimberUp);
         // climberDown.onTrue(ClimberDown);
 
-        new JoystickButton(fight, 9).whileTrue(
-            new RunCommand(()->ext.setPowerArm(-fight.getY())));
+        // new JoystickButton(fight, 9).whileTrue(
+        //     new RunCommand(()->ext.setPowerArm(-fight.getY())));
                  
-        new JoystickButton(fight, 9).onFalse(
-            new InstantCommand(()->ext.stopArm(), ext)); 
+        // new JoystickButton(fight, 9).onFalse(
+        //     new InstantCommand(()->ext.stopArm(), ext)); 
 
         // new JoystickButton(fight, 10).whileTrue(
         //    new PresetWrist(wrist, 2.4));
 
-        new JoystickButton(fight, 10).whileTrue(
-            //new InstantCommand(()->ext.presetArm(13))
-            //AmpScore
-            new RunCommand(() -> wrist.setPowerWrist(fight.getY()/5), wrist)
-        );
-        new JoystickButton(fight, 10).onFalse(
-            new InstantCommand(() -> wrist.setPowerWrist(0), wrist)
-        );
+        // new JoystickButton(fight, 10).whileTrue(
+        //     //new InstantCommand(()->ext.presetArm(13))
+        //     //AmpScore
+        //     new RunCommand(() -> wrist.setPowerWrist(fight.getY()/5), wrist)
+        // );
+        // new JoystickButton(fight, 10).onFalse(
+        //     new InstantCommand(() -> wrist.setPowerWrist(0), wrist)
+        // );
                  
         // new JoystickButton(fight, 10).onFalse(
         //     new InstantCommand(()->ext.stopArm(), ext)); 
@@ -281,7 +296,7 @@ public class RobotContainer {
         // new JoystickButton(swifferGamepad, 4).onTrue(
         //     new PresetArm(ext, -20));
 
-        rollerShoot.onTrue(new RunCommand(()->roller.setPowerRoller(-0.75, false), roller));
+        rollerShoot.onTrue(new RunCommand(()->roller.setPowerRoller(-1, false), roller));
 
         rollerShoot.onFalse(new RunCommand(()->roller.stopRoller(), roller));
 

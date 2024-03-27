@@ -32,7 +32,7 @@ public class Passing extends ParallelCommandGroup {
     addCommands(
       new InstantCommand(() -> roller.setPowerRoller(-0.5, true)),
       new InstantCommand(() -> shooter.setSSpeed(-0.3)),
-      new InstantCommand(() -> intake.setISpeed(0.6, false, false))  
+      new InstantCommand(() -> intake.setISpeed(-0.6, false, false))  
     );
   }
 }

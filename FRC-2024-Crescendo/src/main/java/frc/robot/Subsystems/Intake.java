@@ -26,13 +26,12 @@ public class Intake extends SubsystemBase{
         upperIntake = new CANSparkMax(Constants.IntakeConstants.kUI, MotorType.kBrushless);
         lowerIntake = new CANSparkMax(Constants.IntakeConstants.kLI, MotorType.kBrushless);
         optical1 = new DigitalInput(0);
-        optical2 = new DigitalInput(1);
 
         upperIntake.restoreFactoryDefaults();
         lowerIntake.restoreFactoryDefaults();
 
-        upperIntake.setInverted(false);
-        lowerIntake.setInverted(false);
+        upperIntake.setInverted(true);
+        lowerIntake.setInverted(true);
 
         upperIntake.setIdleMode(IdleMode.kCoast);
         lowerIntake.setIdleMode(IdleMode.kCoast);
@@ -73,6 +72,10 @@ public class Intake extends SubsystemBase{
                 // upperIntake.set(0);
                 // Timer.delay(0.225);
             }
+            lowerIntake.set(-power/3);
+            upperIntake.set(-power/3);
+            Timer.delay(0.05);
+            stopI();
         });
     }
 
@@ -83,12 +86,7 @@ public class Intake extends SubsystemBase{
     }
 
     public boolean optic(){
-        if(optical1.get() == true && optical2.get() == true){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return optical1.get();
     }
 
     public void setIntakeRaw(double speed){

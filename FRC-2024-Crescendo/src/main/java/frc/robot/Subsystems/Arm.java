@@ -52,7 +52,7 @@ public class Arm extends SubsystemBase{
         // PID coefficients
         kP = 4e-2; 
         kI = 4e-5;
-        kD = 0; 
+        kD = 4e-5; 
         kIz = 0; 
         kFF = 0.000156; 
         kMaxOutput = 1; 
