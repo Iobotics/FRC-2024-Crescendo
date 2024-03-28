@@ -13,6 +13,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,7 +32,7 @@ public class Vision extends SubsystemBase{
     public double latestAngle;
 
     private AprilTagFieldLayout aprilTagFieldLayout;
-    public final PhotonPoseEstimator photonPoseEstimator;
+    public final PhotonPoseEstimator swifferPoseEstimator;
     // private final Field2d m_field = new Field2d();
     private Swerve swerve;
     private EstimatedRobotPose latestEstimatedPose;
@@ -41,20 +42,21 @@ public class Vision extends SubsystemBase{
         this.swifferCamera = new PhotonCamera(VisionConstants.kFrontCameraName);
         this.intakeCamera = new PhotonCamera(VisionConstants.kIntakeCameraName);
         aprilTagFieldLayout = VisionConstants.k2024CrescendoTagField;
-        photonPoseEstimator = new PhotonPoseEstimator(
+        swifferPoseEstimator = new PhotonPoseEstimator(
             aprilTagFieldLayout, 
-            PoseStrategy.LOWEST_AMBIGUITY, 
+            PoseStrategy.CLOSEST_TO_LAST_POSE, 
             swifferCamera, 
-            VisionConstants.kRobotToCam);
+            VisionConstants.kRobotToSwifferCam);
+
 
         this.intakeCameraPipeline = 0;
-        
+        swifferPoseEstimator.setLastPose(new Pose2d(15.2,5.5,new Rotation2d(Math.toRadians(180))));
     } 
 
     public Optional<EstimatedRobotPose> getEstimatedRobotPose() {
         var result = this.swifferCamera.getLatestResult();
         if (result.hasTargets()) {
-            var latestPose = photonPoseEstimator.update(result);
+            var latestPose = swifferPoseEstimator.update(result);
             if (latestPose.isPresent()) {
                 this.latestEstimatedPose = latestPose.get();
             }
@@ -97,12 +99,11 @@ public class Vision extends SubsystemBase{
 
         if (result.hasTargets()) {
             var target = result.getBestTarget();
-            Pose3d bestEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToCam);
+            Pose3d bestEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToSwifferCam);
             // Pose3d altEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getAlternateCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToCam);
             
             this.latestAngle = bestEstimate.toPose2d().getRotation().getDegrees();
-            SmartDashboard.putNumber("latestEstAngle", this.latestAngle);
-            var estimatedPose = photonPoseEstimator.update(result);
+            var estimatedPose = swifferPoseEstimator.update(result);
         
             if (estimatedPose.isPresent() && this.swifferCamera.getLatestResult().hasTargets() && !DriverStation.isAutonomousEnabled()){
                 swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);

@@ -31,6 +31,10 @@ public class Shooter extends SubsystemBase{
         upperShoot.setIdleMode(IdleMode.kCoast);
         lowerShoot.setIdleMode(IdleMode.kCoast);
 
+        upperShoot.setOpenLoopRampRate(0.1);
+        lowerShoot.setOpenLoopRampRate(0.1);
+
+
         upperShoot.burnFlash();
         lowerShoot.burnFlash();
     }

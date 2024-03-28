@@ -93,7 +93,6 @@ public class RobotContainer {
     private final JoystickButton climberUnlock = new JoystickButton(fight, 5); //l1
 
 
-
     //private final JoystickButton mSConsume = new JoystickButton(fight, 3);
     //private final JoystickButton shooting = new JoystickButton(gamepad, 5);
     //private final JoystickButton pulse = new JoystickButton(gamepad, 2);
@@ -210,10 +209,12 @@ public class RobotContainer {
 
         mIConsume.onTrue(
             new SequentialCommandGroup(
+                new InstantCommand(() -> shooter.setSSpeed(0.01)),
                 new Intaking(intake, false, false),
                 new ParallelCommandGroup(
                     new MoveArm(arm, 0),
-                    new InstantCommand(() -> intake.pulse(-0.5, 4))
+                    new InstantCommand(() -> intake.pulse(-0.5, 4)),
+                    new InstantCommand(() -> shooter.stopS())
                 )
             )
         );

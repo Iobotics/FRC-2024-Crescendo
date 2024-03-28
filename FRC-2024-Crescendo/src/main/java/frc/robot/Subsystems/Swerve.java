@@ -254,11 +254,23 @@ public class Swerve extends SubsystemBase {
         double shootingAngle = 0;
         Pose2d poseToSpeaker = getPoseToSpeaker();
         double distanceToSpeaker = Math.hypot(poseToSpeaker.getX(),poseToSpeaker.getY());
-        if (distanceToSpeaker < 2.0) {
-            shootingAngle = 2.0*(distanceToSpeaker-0.8)-9.0;
+        if (distanceToSpeaker < 1.0) {
+            shootingAngle = 4.0*(distanceToSpeaker-0.7)-22.0;
+        } 
+        else if (distanceToSpeaker < 1.5) {
+            shootingAngle = 4.8*(distanceToSpeaker-0.7)-22.0;
+        }
+        else if (distanceToSpeaker < 2.0) {
+            shootingAngle = 4.4*(distanceToSpeaker-0.7)-22.0;
+        }
+        else if (distanceToSpeaker < 3.0) {
+            shootingAngle = 3.3*(distanceToSpeaker-0.7)-22.0;
+        }
+        else if (distanceToSpeaker < 3.5) {
+            shootingAngle = 2.8*(distanceToSpeaker-0.7)-22.0;
         }
         else {
-            shootingAngle = 1.3*(distanceToSpeaker-0.8)-9.0;
+            shootingAngle = 2.6*(distanceToSpeaker-0.7)-22.0;
         }
         /*
          * 0.8, -9
