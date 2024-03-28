@@ -4,8 +4,6 @@
 
 package frc.robot.Subsystems;
 
-import java.lang.Character.Subset;
-
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
