@@ -6,7 +6,6 @@ package frc.robot;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -119,6 +118,7 @@ public final class Constants {
          * meters.
          */
 
+        @SuppressWarnings("removal")
         public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
         .fill(
             0.1, // x
@@ -132,6 +132,7 @@ public final class Constants {
          * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
          * radians.
          */
+        @SuppressWarnings("removal")
         public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
             .fill(
                 1, // x

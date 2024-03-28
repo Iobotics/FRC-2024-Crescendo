@@ -1,15 +1,8 @@
 package frc.robot;
 
-import java.util.Optional;
-import java.util.function.DoubleSupplier;
-
-import javax.management.InstanceAlreadyExistsException;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,7 +32,6 @@ import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Swerve;
 import frc.robot.Subsystems.Vision;
 import frc.robot.Subsystems.Wrist;
-import pabeles.concurrency.ConcurrencyOps.NewInstance;
 
 
 public class RobotContainer {
@@ -48,7 +40,6 @@ public class RobotContainer {
     /* Controllers */
     private final Joystick joystick1 = new Joystick(OIConstants.kJoystick1);
     private final Joystick joystick2 = new Joystick(OIConstants.kJoystick2);
-    private final Joystick swifferGamepad = new Joystick(OIConstants.kSwifferGamepad);
     private final Joystick gamepad = new Joystick(OIConstants.kGamepad);
     private final Joystick fight = new Joystick(OIConstants.kFight);
 
@@ -91,7 +82,6 @@ public class RobotContainer {
     private final JoystickButton climberRDown = new JoystickButton(fight, 3); //red
     private final JoystickButton climberLock = new JoystickButton(fight, 6); //r1
     private final JoystickButton climberUnlock = new JoystickButton(fight, 5); //l1
-
 
 
     //private final JoystickButton mSConsume = new JoystickButton(fight, 3);
