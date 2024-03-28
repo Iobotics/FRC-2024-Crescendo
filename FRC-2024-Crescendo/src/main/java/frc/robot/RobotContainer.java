@@ -59,6 +59,9 @@ public class RobotContainer {
     private final JoystickButton armIntake = new JoystickButton(joystick2, 1);
     private final JoystickButton mIConsume = new JoystickButton(joystick2, 3);
     private final JoystickButton resetWheels = new JoystickButton(joystick1, 6);
+
+    private final JoystickButton cancelAutoSwerveCommands = new JoystickButton(joystick1, 5);
+
     //private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
     //private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
     //private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
@@ -133,6 +136,9 @@ public class RobotContainer {
             new Intaking(intake, false, false)),
             new MoveArm(arm, 0),
             new InstantCommand(() -> intake.pulse(-0.5, 4)));
+
+
+
     // private ParallelCommandGroup ClimberUp = new ParallelCommandGroup(
     //     new SequentialCommandGroup(
     //         new InstantCommand(()->climber.unlock()),
@@ -197,6 +203,8 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
 
         autoIntakeNote.onTrue(AutoNotePickup);
+
+        cancelAutoSwerveCommands.onTrue(new InstantCommand(()->AutoNotePickup.cancel()));
 
         mIConsume.onTrue(
             new SequentialCommandGroup(
@@ -269,6 +277,7 @@ public class RobotContainer {
         // speaker.onTrue(SpeakerScore);
 
         alignSpeaker.whileTrue(new ParallelCommandGroup(
+            new PresetWrist(wrist,-50.0).withTimeout(2),
             new InstantCommand(() -> teleopRotationOverride.run()),
             new InstantCommand(()->arm.setArmPos(swerve.getShootingAngle()))));
         alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));

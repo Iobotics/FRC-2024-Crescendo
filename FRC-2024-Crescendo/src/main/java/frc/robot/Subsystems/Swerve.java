@@ -267,6 +267,8 @@ public class Swerve extends SubsystemBase {
         else {
             shootingAngle = 2.6*(distanceToSpeaker-0.7)-22.0;
         }
+
+        shootingAngle = (-1.5*Math.pow(distanceToSpeaker/2.8 - 3,2)) - 10;
         /*
          * 0.8, -9
          * 2.79240671479449, -6.409871270767164 too high, 
