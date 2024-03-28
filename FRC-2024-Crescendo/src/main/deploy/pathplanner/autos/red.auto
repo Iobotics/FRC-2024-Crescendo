@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 11.016976018914443,
-      "y": 6.684414386640477
+      "x": 15.2,
+      "y": 5.5
     },
-    "rotation": -179.01494766555024
+    "rotation": 179.53072561665368
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Java"
+            "pathName": "New Path"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoIntakeNote"
           }
         }
       ]

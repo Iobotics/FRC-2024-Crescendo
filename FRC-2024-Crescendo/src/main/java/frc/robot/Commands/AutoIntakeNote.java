@@ -27,8 +27,8 @@ public class AutoIntakeNote extends Command{
         this.intake = intake;
         // this.arm = arm;
 
-        this.translationController = new PIDController(0.4, 0, 0);
-        this.strafeController = new PIDController(0.2, 0, 0);
+        this.translationController = new PIDController(0.2, 0, 0);
+        this.strafeController = new PIDController(0.1, 0, 0);
         
         addRequirements(swerve);
         // -10 pitch 

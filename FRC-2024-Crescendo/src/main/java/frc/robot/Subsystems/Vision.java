@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class Vision extends SubsystemBase{
@@ -47,6 +48,7 @@ public class Vision extends SubsystemBase{
             VisionConstants.kRobotToCam);
 
         this.intakeCameraPipeline = 0;
+        
     } 
 
     public Optional<EstimatedRobotPose> getEstimatedRobotPose() {
@@ -102,7 +104,7 @@ public class Vision extends SubsystemBase{
             SmartDashboard.putNumber("latestEstAngle", this.latestAngle);
             var estimatedPose = photonPoseEstimator.update(result);
         
-            if (estimatedPose.isPresent() && this.swifferCamera.getLatestResult().hasTargets()){
+            if (estimatedPose.isPresent() && this.swifferCamera.getLatestResult().hasTargets() && !DriverStation.isAutonomousEnabled()){
                 swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);
             }
         }   

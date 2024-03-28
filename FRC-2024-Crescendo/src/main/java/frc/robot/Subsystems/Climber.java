@@ -40,8 +40,10 @@ public class Climber extends SubsystemBase {
     climber2 = new CANSparkMax(ClimberConstants.kClimber2, MotorType.kBrushless);
     climber2.restoreFactoryDefaults();
 
-    servo1 = new Servo(2);
+    servo1 = new Servo(0);
     servo2 = new Servo(1);
+
+    
 
     climber1.setInverted(false);
     climber2.setInverted(true);
@@ -101,7 +103,7 @@ public class Climber extends SubsystemBase {
 }
 
   public void setPower(double speed){
-    climber1.set(-speed);
+    climber1.set(speed);
     climber2.set(speed);
   }
 
@@ -126,14 +128,19 @@ public class Climber extends SubsystemBase {
     climber2.set(0);
   }
 
+  public void zeroRatchets() {
+    servo1.set(1500);
+    servo2.set(1500);
+  }
+
   public void lock(){
-    servo1.setPulseTimeMicroseconds(1475);
-    servo2.setPulseTimeMicroseconds(1525);
+    servo1.setPulseTimeMicroseconds(1625);
+    servo2.setPulseTimeMicroseconds(1375);
   }
 
   public void unlock(){
-    servo1.setPulseTimeMicroseconds(1600); //L
-    servo2.setPulseTimeMicroseconds(1400); //R
+    servo1.setPulseTimeMicroseconds(1500); //L
+    servo2.setPulseTimeMicroseconds(1500); //R
   }
 
   @Override

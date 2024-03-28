@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.concurrent.CompletableFuture;
@@ -96,6 +97,7 @@ public class Intake extends SubsystemBase{
 
     @Override
     public void periodic(){
+        SmartDashboard.putBoolean("NOTE", !optic());
     }
     
 }
