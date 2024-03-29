@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,6 +23,7 @@ public class Arm extends SubsystemBase{
     private SparkPIDController rAPID;
     private SparkPIDController lAPID;
 
+
     public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
 
     public Arm(){
@@ -32,6 +34,9 @@ public class Arm extends SubsystemBase{
         //Reset sparkmaxes
         rightArm.restoreFactoryDefaults();
         leftArm.restoreFactoryDefaults();
+
+        rightArm.setSmartCurrentLimit(45);
+        leftArm.setSmartCurrentLimit(45);
 
         //Direction
         rightArm.setInverted(false);
@@ -50,18 +55,18 @@ public class Arm extends SubsystemBase{
         leftArm.setClosedLoopRampRate(0);
 
         // PID coefficients
-        kP = 8e-2; 
+        kP = 4e-2; 
         kI = 4e-5;
         kD = 4e-5; 
         kIz = 0; 
-        kFF = 0.000156; 
+        kFF = 0.012; 
         kMaxOutput = 1; 
         kMinOutput = -1;
         maxRPM = 5700;
 
         // Smart Motion Coefficients
-        maxVel = 2000; // rpm
-        maxAcc = 1500;
+        maxVel = 1900; // rpm
+        maxAcc = 1400;
 
         //configure each PID object to it's correct controller
         rAPID = rightArm.getPIDController();

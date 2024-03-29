@@ -80,7 +80,7 @@ public class Intake extends SubsystemBase{
             }
             lowerIntake.set(-power/3);
             upperIntake.set(-power/3);
-            Timer.delay(0.05);
+            Timer.delay(0.1);
             stopI();
         });
     }

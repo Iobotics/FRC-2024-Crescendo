@@ -256,13 +256,13 @@ public class Swerve extends SubsystemBase {
             shootingAngle = 4.8*(distanceToSpeaker-0.7)-22.0;
         }
         else if (distanceToSpeaker < 2.0) {
-            shootingAngle = 4.5*(distanceToSpeaker-0.7)-22.0;
+            shootingAngle = 4.6*(distanceToSpeaker-0.7)-22.0;
         }
         else if (distanceToSpeaker < 2.5) {
             shootingAngle = 4.3*(distanceToSpeaker-0.7)-22.0;
         }
         else if (distanceToSpeaker < 3.0) {
-            shootingAngle = 3.7*(distanceToSpeaker-0.7)-22.0;
+            shootingAngle = 4.1*(distanceToSpeaker-0.7)-22.0;
         }
         else if (distanceToSpeaker < 3.5) {
             shootingAngle = 3.5*(distanceToSpeaker-0.7)-22.0;
