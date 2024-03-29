@@ -58,7 +58,7 @@ public class RobotContainer {
 
     /* Driver Buttons */
     private final JoystickButton alignAmp = new JoystickButton(joystick1, 1);
-    private final JoystickButton zeroGyro = new JoystickButton(joystick1, 8);
+    private final JoystickButton zeroGyro = new JoystickButton(gamepad, 10);
 
     private final JoystickButton armIntake = new JoystickButton(joystick2, 1);
     private final JoystickButton alignSpeaker = new JoystickButton(joystick2, 2);
@@ -146,9 +146,9 @@ public class RobotContainer {
     
     TeleopSwerve teleopSwerve = new TeleopSwerve(
                 swerve, 
-                () -> -joystick1.getRawAxis(translationAxis), 
-                () -> -joystick1.getRawAxis(strafeAxis), 
-                () -> -joystick2.getRawAxis(rotationAxis), 
+                () -> -gamepad.getRawAxis(1), 
+                () -> -gamepad.getRawAxis(0), 
+                () -> -gamepad.getRawAxis(4), 
                 () -> false,
                 scalar
             );
@@ -164,7 +164,7 @@ public class RobotContainer {
         //arm.setDefaultCommand(new InstantCommand(() -> arm.brake(), arm));
 
         // NamedCommands.registerCommand("exampleCommand", subsystem.exampleCommand);
-
+        // NamedCommands.registerCommand("pickup", Pickup);
         //autoChooser = AutoBuilder.buildAutoChooser();
         // Put the chooser on the dashboard
         //SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -343,6 +343,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return autoChooser.getSelected();
+        return new PathPlannerAuto("Penguino");
+        // return autoChooser.getSelected();
     }
 }
