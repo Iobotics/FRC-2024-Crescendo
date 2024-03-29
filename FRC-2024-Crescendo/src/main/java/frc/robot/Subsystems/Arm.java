@@ -8,9 +8,10 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
@@ -59,7 +60,7 @@ public class Arm extends SubsystemBase{
         kI = 4e-5;
         kD = 4e-5; 
         kIz = 0; 
-        kFF = 0.012; 
+        kFF = 0.05; 
         kMaxOutput = 1; 
         kMinOutput = -1;
         maxRPM = 5700;
@@ -112,6 +113,10 @@ public class Arm extends SubsystemBase{
     public void setArmPos(double pos){
         rAPID.setReference(pos, ControlType.kPosition);
         lAPID.setReference(pos, ControlType.kPosition);
+    }
+
+    public void setArmPos(Supplier<Double> posSupplier){
+        setArmPos(posSupplier.get());
     }
 
     //returns encoder value
