@@ -42,7 +42,7 @@ public class Roller extends SubsystemBase{
             do{
             roller.set(speed);
             }while(isNoteDetected() == true);
-            Timer.delay(1);
+            Timer.delay(0.2);
             stopRoller();
         });
         }

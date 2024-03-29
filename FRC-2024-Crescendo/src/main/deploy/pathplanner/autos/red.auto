@@ -22,6 +22,18 @@
           "data": {
             "name": "AutoIntakeNote"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoSpeakerScore"
+          }
         }
       ]
     }

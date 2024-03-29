@@ -70,8 +70,8 @@ public class Swerve extends SubsystemBase {
             this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(2.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(3.0, 0.0, 0.0), // Rotation PID constants
+                    new PIDConstants(8.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(6.0, 0.0, 0.0), // Rotation PID constants
                     4.0, // Max module speed, in m/s
                     0.37268062902, // Drive base radius in meters. Distance from robot center to furthest module.
                     new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -256,19 +256,25 @@ public class Swerve extends SubsystemBase {
             shootingAngle = 4.8*(distanceToSpeaker-0.7)-22.0;
         }
         else if (distanceToSpeaker < 2.0) {
-            shootingAngle = 4.4*(distanceToSpeaker-0.7)-22.0;
+            shootingAngle = 4.5*(distanceToSpeaker-0.7)-22.0;
+        }
+        else if (distanceToSpeaker < 2.5) {
+            shootingAngle = 4.3*(distanceToSpeaker-0.7)-22.0;
         }
         else if (distanceToSpeaker < 3.0) {
-            shootingAngle = 3.3*(distanceToSpeaker-0.7)-22.0;
+            shootingAngle = 3.7*(distanceToSpeaker-0.7)-22.0;
         }
         else if (distanceToSpeaker < 3.5) {
-            shootingAngle = 2.8*(distanceToSpeaker-0.7)-22.0;
+            shootingAngle = 3.5*(distanceToSpeaker-0.7)-22.0;
+        }
+        else if (distanceToSpeaker < 4.0) {
+            shootingAngle = 3.3*(distanceToSpeaker-0.7)-22.0;
         }
         else {
-            shootingAngle = 2.6*(distanceToSpeaker-0.7)-22.0;
+            shootingAngle = (-1.5*Math.pow(distanceToSpeaker/2.8 - 3,2)) - 10;
         }
 
-        shootingAngle = (-1.5*Math.pow(distanceToSpeaker/2.8 - 3,2)) - 10;
+        // shootingAngle = (-1.5*Math.pow(distanceToSpeaker/2.8 - 3,2)) - 10;
         /*
          * 0.8, -9
          * 2.79240671479449, -6.409871270767164 too high, 

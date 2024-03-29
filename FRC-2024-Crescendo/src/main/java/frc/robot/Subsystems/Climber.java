@@ -80,8 +80,8 @@ public class Climber extends SubsystemBase {
     climb2P.setFeedbackDevice(climber2E);
 
    //assigns limit switches to climbers
-    climber1LS = climber1.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
-    climber2LS = climber2.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
+    climber1LS = climber1.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    climber2LS = climber2.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
    
     //enables limit switch
     climber1LS.enableLimitSwitch(true);

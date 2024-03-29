@@ -1,6 +1,9 @@
 package frc.robot;
 
+import java.time.Instant;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -11,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Commands.AutoIntakeNote;
@@ -85,6 +89,9 @@ public class RobotContainer {
     private final JoystickButton climberRDown = new JoystickButton(fight, 3); //red
     private final JoystickButton climberLock = new JoystickButton(fight, 6); //r1
     private final JoystickButton climberUnlock = new JoystickButton(fight, 5); //l1
+    private final JoystickButton manualRollerOut = new JoystickButton(fight, 8);
+    private final JoystickButton manualWristOut = new JoystickButton(fight, 9);
+    private final JoystickButton manualWristIn = new JoystickButton(fight, 10);
 
 
     //private final JoystickButton mSConsume = new JoystickButton(fight, 3);
@@ -132,10 +139,19 @@ public class RobotContainer {
 
     private SequentialCommandGroup AutoNotePickup = new SequentialCommandGroup(
             new InstantCommand(()-> arm.setArmPos(-21.2)).withTimeout(2),
-            new ParallelCommandGroup(new AutoIntakeNote(vision.intakeCamera,swerve,intake), 
+            new ParallelCommandGroup(new AutoIntakeNote(vision,swerve,intake), 
             new Intaking(intake, false, false)),
             new MoveArm(arm, 0),
             new InstantCommand(() -> intake.pulse(-0.5, 4)));
+
+    private SequentialCommandGroup AutoSpeakerScore = new SequentialCommandGroup(
+        new InstantCommand(() -> shooter.setSSpeed(-1.0)),
+        new RunCommand(()->arm.setArmPos(swerve.getShootingAngle())).withTimeout(1.5),
+        new WaitCommand(1.0),
+        new InstantCommand(() -> intake.setISpeed(-0.25, false, false)),
+        new InstantCommand(() -> shooter.stopS()),
+        new InstantCommand(() -> intake.stopI())
+    );
 
 
 
@@ -179,6 +195,8 @@ public class RobotContainer {
         arm.setDefaultCommand(new InstantCommand(() -> arm.brake(), arm));
 
         // NamedCommands.registerCommand("exampleCommand", subsystem.exampleCommand);
+        NamedCommands.registerCommand("AutoIntakeNote", AutoNotePickup);
+        NamedCommands.registerCommand("AutoSpeakerScore", AutoSpeakerScore);
 
         autoChooser = AutoBuilder.buildAutoChooser();
         // Put the chooser on the dashboard
@@ -205,6 +223,15 @@ public class RobotContainer {
         autoIntakeNote.onTrue(AutoNotePickup);
 
         cancelAutoSwerveCommands.onTrue(new InstantCommand(()->AutoNotePickup.cancel()));
+
+        manualRollerOut.onTrue(new RunCommand(()->roller.setPowerRoller(-1.0,false),roller));
+        manualRollerOut.onFalse(new RunCommand(()->roller.stopRoller(),roller));
+
+        manualWristIn.onTrue(new InstantCommand(()->wrist.setPowerWrist(0.4)));
+        manualWristIn.onFalse(new InstantCommand(()->wrist.stopWrist()));
+
+        manualWristOut.onTrue(new InstantCommand(()->wrist.setPowerWrist(-0.4)));
+        manualWristOut.onFalse(new InstantCommand(()->wrist.stopWrist()));
 
         mIConsume.onTrue(
             new SequentialCommandGroup(
@@ -277,7 +304,7 @@ public class RobotContainer {
         // speaker.onTrue(SpeakerScore);
 
         alignSpeaker.whileTrue(new ParallelCommandGroup(
-            new PresetWrist(wrist,-50.0).withTimeout(2),
+            new PresetWrist(wrist,50.0).withTimeout(2),
             new InstantCommand(() -> teleopRotationOverride.run()),
             new InstantCommand(()->arm.setArmPos(swerve.getShootingAngle()))));
         alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));

@@ -50,7 +50,7 @@ public class Arm extends SubsystemBase{
         leftArm.setClosedLoopRampRate(0);
 
         // PID coefficients
-        kP = 4e-2; 
+        kP = 8e-2; 
         kI = 4e-5;
         kD = 4e-5; 
         kIz = 0; 
