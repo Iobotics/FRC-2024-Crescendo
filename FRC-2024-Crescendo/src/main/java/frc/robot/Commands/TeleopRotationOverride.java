@@ -37,6 +37,11 @@ public class TeleopRotationOverride {
         return overrideTeleop;
     }
 
+    public void setOverride(Supplier<Double> overrideSupplier) {
+        this.targetRotation = overrideSupplier;
+
+    }
+
     public double getRotation() {
         return MathUtil.clamp(Math.toRadians(rotationController.calculate(swerve.getEstYaw(),targetRotation.get())),-1.0,1.0);
     }

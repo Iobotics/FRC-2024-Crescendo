@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.time.Instant;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -144,7 +146,7 @@ public class RobotContainer {
     );
 
     private SequentialCommandGroup AutoNotePickup = new SequentialCommandGroup(
-            new InstantCommand(()-> arm.setArmPos(-21.2)).withTimeout(2),
+            new InstantCommand(()-> arm.setArmPos(-20.8)).withTimeout(2),
             new ParallelCommandGroup(new AutoIntakeNote(vision,swerve,intake), 
             new Intaking(intake, false, false)),
             new MoveArm(arm, 0),
@@ -206,9 +208,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoIntakeNote", AutoNotePickup);
         NamedCommands.registerCommand("AutoSpeakerScore", AutoSpeakerScore);
 
-        autoChooser = AutoBuilder.buildAutoChooser();
+        // autoChooser = AutoBuilder.buildAutoChooser();
         // Put the chooser on the dashboard
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+        // SmartDashboard.putData("Auto Chooser", autoChooser);
 
         SmartDashboard.putBoolean("arm", false);
 
@@ -246,7 +248,7 @@ public class RobotContainer {
 
         mIConsume.onTrue(
             new SequentialCommandGroup(
-                new InstantCommand(()-> arm.setArmPos(-21.4)).withTimeout(2),
+                new InstantCommand(()-> arm.setArmPos(-20.8)).withTimeout(2),
                 new InstantCommand(() -> shooter.setSSpeed(0.01)),
                 new Intaking(intake, false, false),
                 new ParallelCommandGroup(
@@ -313,13 +315,19 @@ public class RobotContainer {
 
         collapsing.onTrue(PassPos.withTimeout(2));
 
-        armIntake.onTrue(new InstantCommand(()-> arm.setArmPos(-21.4)).withTimeout(2)); //-21.4
+        armIntake.onTrue(new InstantCommand(()-> arm.setArmPos(-20.8)).withTimeout(2)); //-21.4
 
         // speaker.onTrue(SpeakerScore);
 
+        // alignSpeaker.whileTrue(new ParallelCommandGroup(
+        //     new InstantCommand(() -> teleopRotationOverride.run()),
+        //     new InstantCommand(() -> arm.setSupplier(swerve::getShootingAngle)),
+        //     new InstantCommand(()->arm.setArmFollow())));
+
         alignSpeaker.whileTrue(new ParallelCommandGroup(
             new InstantCommand(() -> teleopRotationOverride.run()),
-            new InstantCommand(()->arm.setArmPos(()->swerve.getShootingAngle()))));
+            new InstantCommand(() -> arm.setArmPos(swerve.getShootingAngle()))
+        ));
         alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
 
         ampScore.onTrue(AmpScore);
@@ -446,6 +454,12 @@ public class RobotContainer {
 
         // new JoystickButton(joystick1, 7).onTrue(
         //     new PresetClimb(climber, 1));
+
+        new JoystickButton(gamepad,7).onTrue(
+            new MoveArm(arm,0.0));
+        
+        new JoystickButton(gamepad,8).onTrue(
+            new MoveArm(arm, -21.0));
     }
 
     public Command getAutonomousCommand() {

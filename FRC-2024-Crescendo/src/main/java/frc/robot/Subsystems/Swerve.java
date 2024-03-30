@@ -250,7 +250,7 @@ public class Swerve extends SubsystemBase {
         Pose2d poseToSpeaker = getPoseToSpeaker();
         double distanceToSpeaker = Math.hypot(poseToSpeaker.getX(),poseToSpeaker.getY());
         if (distanceToSpeaker < 1.0) {
-            shootingAngle = 4.0*(distanceToSpeaker-0.7)-22.0;
+            shootingAngle = 5.2*(distanceToSpeaker-0.7)-22.0;
         } 
         else if (distanceToSpeaker < 1.5) {
             shootingAngle = 4.8*(distanceToSpeaker-0.7)-22.0;
