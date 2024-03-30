@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.concurrent.CompletableFuture;
@@ -21,22 +20,28 @@ public class Intake extends SubsystemBase{
     private CANSparkMax upperIntake;
     private CANSparkMax lowerIntake;
     private DigitalInput optical1;
-    private DigitalInput optical2;
 
+    //setup intake
     public Intake(){
+
+        //setup sparkmax for intake
         upperIntake = new CANSparkMax(Constants.IntakeConstants.kUI, MotorType.kBrushless);
         lowerIntake = new CANSparkMax(Constants.IntakeConstants.kLI, MotorType.kBrushless);
         optical1 = new DigitalInput(0);
 
+        //reset to default when rebooted
         upperIntake.restoreFactoryDefaults();
         lowerIntake.restoreFactoryDefaults();
 
+        //directions
         upperIntake.setInverted(true);
         lowerIntake.setInverted(true);
 
+        //idle mode
         upperIntake.setIdleMode(IdleMode.kCoast);
         lowerIntake.setIdleMode(IdleMode.kCoast);
 
+        //burn into sparkmax
         upperIntake.burnFlash();
         lowerIntake.burnFlash();
     }
@@ -75,7 +80,7 @@ public class Intake extends SubsystemBase{
             }
             lowerIntake.set(-power/3);
             upperIntake.set(-power/3);
-            Timer.delay(0.05);
+            Timer.delay(0.1);
             stopI();
         });
     }
@@ -85,19 +90,19 @@ public class Intake extends SubsystemBase{
         lowerIntake.set(0);
         upperIntake.set(0);
     }
-
+    
+    //vison
     public boolean optic(){
         return optical1.get();
     }
 
+    //set speed
     public void setIntakeRaw(double speed){
         lowerIntake.set(speed);
         upperIntake.set(speed);
     }
 
     @Override
-    public void periodic(){
-        SmartDashboard.putBoolean("NOTE", !optic());
-    }
+    public void periodic(){}
     
 }

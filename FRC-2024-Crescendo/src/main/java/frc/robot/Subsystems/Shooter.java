@@ -4,8 +4,6 @@
 
 package frc.robot.Subsystems;
 
-import java.lang.Character.Subset;
-
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -30,6 +28,10 @@ public class Shooter extends SubsystemBase{
 
         upperShoot.setIdleMode(IdleMode.kCoast);
         lowerShoot.setIdleMode(IdleMode.kCoast);
+
+        upperShoot.setOpenLoopRampRate(0.1);
+        lowerShoot.setOpenLoopRampRate(0.1);
+
 
         upperShoot.burnFlash();
         lowerShoot.burnFlash();

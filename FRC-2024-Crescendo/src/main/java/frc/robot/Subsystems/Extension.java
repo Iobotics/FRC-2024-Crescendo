@@ -27,31 +27,32 @@ public class Extension extends SubsystemBase{
     public double kPArm, kIArm, kDArm, kIzArm, kFFArm, kMaxOutputArm, kMinOutputArm, maxVelArm, maxAccArm, allowedErrArm;
     int smartMotionSlotArm = 0;
 
+    //sets up arm sparkmax
     public Extension(){
-        arm = new CANSparkMax(SwifferConstants.kArm, MotorType.kBrushless);
+        arm = new CANSparkMax(SwifferConstants.kArm, MotorType.kBrushless); //set up sparkmax
 
-        arm.restoreFactoryDefaults();
+        //default when restarted or rebooted
+        arm.restoreFactoryDefaults(); 
 
-        arm.setInverted(false);
+        arm.setInverted(false); //direction
 
-        arm.setIdleMode(IdleMode.kBrake);
-
-        arm.setOpenLoopRampRate(1);
+        arm.setIdleMode(IdleMode.kBrake); //idle mode setting
+         
+        arm.setOpenLoopRampRate(1); //ramprate controls
         arm.setClosedLoopRampRate(0);
 
         //Set up bottom limit switch for the arm
-        armBottomLimit = arm.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-        // arm.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, 0);
-        // arm.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        armBottomLimit = arm.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); 
         armBottomLimit.enableLimitSwitch(true);
 
-        armPID = arm.getPIDController();
+        armPID = arm.getPIDController(); //use PID
 
-        armEncoder = arm.getEncoder();
-        armPID.setFeedbackDevice(armEncoder);
+        armEncoder = arm.getEncoder(); //assign encoder
+        armPID.setFeedbackDevice(armEncoder); //recieve encoder data
 
-        arm.setSmartCurrentLimit(30);
-
+        arm.setSmartCurrentLimit(30); //limit or reduce power
+ 
+        //setup PID
         kPArm = 6e-5; //proportional gain
         kIArm = 2e-6; //integral gain
         // kIArm = 0.0;
@@ -64,6 +65,7 @@ public class Extension extends SubsystemBase{
         maxAccArm = 500; //rpm per second
         allowedErrArm = 0.1; //inches
 
+        //use pid for arm
         armPID.setP(kPArm);
         armPID.setI(kIArm);
         armPID.setD(kDArm);
@@ -74,6 +76,7 @@ public class Extension extends SubsystemBase{
         armPID.setSmartMotionMaxAccel(1000, smartMotionSlotArm); //tune the max smart motion acceleration (RPM per second)
         armPID.setSmartMotionAllowedClosedLoopError(allowedErrArm, smartMotionSlotArm); //set the closed loop error
 
+        //burn into sparkmax
         arm.burnFlash(); //flash the new parameters to the sparkmax
     }
 

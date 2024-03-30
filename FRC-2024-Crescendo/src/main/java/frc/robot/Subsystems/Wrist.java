@@ -4,12 +4,10 @@
 
 package frc.robot.Subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,7 +18,6 @@ import frc.robot.Constants.SwifferConstants;
 public class Wrist extends SubsystemBase{
     private CANSparkMax wrist;
     public SparkPIDController wristPID;
-    private SparkAbsoluteEncoder wristEncoder;
     public double kPWrist, kIWrist, kDWrist, kIzWrist, kFFWrist, kMaxOutputWrist, kMinOutputWrist, maxVelWrist, maxAccWrist, allowedErrWrist;
     int smartMotionSlotWrist = 0;
 
@@ -37,8 +34,6 @@ public class Wrist extends SubsystemBase{
         wristPID = wrist.getPIDController();
 
         wristPID.setFeedbackDevice(wrist.getEncoder());
-
-        wristEncoder = wrist.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
 
 
         wrist.setSmartCurrentLimit(30);

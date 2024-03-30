@@ -1,19 +1,18 @@
 package frc.robot.Commands;
 
-import org.opencv.photo.Photo;
 import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Swerve;
+import frc.robot.Subsystems.Vision;
 
 public class AutoIntakeNote extends Command{
+    private Vision vision;
     private PhotonCamera camera;
     private Swerve swerve;
     private Intake intake;
@@ -21,8 +20,9 @@ public class AutoIntakeNote extends Command{
     private PIDController translationController;
     private PIDController strafeController;
 
-    public AutoIntakeNote(PhotonCamera camera, Swerve swerve, Intake intake) {
-        this.camera = camera;
+    public AutoIntakeNote(Vision vision, Swerve swerve, Intake intake) {
+        this.vision = vision;
+        this.camera = vision.intakeCamera;
         this.swerve = swerve;
         this.intake = intake;
         // this.arm = arm;
@@ -38,7 +38,8 @@ public class AutoIntakeNote extends Command{
 
     @Override
     public void initialize() {
-       this.camera.setPipelineIndex(VisionConstants.COLORED_SHAPE_PIPELINE);
+        this.vision.intakeCameraFree = false;
+        this.camera.setPipelineIndex(VisionConstants.COLORED_SHAPE_PIPELINE);
     }
 
     @Override
@@ -73,6 +74,7 @@ public class AutoIntakeNote extends Command{
     @Override
     public void end(boolean interrupted) {
         this.camera.setPipelineIndex(VisionConstants.APRILTAG_PIPELINE);
+        this.vision.intakeCameraFree = true;
     }
 
     @Override

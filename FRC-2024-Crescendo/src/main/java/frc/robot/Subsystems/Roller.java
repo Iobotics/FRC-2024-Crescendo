@@ -12,7 +12,6 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwifferConstants;
 
@@ -43,7 +42,7 @@ public class Roller extends SubsystemBase{
             do{
             roller.set(speed);
             }while(isNoteDetected() == true);
-            Timer.delay(1);
+            Timer.delay(0.2);
             stopRoller();
         });
         }
@@ -65,7 +64,6 @@ public class Roller extends SubsystemBase{
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putBoolean("Note?", isNoteDetected()); //Update note intake status (FIX THIS)
     }
 
 }
