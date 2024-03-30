@@ -143,6 +143,22 @@ public class RobotContainer {
             new Intaking(intake, false, false)),
             new MoveArm(arm, 0),
             new InstantCommand(() -> intake.pulse(-0.5, 4)));
+
+    private Command AutonomousIntake = new InstantCommand(()-> arm.setArmPos(-22.0)).withTimeout(2);
+
+    private SequentialCommandGroup AutonomousPickup = new SequentialCommandGroup(
+        new InstantCommand(() -> arm.setArmPos(-22.0)).withTimeout(0.5),
+        new Intaking(intake, false, false),
+        new ParallelCommandGroup(
+            new MoveArm(arm, 0),
+            new InstantCommand(() -> intake.pulse(-0.5, 4))
+        ));
+
+    private Command AutonomousSpeaker = new SequentialCommandGroup(
+        new MoveArm(arm, -18.5),
+        new InstantCommand(() -> shooter.setSSpeed(-1.0)).withTimeout(2.0),
+        new InstantCommand(() -> intake.setISpeed(-0.25, false, false)));
+
     // private ParallelCommandGroup ClimberUp = new ParallelCommandGroup(
     //     new SequentialCommandGroup(
     //         new InstantCommand(()->climber.unlock()),
@@ -183,6 +199,10 @@ public class RobotContainer {
         arm.setDefaultCommand(new InstantCommand(() -> arm.brake(), arm));
 
         // NamedCommands.registerCommand("exampleCommand", subsystem.exampleCommand);
+        NamedCommands.registerCommand("AutonomousIntake", AutonomousIntake);
+        NamedCommands.registerCommand("AutonomousPickup", AutonomousPickup);
+        NamedCommands.registerCommand("AutonomousSpeaker", AutonomousSpeaker);
+
 
         autoChooser = AutoBuilder.buildAutoChooser();
         // Put the chooser on the dashboard
@@ -409,7 +429,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return new PathPlannerAuto("red");
+        return new PathPlannerAuto("Penguino");
         // return autoChooser.getSelected();
     }
 }
