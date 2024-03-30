@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -39,7 +45,38 @@
         {
           "type": "named",
           "data": {
-            "name": "AutonomousSpeaker"
+            "name": "AutonomousSpeaker1"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Penguino2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutonomousPickup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonomousSpeaker2"
           }
         }
       ]

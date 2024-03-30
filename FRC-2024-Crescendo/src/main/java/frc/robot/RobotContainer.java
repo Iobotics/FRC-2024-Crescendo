@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Commands.AutoIntakeNote;
@@ -147,17 +148,40 @@ public class RobotContainer {
     private Command AutonomousIntake = new InstantCommand(()-> arm.setArmPos(-22.0)).withTimeout(2);
 
     private SequentialCommandGroup AutonomousPickup = new SequentialCommandGroup(
+        new InstantCommand(() -> shooter.setSSpeed(0.05)).withTimeout(0.1),
         new InstantCommand(() -> arm.setArmPos(-22.0)).withTimeout(0.5),
         new Intaking(intake, false, false),
         new ParallelCommandGroup(
-            new MoveArm(arm, 0),
-            new InstantCommand(() -> intake.pulse(-0.5, 4))
-        ));
+            new MoveArm(arm, -15.5),
+            new InstantCommand(() -> intake.pulse(-0.5, 4))),
+        new ParallelCommandGroup(
+            new InstantCommand(() -> intake.setIntakeRaw(0.1)).withTimeout(0.15),
+            new InstantCommand(() -> shooter.setSSpeed(0.1)).withTimeout(0.15))
+            );
 
-    private Command AutonomousSpeaker = new SequentialCommandGroup(
-        new MoveArm(arm, -18.5),
-        new InstantCommand(() -> shooter.setSSpeed(-1.0)).withTimeout(2.0),
-        new InstantCommand(() -> intake.setISpeed(-0.25, false, false)));
+    private SequentialCommandGroup AutonomousSpeaker = new SequentialCommandGroup(
+        new MoveArm(arm, -18.5).withTimeout(0.5),
+        new InstantCommand(() -> shooter.setSSpeed(-1.0)),
+        new WaitCommand(1),
+        new InstantCommand(() -> intake.setIntakeRaw(-1)).withTimeout(1),
+        new InstantCommand(() -> shooter.stopS(), shooter),
+        new InstantCommand(() -> intake.stopI(), intake));
+
+    private SequentialCommandGroup AutonomousSpeaker1 = new SequentialCommandGroup(
+        new MoveArm(arm, -14).withTimeout(2),
+        new InstantCommand(() -> shooter.setSSpeed(-1.0)),
+        new WaitCommand(1),
+        new InstantCommand(() -> intake.setIntakeRaw(-1)).withTimeout(1),
+        new InstantCommand(() -> shooter.stopS(), shooter),
+        new InstantCommand(() -> intake.stopI(), intake));
+
+    private SequentialCommandGroup AutonomousSpeaker2 = new SequentialCommandGroup(
+        new MoveArm(arm, -13.4).withTimeout(2),
+        new InstantCommand(() -> shooter.setSSpeed(-1.0)).withTimeout(1),
+        new WaitCommand(1),
+        new InstantCommand(() -> intake.setIntakeRaw(-1)).withTimeout(1),
+        new InstantCommand(() -> shooter.stopS(), shooter),
+        new InstantCommand(() -> intake.stopI(), intake));
 
     // private ParallelCommandGroup ClimberUp = new ParallelCommandGroup(
     //     new SequentialCommandGroup(
@@ -190,6 +214,20 @@ public class RobotContainer {
 
     public TeleopRotationOverride teleopRotationOverride = new TeleopRotationOverride(swerve::getRotationToSpeaker, swerve, teleopSwerve);
 
+    // private SequentialCommandGroup VisionSpeaker = new SequentialCommandGroup(
+    //     new ParallelCommandGroup(
+    //         new InstantCommand(() -> teleopRotationOverride.run()),
+    //         new InstantCommand(() -> arm.setArmPos(swerve.getShootingAngle())).withTimeout(1)),
+    //     new ParallelCommandGroup( 
+    //         new InstantCommand(() -> shooter.setSSpeed(-1.0)).withTimeout(1),
+    //         new WaitCommand(1),
+    //         new InstantCommand(() -> intake.setIntakeRaw(-1))),
+    //     new ParallelCommandGroup(
+    //         new InstantCommand(() -> shooter.stopS(), shooter),
+    //         new InstantCommand(() -> intake.stopI(), intake)
+    //     ));
+
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         swerve.configureAutoBuilder();
@@ -202,11 +240,13 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutonomousIntake", AutonomousIntake);
         NamedCommands.registerCommand("AutonomousPickup", AutonomousPickup);
         NamedCommands.registerCommand("AutonomousSpeaker", AutonomousSpeaker);
+        NamedCommands.registerCommand("AutonomousSpeaker1", AutonomousSpeaker1);
+        NamedCommands.registerCommand("AutonomousSpeaker2", AutonomousSpeaker2);
+        // NamedCommands.registerCommand("VisionSpeaker", VisionSpeaker);
 
-
-        autoChooser = AutoBuilder.buildAutoChooser();
+        // autoChooser = AutoBuilder.buildAutoChooser();
         // Put the chooser on the dashboard
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+        // SmartDashboard.putData("Auto Chooser", autoChooser);
 
         SmartDashboard.putBoolean("arm", false);
 
