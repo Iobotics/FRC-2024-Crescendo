@@ -168,6 +168,7 @@ public final class Constants {
     public static final class SwerveConstants {
         public static final int pigeonID = 14;
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
+        public static final int maxModuleSpeed = 4;
 
         public static final NeoSwerveConstants chosenModule = // TODO: This must be tuned to specific robot
                 NeoSwerveConstants.SDSMK4i(NeoSwerveConstants.driveGearRatios.SDSMK4i_L2);
@@ -316,10 +317,10 @@ public final class Constants {
 
     public static final class AutoConstants { // TODO: The below constants are used in the example auto, and must be
                                               // tuned to specific robot
-        public static final double kMaxSpeedMetersPerSecond = 10;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 2.0;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+        public static final double kMaxSpeedMetersPerSecond = 3.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3.0;
+        public static final double kMaxAngularSpeedRadiansPerSecond = 3*Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = 4*Math.PI;
 
         public static final double kPXController = 10;
         public static final double kPYController = 10;

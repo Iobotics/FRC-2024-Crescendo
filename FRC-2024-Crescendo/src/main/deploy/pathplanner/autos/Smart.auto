@@ -22,4 +22,53 @@
   },
   "folder": null,
   "choreoAuto": false
+}{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 15.25,
+      "y": 6.75
+    },
+    "rotation": 135.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": null
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoPickup"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": null
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": null
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
 }

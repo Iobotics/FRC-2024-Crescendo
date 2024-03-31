@@ -164,7 +164,7 @@ public class RobotContainer {
         //arm.setDefaultCommand(new InstantCommand(() -> arm.brake(), arm));
 
         // NamedCommands.registerCommand("exampleCommand", subsystem.exampleCommand);
-
+        // NamedCommands.registerCommand("pickup", Pickup);
         //autoChooser = AutoBuilder.buildAutoChooser();
         // Put the chooser on the dashboard
         //SmartDashboard.putData("Auto Chooser", autoChooser);
