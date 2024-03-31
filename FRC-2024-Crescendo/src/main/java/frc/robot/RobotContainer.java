@@ -89,6 +89,8 @@ public class RobotContainer {
     private final JoystickButton defaultSpeaker = new JoystickButton(gamepad, 7);
     private final JoystickButton trapScore = new JoystickButton(gamepad, 10);
     private final JoystickButton manualSwiffer = new JoystickButton(gamepad, 8);
+    private final JoystickButton climbFirst = new JoystickButton(gamepad, 9);
+
     private final JoystickButton climberLUp = new JoystickButton(fight, 4); //green
     private final JoystickButton climberLDown = new JoystickButton(fight, 2); //red
     private final JoystickButton climberRUp = new JoystickButton(fight, 1); //green
@@ -126,8 +128,14 @@ public class RobotContainer {
 
     private Command stowWrist = new PresetWrist(wrist, 50.0);
 
+    private SequentialCommandGroup TrapPos = new SequentialCommandGroup(
+        new InstantCommand(() -> climber.unlock()),
+        new PresetClimb(climber, -108.4, -103.4),
+        new PresetWrist(wrist, 50.0)
+    );
+
     private ParallelCommandGroup PassPos = new ParallelCommandGroup(
-        new MoveArm(arm, 0.39293).withTimeout(3),
+        new MoveArm(arm, 0.39293).withTimeout(0.5),
         new PresetWrist(wrist, 0.9).withTimeout(3),
         new PresetExt(ext,0).withTimeout(3)
     ); 
@@ -144,6 +152,12 @@ public class RobotContainer {
     private ParallelCommandGroup TrapScore = new ParallelCommandGroup(
         new PresetExt(ext, -71.5).withTimeout(5),
         new PresetWrist(wrist, 25.666).withTimeout(3)
+    );
+
+    private SequentialCommandGroup Pullup = new SequentialCommandGroup(
+        new PresetClimb(climber, 0, -1.5),
+        new InstantCommand(() -> climber.lock()),
+        TrapScore
     );
 
     private SequentialCommandGroup AutoNotePickup = new SequentialCommandGroup(
@@ -284,6 +298,8 @@ public class RobotContainer {
 
         /* SUBSYSTEMS */
 
+        climbFirst.onTrue(TrapPos);
+
         plainSpeaker.onTrue(new MoveArm(arm, -18.5));
 
         resetWheels.onTrue(new InstantCommand(() -> swerve.resetModulesToAbsolute()));
@@ -308,9 +324,11 @@ public class RobotContainer {
 
         mIConsume.onTrue(
             new SequentialCommandGroup(
-                new MoveArm(arm, 0.171).withTimeout(4),
-                new InstantCommand(() -> shooter.setSSpeed(0.01)),
-                new Intaking(intake, false, false),
+                new ParallelCommandGroup(
+                    new MoveArm(arm, 0.171).withTimeout(0.5),
+                    new InstantCommand(() -> shooter.setSSpeed(0.01)),
+                    new Intaking(intake, false, false)
+                ),
                 new ParallelCommandGroup(
                     new MoveArm(arm, 0.452),
                     //0.452
@@ -392,7 +410,7 @@ public class RobotContainer {
         alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
 
         ampScore.onTrue(AmpScore);
-        trapScore.onTrue(TrapScore);
+        trapScore.onTrue(Pullup);
 
         manualSwiffer.onTrue(new InstantCommand(()-> ext.setPowerArm(gamepad.getY())));
         manualSwiffer.onFalse(new InstantCommand(()-> ext.stopArm()));

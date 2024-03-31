@@ -60,6 +60,6 @@ public class MoveArm extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return arm.isArmWithinError(pos, 0.0001);
+    return arm.isArmWithinError(pos, 0.001);
   }
 }
