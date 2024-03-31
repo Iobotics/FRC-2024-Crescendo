@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import frc.robot.Constants;
 
@@ -25,9 +26,7 @@ public class Arm extends SubsystemBase{
     private Supplier<Double> armPositionSupplier;
     private SparkPIDController rAPID;
     private SparkPIDController lAPID;
-
-
-
+    private SparkAbsoluteEncoder armEncoder;
     public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
 
     public Arm(){
@@ -39,8 +38,8 @@ public class Arm extends SubsystemBase{
         rightArm.restoreFactoryDefaults();
         leftArm.restoreFactoryDefaults();
 
-        rightArm.setSmartCurrentLimit(40);
-        leftArm.setSmartCurrentLimit(40);
+        // rightArm.setSmartCurrentLimit(30);
+        // leftArm.setSmartCurrentLimit(30);
 
         //Direction
         rightArm.setInverted(false);
@@ -49,9 +48,6 @@ public class Arm extends SubsystemBase{
         //Idlemode: Can be Brake or Coast
         rightArm.setIdleMode(IdleMode.kBrake);
         leftArm.setIdleMode(IdleMode.kBrake);
-
-        rightArm.setSoftLimit(SoftLimitDirection.kReverse,-21.0f);
-        leftArm.setSoftLimit(SoftLimitDirection.kReverse,-21.0f);
 
         //Set RampRate:
         //Open: Manual Control
@@ -62,11 +58,11 @@ public class Arm extends SubsystemBase{
         leftArm.setClosedLoopRampRate(0);
 
         // PID coefficients
-        kP = 4e-2; 
-        kI = 0;
-        kD = 0; 
+        kP = 4.0;
+        kI = 0.0;
+        kD =  0.0; 
         kIz = 0.0; 
-        kFF = 0.06; 
+        kFF = 0.0; 
         kMaxOutput = 1; 
         kMinOutput = -1;
         maxRPM = 5700;
@@ -81,10 +77,11 @@ public class Arm extends SubsystemBase{
         lAPID = leftArm.getPIDController();
         configPID(lAPID);
 
+        armEncoder = leftArm.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
 
         //set the motor's Hall encoder to be the feedback
         //You only need one because the two motors will turn the same amount of rotations;
-        lAPID.setFeedbackDevice(leftArm.getEncoder());
+        lAPID.setFeedbackDevice(armEncoder);
 
         //Burns all the values above onto the sparkmax
         rightArm.burnFlash();
@@ -134,7 +131,7 @@ public class Arm extends SubsystemBase{
 
     //returns encoder value
     public double getArmPos(){
-        return(rightArm.getEncoder().getPosition());
+        return(armEncoder.getPosition());
     }
 
     public void stopA(){

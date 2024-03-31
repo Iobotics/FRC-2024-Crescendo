@@ -127,7 +127,7 @@ public class RobotContainer {
     private Command stowWrist = new PresetWrist(wrist, 50.0);
 
     private ParallelCommandGroup PassPos = new ParallelCommandGroup(
-        new MoveArm(arm, -4.5).withTimeout(3),
+        new MoveArm(arm, 0.39293).withTimeout(3),
         new PresetWrist(wrist, 0.9).withTimeout(3),
         new PresetExt(ext,0).withTimeout(3)
     ); 
@@ -142,18 +142,18 @@ public class RobotContainer {
     );
 
     private ParallelCommandGroup TrapScore = new ParallelCommandGroup(
-        new PresetExt(ext, -65).withTimeout(4),
-        new PresetWrist(wrist, 22).withTimeout(3)
+        new PresetExt(ext, -71.5).withTimeout(5),
+        new PresetWrist(wrist, 25.666).withTimeout(3)
     );
 
     private SequentialCommandGroup AutoNotePickup = new SequentialCommandGroup(
             new InstantCommand(()-> arm.setArmPos(-20.8)).withTimeout(2),
             new ParallelCommandGroup(new AutoIntakeNote(vision,swerve,intake), 
             new Intaking(intake, false, false)),
-            new MoveArm(arm, 0),
+            new MoveArm(arm, 0.17),
             new InstantCommand(() -> intake.pulse(-0.5, 4)));
 
-    private Command AutonomousIntake = new InstantCommand(()-> arm.setArmPos(-22.0)).withTimeout(2);
+    private Command AutonomousIntake = new InstantCommand(()-> arm.setArmPos(0.17)).withTimeout(2);
 
     private SequentialCommandGroup AutonomousPickup = new SequentialCommandGroup(
         new InstantCommand(() -> shooter.setSSpeed(0.05)).withTimeout(0.1),
@@ -308,11 +308,12 @@ public class RobotContainer {
 
         mIConsume.onTrue(
             new SequentialCommandGroup(
-                new InstantCommand(()-> arm.setArmPos(-20.8)).withTimeout(2),
+                new MoveArm(arm, 0.171).withTimeout(4),
                 new InstantCommand(() -> shooter.setSSpeed(0.01)),
                 new Intaking(intake, false, false),
                 new ParallelCommandGroup(
-                    new MoveArm(arm, 0),
+                    new MoveArm(arm, 0.452),
+                    //0.452
                     new InstantCommand(() -> intake.pulse(-0.5, 4)),
                     new InstantCommand(() -> shooter.stopS())
                 )
@@ -375,7 +376,7 @@ public class RobotContainer {
 
         collapsing.onTrue(PassPos.withTimeout(2));
 
-        armIntake.onTrue(new InstantCommand(()-> arm.setArmPos(-20.8)).withTimeout(2)); //-21.4
+        armIntake.onTrue(new MoveArm(arm, 0.171).withTimeout(2)); //-21.4
 
         // speaker.onTrue(SpeakerScore);
 
@@ -386,7 +387,7 @@ public class RobotContainer {
 
         alignSpeaker.whileTrue(new ParallelCommandGroup(
             new InstantCommand(() -> teleopRotationOverride.run()),
-            new InstantCommand(() -> arm.setArmPos(swerve.getShootingAngle()))
+            new MoveArm(arm ,swerve.getShootingAngle())
         ));
         alignSpeaker.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
 
@@ -515,11 +516,8 @@ public class RobotContainer {
         // new JoystickButton(joystick1, 7).onTrue(
         //     new PresetClimb(climber, 1));
 
-        new JoystickButton(gamepad,7).onTrue(
-            new MoveArm(arm,0.0));
-        
-        new JoystickButton(gamepad,8).onTrue(
-            new MoveArm(arm, -21.0));
+        // new JoystickButton(gamepad,6).onTrue(
+        //     new InstantCommand(()->arm.armSpeed()));
     }
 
     public Command getAutonomousCommand() {
