@@ -103,7 +103,7 @@ public class Vision extends SubsystemBase{
             var estimatedPose = photonPoseEstimator.update(result);
         
             if (estimatedPose.isPresent() && this.swifferCamera.getLatestResult().hasTargets()){
-                swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);
+                // swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);
             }
         }   
 

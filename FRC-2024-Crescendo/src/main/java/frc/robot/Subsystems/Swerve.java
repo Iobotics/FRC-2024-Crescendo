@@ -75,9 +75,9 @@ public class Swerve extends SubsystemBase {
             this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(1.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(1.0, 0.0, 0.0), // Rotation PID constants
-                    Constants.SwerveConstants.maxSpeed / 4, // Max module speed, in m/s
+                    new PIDConstants(1, 0, 0), // Translation PID constants
+                    new PIDConstants(1, 0, 0), // Rotation PID constants
+                    1.0, // Max module speed, in m/s
                     0.37268062902, // Drive base radius in meters. Distance from robot center to furthest module.
                     new ReplanningConfig() // Default path replanning config. See the API for the options here
             ),
@@ -128,14 +128,13 @@ public class Swerve extends SubsystemBase {
 
     // test for pathplanner
     public void driveRobotRelative(ChassisSpeeds desiredChassisSpeeds) {
-        desiredChassisSpeeds.omegaRadiansPerSecond *= 200.0;
         SmartDashboard.putNumber("swerverotationout", desiredChassisSpeeds.omegaRadiansPerSecond);
         setModuleStates(Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(ChassisSpeeds.discretize(desiredChassisSpeeds, 0.02)));
     }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.SwerveConstants.maxSpeed / 4);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, 1.0);
         
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(desiredStates[mod.moduleNumber], true);
