@@ -72,8 +72,8 @@ public class Arm extends SubsystemBase{
         maxAcc = 1500;
 
         //configure each PID object to it's correct controller
-        rAPID = rightArm.getPIDController();
-        configPID(rAPID);
+        // rAPID = rightArm.getPIDController();
+        // configPID(rAPID);
         lAPID = leftArm.getPIDController();
         configPID(lAPID);
 
@@ -82,6 +82,7 @@ public class Arm extends SubsystemBase{
         //set the motor's Hall encoder to be the feedback
         //You only need one because the two motors will turn the same amount of rotations;
         lAPID.setFeedbackDevice(armEncoder);
+        rightArm.follow(leftArm);
 
         //Burns all the values above onto the sparkmax
         rightArm.burnFlash();
@@ -121,7 +122,7 @@ public class Arm extends SubsystemBase{
 
     //Closed loop control
     public void setArmPos(double pos){
-        rAPID.setReference(pos, ControlType.kPosition);
+        // rAPID.setReference(pos, ControlType.kPosition);
         lAPID.setReference(pos, ControlType.kPosition);
     }
 
