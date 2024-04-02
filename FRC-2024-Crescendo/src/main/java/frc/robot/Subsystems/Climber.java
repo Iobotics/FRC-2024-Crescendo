@@ -36,10 +36,7 @@ public class Climber extends SubsystemBase {
   public Climber() {
     //create new sparkmax instances
     climber1 = new CANSparkMax(ClimberConstants.kClimber1, MotorType.kBrushless);
-    climber1.restoreFactoryDefaults();
-
     climber2 = new CANSparkMax(ClimberConstants.kClimber2, MotorType.kBrushless);
-    climber2.restoreFactoryDefaults();
 
     //Creates servo instances
     servo1 = new Servo(0);
@@ -50,8 +47,8 @@ public class Climber extends SubsystemBase {
     climber2.restoreFactoryDefaults();
 
     //Direction
-    climber1.setInverted(false);
-    climber2.setInverted(true);
+    climber1.setInverted(true);
+    climber2.setInverted(false);
 
     //Idlemode: Can be Brake or Coast
     climber1.setIdleMode(IdleMode.kBrake);
@@ -76,12 +73,12 @@ public class Climber extends SubsystemBase {
     PIDConfiguration(climb2P);
 
    //sends encoder readings to PID controller
-    climb1P.setFeedbackDevice(climber1E);
-    climb2P.setFeedbackDevice(climber2E);
+    climb1P.setFeedbackDevice(climber1.getEncoder());
+    climb2P.setFeedbackDevice(climber2.getEncoder());
 
    //assigns limit switches to climbers
-    climber1LS = climber1.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-    climber2LS = climber2.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    climber1LS = climber1.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    climber2LS = climber2.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
    
     //enables limit switch
     climber1LS.enableLimitSwitch(true);
@@ -89,42 +86,43 @@ public class Climber extends SubsystemBase {
 
     //Burns all the values above onto the sparkmax
     climber1.burnFlash();
-    climber2.burnFlash();
-
-    
+    climber2.burnFlash();    
   }
 
    //sets up PID Controller
   public void PIDConfiguration(SparkPIDController pid){
-
-    pid.setP(1e-7);
+    pid.setP(1E-9);
     pid.setI(0);
     pid.setD(0);
     pid.setIZone(0);
     pid.setFF(0);
     pid.setOutputRange(1, -1);
 
-    pid.setSmartMotionMaxVelocity(2000, 0);
+    pid.setSmartMotionMaxVelocity(500, 0);
     pid.setSmartMotionMinOutputVelocity(0, 0);
-    pid.setSmartMotionMaxAccel(2000, 0);
+    pid.setSmartMotionMaxAccel(500, 0);
     pid.setSmartMotionAllowedClosedLoopError(0.1, 0);
 
   }
 
    //set up climber position function
   public void climbPOS(double posL, double posR){
-  climb1P.setReference(posL, ControlType.kSmartMotion);
-  climb2P.setReference(posR, ControlType.kSmartMotion);
+    climb1P.setReference(posL, ControlType.kPosition);
+    climb2P.setReference(posR, ControlType.kPosition);
   }
    
    //recieve position value 
-  public double climbValue(){
-    return(climber1E.getPosition()*Constants.ClimberConstants.kCGearRatio);
+  public double climbValue1(){
+    return(climber1.getEncoder().getPosition());
+  }
+
+  public double climbValue2(){
+    return(climber2.getEncoder().getPosition());
   }
 
   //checks if the climber is at the right position or how much further it needs to go
-  public boolean isClimbWithinError(double target, double error){
-    return (Math.abs(target - climbValue()) <= error);
+  public boolean isClimbWithinError(double target1, double target2, double error){
+    return (Math.abs(target1 - climbValue1()) <= error || Math.abs(target2 - climbValue2()) <= error);
   }
 
   //set power to each climber
@@ -180,7 +178,7 @@ public class Climber extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("LClimb", climber1E.getPosition());
-    SmartDashboard.putNumber("RClimb", climber2E.getPosition());
+    SmartDashboard.putNumber("LClimb", climber1.getEncoder().getPosition());
+    SmartDashboard.putNumber("RClimb", climber2.getEncoder().getPosition());
   }
 }

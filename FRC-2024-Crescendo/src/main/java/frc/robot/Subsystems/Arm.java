@@ -27,6 +27,7 @@ public class Arm extends SubsystemBase{
     private SparkPIDController rAPID;
     private SparkPIDController lAPID;
     private SparkAbsoluteEncoder armEncoder;
+    private boolean speakerFollow = false;
     public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
 
     public Arm(){
@@ -91,10 +92,6 @@ public class Arm extends SubsystemBase{
 
     }
 
-    public void setSupplier(Supplier<Double> armPositionSupplier) {
-        this.armPositionSupplier = armPositionSupplier;
-    }
-
     //configures the PID object
     public void configPID(SparkPIDController pid){
         // set PID coefficients
@@ -118,6 +115,18 @@ public class Arm extends SubsystemBase{
     public void armSpeed(double power){
         rightArm.set(power);
         leftArm.set(power);
+    }
+
+    public void configureSpeakerFollow(Supplier<Double> armPositionSupplier){
+        this.armPositionSupplier = armPositionSupplier;
+    }
+
+    public void followSpeaker() {
+        speakerFollow = true;
+    }
+
+    public void stopFollowSpeaker() {
+        speakerFollow = false;
     }
 
     //Closed loop control
@@ -153,6 +162,9 @@ public class Arm extends SubsystemBase{
 
     @Override
     public void periodic(){
+        if (this.speakerFollow) {
+            lAPID.setReference(this.armPositionSupplier.get(), ControlType.kPosition);
+        }
         // This method will be called once per scheduler run
         SmartDashboard.putNumber("Arm Pos", getArmPos());
     }

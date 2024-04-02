@@ -283,6 +283,8 @@ public class Swerve extends SubsystemBase {
          * 4.284403100159929, -5.51559689984007 too high
          * 5.073239844268676, -4.299436171304455
          */
+
+        shootingAngle = (shootingAngle/78.853) + 0.45;
         SmartDashboard.putNumber("distanceToSpeaker", distanceToSpeaker);
         SmartDashboard.putNumber("Estimated Shooter Angle", shootingAngle);
         return shootingAngle;
