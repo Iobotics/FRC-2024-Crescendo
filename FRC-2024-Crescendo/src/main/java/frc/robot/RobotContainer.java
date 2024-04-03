@@ -195,7 +195,7 @@ public class RobotContainer {
 
     private SequentialCommandGroup AutonomousSpeaker = new SequentialCommandGroup(
         new InstantCommand(()-> intake.checkContact()),
-        new WaitCommand(0.1),
+        new WaitCommand(0.05),
         new ParallelCommandGroup(
             new InstantCommand(()->arm.followSpeaker()),
             new InstantCommand(() -> shooter.setSSpeed(-1.0)),
@@ -571,7 +571,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return new PathPlannerAuto("New Auto");
+        return new PathPlannerAuto("rightToLeft");
         // return autoChooser.getSelected();
     }
 }
