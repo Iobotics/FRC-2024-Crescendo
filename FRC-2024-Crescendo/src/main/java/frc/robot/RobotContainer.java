@@ -60,12 +60,7 @@ public class RobotContainer {
     private final JoystickButton alignSpeaker = new JoystickButton(joystick1, 1);
     private final JoystickButton autoIntakeNote = new JoystickButton(joystick1, 2);
     private final JoystickButton plainSpeaker = new JoystickButton(joystick1, 3);
-    // private final JoystickButton alignAmp = new JoystickButton(joystick1, 1);
-    private final JoystickButton startClimb = new JoystickButton(joystick1, 6);
-    private final JoystickButton finishClimb = new JoystickButton (joystick1, 7);
     private final JoystickButton zeroGyro = new JoystickButton(joystick1, 8);
-
-    private final JoystickButton armIntake = new JoystickButton(joystick2, 3);
     private final JoystickButton mIConsume = new JoystickButton(joystick2, 1);
     private final JoystickButton resetWheels = new JoystickButton(joystick1, 6);
     private final JoystickButton alignToRightStage = new JoystickButton(joystick1, 7);
@@ -79,18 +74,7 @@ public class RobotContainer {
     //private final JoystickButton eject = new JoystickButton(joystick1, 3);
     //private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
 
-    /* Operator Buttons */
-    //private final JoystickButton pass = new JoystickButton(gamepad, 1);
-    // private final JoystickButton collapsing = new JoystickButton(gamepad, 2);
-    // private final JoystickButton ampScore = new JoystickButton(gamepad, 3);
-    // private final JoystickButton rollerShoot = new JoystickButton(gamepad, 4);
-    // private final JoystickButton mSEject = new JoystickButton(gamepad, 5);
-    // private final JoystickButton mIEject = new JoystickButton(gamepad, 6);
-    // private final JoystickButton defaultSpeaker = new JoystickButton(gamepad, 7);
-    // private final JoystickButton trapScore = new JoystickButton(gamepad, 10);
-    // private final JoystickButton manualSwiffer = new JoystickButton(gamepad, 8);
-    // private final JoystickButton climbFirst = new JoystickButton(gamepad, 9);
-
+    // Operator Buttons
     private final JoystickButton passPosition = new JoystickButton(gamepad, 3);
     private final JoystickButton pass = new JoystickButton(gamepad, 2);
     private final JoystickButton amp = new JoystickButton(gamepad, 1);
@@ -98,23 +82,19 @@ public class RobotContainer {
     private final JoystickButton spinUp = new JoystickButton(gamepad, 5);
     private final JoystickButton shoot = new JoystickButton(gamepad, 6);
     private final JoystickButton revSpin = new JoystickButton(gamepad, 7);
-    private final JoystickButton revSho0t = new JoystickButton(gamepad, 8);
+    private final JoystickButton revShoot = new JoystickButton(gamepad, 8);
     private final JoystickButton revRoller = new JoystickButton(gamepad, 10);
     private final JoystickButton wristShotPos = new JoystickButton(gamepad, 11);
-    private final JoystickButton TrapAssist = new JoystickButton(gamepad, 12);
+    private final JoystickButton trapAssist = new JoystickButton(gamepad, 12);
 
-
-
-
-
-
-
+    //Manual Buttons
     private final JoystickButton climberLUp = new JoystickButton(fight, 4); //green
     private final JoystickButton climberLDown = new JoystickButton(fight, 2); //red
     private final JoystickButton climberRUp = new JoystickButton(fight, 3); //green
     private final JoystickButton climberRDown = new JoystickButton(fight, 1); //red
     private final JoystickButton climberLock = new JoystickButton(fight, 6); //r1
     private final JoystickButton climberUnlock = new JoystickButton(fight, 5); //l1
+    private final JoystickButton manualRollerIn = new JoystickButton(fight, 7);
     private final JoystickButton manualRollerOut = new JoystickButton(fight, 8);
     private final JoystickButton manualWristOut = new JoystickButton(fight, 9);
     private final JoystickButton manualWristIn = new JoystickButton(fight, 10);
@@ -142,7 +122,7 @@ public class RobotContainer {
     private final Roller roller = new Roller();
     private final Climber climber = new Climber();
     
-    private Command stowWrist = new PresetWrist(wrist, 30);
+    private Command stowWrist = new PresetWrist(wrist, 50);
 
     private ParallelCommandGroup PassPos = new ParallelCommandGroup(
         new MoveArm(arm, 0.39293).withTimeout(0.5),
@@ -294,7 +274,10 @@ public class RobotContainer {
 
         cancelAutoSwerveCommands.onTrue(new InstantCommand(()->AutoNotePickup.cancel()));
 
-        manualRollerOut.onTrue(new RunCommand(()->roller.setPowerRoller(-1.0,false),roller));
+        manualRollerIn.onTrue(new RunCommand(()->roller.setPowerRoller(1.0,false), roller));
+        manualRollerIn.onFalse(new RunCommand(()->roller.stopRoller(),roller));
+
+        manualRollerOut.onTrue(new RunCommand(()->roller.setPowerRoller(-1.0,false), roller));
         manualRollerOut.onFalse(new RunCommand(()->roller.stopRoller(),roller));
 
         manualWristIn.onTrue(new InstantCommand(()->wrist.setPowerWrist(0.4)));
@@ -330,7 +313,32 @@ public class RobotContainer {
 
         amp.onTrue(AmpScore);
 
-        
+        rollerShoot.onTrue(new InstantCommand(() -> roller.setPowerRoller(1, false)));
+        rollerShoot.onFalse(new InstantCommand(() -> roller.stopRoller()));
+
+        spinUp.onTrue(new SequentialCommandGroup(
+            new InstantCommand(() -> intake.checkContact()),
+            new WaitCommand(0.05),
+            new InstantCommand(() -> shooter.setSSpeed(-1.0))
+        ));
+        spinUp.onTrue(new InstantCommand(() -> shooter.stopS()));
+
+        shoot.onTrue(new InstantCommand(() -> intake.setISpeed(-0.5, false, false)));
+        shoot.onFalse(new InstantCommand(() -> intake.stopI()));
+
+        revSpin.onTrue(new InstantCommand(() -> shooter.setSSpeed(0.5)));
+        revSpin.onFalse(new InstantCommand(() -> shooter.stopS()));
+
+        revShoot.onTrue(new InstantCommand(() -> intake.setISpeed(0.3, false, false)));
+        revShoot.onFalse(new InstantCommand(() -> intake.stopI()));
+
+        revRoller.onTrue(new InstantCommand(() -> roller.setPowerRoller(-1, false)));
+        revRoller.onFalse(new InstantCommand(() -> roller.stopRoller()));
+
+        wristShotPos.onTrue(stowWrist);
+
+        trapAssist.onTrue(TrapScore);
+
 
         alignSpeaker.whileTrue(new ParallelCommandGroup(
             new InstantCommand(() -> teleopRotationOverride.run()),
