@@ -92,8 +92,8 @@ public class RobotContainer {
     private final JoystickButton climberLDown = new JoystickButton(fight, 2); //red
     private final JoystickButton climberRUp = new JoystickButton(fight, 3); //green
     private final JoystickButton climberRDown = new JoystickButton(fight, 1); //red
-    private final JoystickButton climberLock = new JoystickButton(fight, 6); //r1
-    private final JoystickButton climberUnlock = new JoystickButton(fight, 5); //l1
+    private final JoystickButton climberLock = new JoystickButton(fight, 5); //r1
+    private final JoystickButton climberUnlock = new JoystickButton(fight, 6); //l1
     private final JoystickButton manualRollerIn = new JoystickButton(fight, 7);
     private final JoystickButton manualRollerOut = new JoystickButton(fight, 8);
     private final JoystickButton manualWristOut = new JoystickButton(fight, 9);
@@ -289,7 +289,7 @@ public class RobotContainer {
         mIConsume.onTrue(
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                    new MoveArm(arm, 0.171).withTimeout(0.5),
+                    new MoveArm(arm, 0.17).withTimeout(0.5),
                     new InstantCommand(() -> shooter.setSSpeed(0.01)),
                     new Intaking(intake, false, false)
                 ),
@@ -313,7 +313,7 @@ public class RobotContainer {
 
         amp.onTrue(AmpScore);
 
-        rollerShoot.onTrue(new InstantCommand(() -> roller.setPowerRoller(1, false)));
+        rollerShoot.onTrue(new InstantCommand(() -> roller.setPowerRoller(-1, false)));
         rollerShoot.onFalse(new InstantCommand(() -> roller.stopRoller()));
 
         spinUp.onTrue(new SequentialCommandGroup(
@@ -321,7 +321,7 @@ public class RobotContainer {
             new WaitCommand(0.05),
             new InstantCommand(() -> shooter.setSSpeed(-1.0))
         ));
-        spinUp.onTrue(new InstantCommand(() -> shooter.stopS()));
+        spinUp.onFalse(new InstantCommand(() -> shooter.stopS()));
 
         shoot.onTrue(new InstantCommand(() -> intake.setISpeed(-0.5, false, false)));
         shoot.onFalse(new InstantCommand(() -> intake.stopI()));
@@ -332,7 +332,7 @@ public class RobotContainer {
         revShoot.onTrue(new InstantCommand(() -> intake.setISpeed(0.3, false, false)));
         revShoot.onFalse(new InstantCommand(() -> intake.stopI()));
 
-        revRoller.onTrue(new InstantCommand(() -> roller.setPowerRoller(-1, false)));
+        revRoller.onTrue(new InstantCommand(() -> roller.setPowerRoller(1, false)));
         revRoller.onFalse(new InstantCommand(() -> roller.stopRoller()));
 
         wristShotPos.onTrue(stowWrist);
