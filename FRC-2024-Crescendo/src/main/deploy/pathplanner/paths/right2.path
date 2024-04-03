@@ -3,48 +3,54 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 15.25,
-        "y": 6.75
+        "x": 13.795342806975782,
+        "y": 6.830635951348642
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.383974596215563,
-        "y": 6.250000000000001
+        "x": 14.007474841331746,
+        "y": 6.618503916992678
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "rightPathNotePickup"
     },
     {
       "anchor": {
-        "x": 11.91306696140573,
-        "y": 6.465729037652767
+        "x": 13.920675576720111,
+        "y": 5.765307408477413
       },
       "prevControl": {
-        "x": 13.446715128509883,
-        "y": 6.19530548687822
+        "x": 14.224731492630326,
+        "y": 6.069363324387629
       },
       "nextControl": {
-        "x": 10.379418794301579,
-        "y": 6.736152588427314
+        "x": 13.779254220482802,
+        "y": 5.6238860522401035
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "rightPathCenterPickup"
     },
     {
       "anchor": {
-        "x": 9.0,
-        "y": 6.75
+        "x": 13.795342806975782,
+        "y": 5.169976752167245
       },
       "prevControl": {
-        "x": 9.86602540378444,
-        "y": 6.25
+        "x": 13.781450952762427,
+        "y": 5.248761372408222
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.15,
+      "rotationDegrees": -135.0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -54,14 +60,14 @@
     "maxAngularAcceleration": 90.0
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": 135.0,
-    "rotateFast": false
+    "velocity": 0,
+    "rotation": -170.72739822289194,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 135.0,
+    "rotation": 141.20344790199024,
     "velocity": 0
   },
   "useDefaultConstraints": true

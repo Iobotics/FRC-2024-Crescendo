@@ -4,6 +4,8 @@
 
 package frc.robot.Commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Arm;
@@ -13,6 +15,7 @@ public class MoveArm extends Command {
   double pos;
   PIDController inController;
   PIDController outController;
+  Supplier<Double> armPositionSupplier;
   boolean goingInwards;
 
   /** Creates a new MoveArm. */
@@ -20,7 +23,7 @@ public class MoveArm extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.arm = arm;
     this.pos = pos;
-    this.inController = new PIDController(0.1,0.0,0.015);
+    this.inController = new PIDController(0.1,0.01,0.015);
     this.outController = new PIDController(8e-3,0.0,0.0001);
 
     if (this.arm.getArmPos() < this.pos) {
@@ -38,12 +41,14 @@ public class MoveArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (goingInwards) {
-      arm.armSpeed(inController.calculate(arm.getArmPos(),pos));
-    }
-    else {
-      arm.armSpeed(outController.calculate(arm.getArmPos(),pos));
-    }
+    // if (goingInwards) {
+    //   arm.armSpeed(inController.calculate(arm.getArmPos(),pos));
+    // }
+    // else {
+    //   arm.armSpeed(outController.calculate(arm.getArmPos(),pos));
+    // }
+
+    arm.setArmPos(pos);
   }
 
   // Called once the command ends or is interrupted.
@@ -55,6 +60,6 @@ public class MoveArm extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return arm.isArmWithinError(pos, 0.01);
+    return arm.isArmWithinError(pos, 0.001);
   }
 }

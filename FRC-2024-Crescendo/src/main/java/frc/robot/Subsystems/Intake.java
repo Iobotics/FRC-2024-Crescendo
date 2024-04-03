@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.concurrent.CompletableFuture;
@@ -20,6 +21,7 @@ public class Intake extends SubsystemBase{
     private CANSparkMax upperIntake;
     private CANSparkMax lowerIntake;
     private DigitalInput optical1;
+    private DigitalInput shooterContactOptical;
 
     //setup intake
     public Intake(){
@@ -28,6 +30,7 @@ public class Intake extends SubsystemBase{
         upperIntake = new CANSparkMax(Constants.IntakeConstants.kUI, MotorType.kBrushless);
         lowerIntake = new CANSparkMax(Constants.IntakeConstants.kLI, MotorType.kBrushless);
         optical1 = new DigitalInput(0);
+        shooterContactOptical = new DigitalInput(2);
 
         //reset to default when rebooted
         upperIntake.restoreFactoryDefaults();
@@ -90,6 +93,15 @@ public class Intake extends SubsystemBase{
         lowerIntake.set(0);
         upperIntake.set(0);
     }
+
+    public void checkContact() {
+        if (!shooterContactOptical.get()) {
+            lowerIntake.set(0.5/3);
+            upperIntake.set(0.5/3);
+            Timer.delay(0.05);
+            stopI();
+        }
+    }
     
     //vison
     public boolean optic(){
@@ -103,6 +115,8 @@ public class Intake extends SubsystemBase{
     }
 
     @Override
-    public void periodic(){}
+    public void periodic(){
+        SmartDashboard.putBoolean("shooterOptic", !shooterContactOptical.get());
+    }
     
 }

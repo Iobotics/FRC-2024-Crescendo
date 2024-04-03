@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 10.181581279193093,
-        "y": 6.684414386640477
+        "x": 15.2233261050152,
+        "y": 5.55076982040085
       },
       "prevControl": null,
       "nextControl": {
-        "x": 11.98398587273365,
-        "y": 6.841080348827365
+        "x": 14.2433261050152,
+        "y": 5.55076982040085
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 13.509404195558094,
-        "y": 5.66762813240929
+        "x": 14.0,
+        "y": 5.55076982040085
       },
       "prevControl": {
-        "x": 12.122762299411693,
-        "y": 5.243689160561322
+        "x": 13.99613448419216,
+        "y": 5.55076982040085
+      },
+      "nextControl": {
+        "x": 14.00386551580784,
+        "y": 5.55076982040085
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 14.223563103614758,
+        "y": 5.55076982040085
+      },
+      "prevControl": {
+        "x": 13.953563103614758,
+        "y": 5.55076982040085
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shootingPosition"
     }
   ],
   "rotationTargets": [],
@@ -39,13 +55,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -132.99339455886658,
+    "rotation": 178.8766972859244,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 179.7254655436876,
+    "rotation": -179.19307054466523,
     "velocity": 0
   },
   "useDefaultConstraints": true
