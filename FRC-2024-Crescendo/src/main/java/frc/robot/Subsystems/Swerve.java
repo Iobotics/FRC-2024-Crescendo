@@ -72,7 +72,7 @@ public class Swerve extends SubsystemBase {
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                     new PIDConstants(8.0, 0.0, 0.0), // Translation PID constants
                     new PIDConstants(6.0, 0.0, 0.0), // Rotation PID constants
-                    2.0, // Max module speed, in m/s
+                    4.0, // Max module speed, in m/s
                     0.37268062902, // Drive base radius in meters. Distance from robot center to furthest module.
                     new ReplanningConfig() // Default path replanning config. See the API for the options here
             ),
@@ -128,7 +128,7 @@ public class Swerve extends SubsystemBase {
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, 2.0);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.SwerveConstants.maxSpeed / 4);
         
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(desiredStates[mod.moduleNumber], true);
@@ -283,10 +283,9 @@ public class Swerve extends SubsystemBase {
          * 4.284403100159929, -5.51559689984007 too high
          * 5.073239844268676, -4.299436171304455
          */
-
-        shootingAngle = (shootingAngle/78.853) + 0.45;
         SmartDashboard.putNumber("distanceToSpeaker", distanceToSpeaker);
         SmartDashboard.putNumber("Estimated Shooter Angle", shootingAngle);
+        shootingAngle = (shootingAngle/78.853)+0.45;
         return shootingAngle;
     }
 

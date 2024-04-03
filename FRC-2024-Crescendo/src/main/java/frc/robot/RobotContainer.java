@@ -80,16 +80,34 @@ public class RobotContainer {
     //private final JoystickButton robotCentric = new JoystickButton(joystick2, 1);
 
     /* Operator Buttons */
-    private final JoystickButton pass = new JoystickButton(gamepad, 1);
-    private final JoystickButton collapsing = new JoystickButton(gamepad, 2);
-    private final JoystickButton ampScore = new JoystickButton(gamepad, 3);
+    //private final JoystickButton pass = new JoystickButton(gamepad, 1);
+    // private final JoystickButton collapsing = new JoystickButton(gamepad, 2);
+    // private final JoystickButton ampScore = new JoystickButton(gamepad, 3);
+    // private final JoystickButton rollerShoot = new JoystickButton(gamepad, 4);
+    // private final JoystickButton mSEject = new JoystickButton(gamepad, 5);
+    // private final JoystickButton mIEject = new JoystickButton(gamepad, 6);
+    // private final JoystickButton defaultSpeaker = new JoystickButton(gamepad, 7);
+    // private final JoystickButton trapScore = new JoystickButton(gamepad, 10);
+    // private final JoystickButton manualSwiffer = new JoystickButton(gamepad, 8);
+    // private final JoystickButton climbFirst = new JoystickButton(gamepad, 9);
+
+    private final JoystickButton passPosition = new JoystickButton(gamepad, 3);
+    private final JoystickButton pass = new JoystickButton(gamepad, 2);
+    private final JoystickButton amp = new JoystickButton(gamepad, 1);
     private final JoystickButton rollerShoot = new JoystickButton(gamepad, 4);
-    private final JoystickButton mSEject = new JoystickButton(gamepad, 5);
-    private final JoystickButton mIEject = new JoystickButton(gamepad, 6);
-    private final JoystickButton defaultSpeaker = new JoystickButton(gamepad, 7);
-    private final JoystickButton trapScore = new JoystickButton(gamepad, 10);
-    private final JoystickButton manualSwiffer = new JoystickButton(gamepad, 8);
-    private final JoystickButton climbFirst = new JoystickButton(gamepad, 9);
+    private final JoystickButton spinUp = new JoystickButton(gamepad, 5);
+    private final JoystickButton shoot = new JoystickButton(gamepad, 6);
+    private final JoystickButton revSpin = new JoystickButton(gamepad, 7);
+    private final JoystickButton revSho0t = new JoystickButton(gamepad, 8);
+    private final JoystickButton revRoller = new JoystickButton(gamepad, 10);
+    private final JoystickButton wristShotPos = new JoystickButton(gamepad, 11);
+    private final JoystickButton TrapAssist = new JoystickButton(gamepad, 12);
+
+
+
+
+
+
 
     private final JoystickButton climberLUp = new JoystickButton(fight, 4); //green
     private final JoystickButton climberLDown = new JoystickButton(fight, 2); //red
@@ -124,24 +142,13 @@ public class RobotContainer {
     private final Roller roller = new Roller();
     private final Climber climber = new Climber();
     
-
-
     private Command stowWrist = new PresetWrist(wrist, 30);
-
-    // private SequentialCommandGroup TrapPos = new SequentialCommandGroup(
-    //     new InstantCommand(() -> climber.unlock()),
-    //     new PresetClimb(climber, 50.0, 50.0)
-    // );
 
     private ParallelCommandGroup PassPos = new ParallelCommandGroup(
         new MoveArm(arm, 0.39293).withTimeout(0.5),
         new PresetWrist(wrist, 0.9).withTimeout(3),
         new PresetExt(ext,0).withTimeout(3)
     ); 
-
-    // private Command SpeakerScore = new RunCommand(() ->
-    //     new MoveArm(arm, -7.00)
-    // );
 
     private ParallelCommandGroup AmpScore = new ParallelCommandGroup(
         new PresetExt(ext, -30).withTimeout(3),
@@ -152,19 +159,6 @@ public class RobotContainer {
         new PresetExt(ext, -71.5).withTimeout(5),
         new PresetWrist(wrist, 25.666).withTimeout(3)
     );
-
-    // private SequentialCommandGroup Pullup = new SequentialCommandGroup(
-    //        new PresetWrist(wrist, 30.0),
-    //     new PresetClimb(climber, 0, -1.5),
-    //     new InstantCommand(() -> climber.lock()),
-    //     TrapScore
-    // );
-
-    // private SequentialCommandGroup StartClimb = new SequentialCommandGroup(
-    //     stowWrist,
-    //     new InstantCommand(() -> climber.unlock()),
-    //     new PresetClimb(climber, -108.4, -103.4)
-    // );
 
     private SequentialCommandGroup AutoNotePickup = new SequentialCommandGroup(
             new InstantCommand(()-> arm.setArmPos(-20.8)).withTimeout(2),
@@ -222,25 +216,6 @@ public class RobotContainer {
     );
 
     private Command goToStageRight = new gotoGoal(VisionConstants.redStageRight,swerve);
-
-
-
-    // private ParallelCommandGroup ClimberUp = new ParallelCommandGroup(
-    //     new SequentialCommandGroup(
-    //         new InstantCommand(()->climber.unlock()),
-    //         new InstantCommand(()->climber.climbPOS(15))),
-    //     new PresetExt(ext, 0.75),
-    //     new PresetWrist(wrist, 25)
-    // );
-
-    // private ParallelCommandGroup ClimberDown = new ParallelCommandGroup(
-    //     new SequentialCommandGroup(
-    //         new PresetClimb(climber, 0),
-    //         new InstantCommand(()->climber.lock())),
-    //     new ParallelCommandGroup(TrapScore)
-    // );
-
-
 
     //Allows for Autos to be chosen in Shuffleboard
     SendableChooser<Command> autoChooser;
@@ -306,8 +281,6 @@ public class RobotContainer {
 
         /* SUBSYSTEMS */
 
-        climbFirst.onTrue(stowWrist);
-
         plainSpeaker.onTrue(new MoveArm(arm, -18.5));
 
         resetWheels.onTrue(new InstantCommand(() -> swerve.resetModulesToAbsolute()));
@@ -315,8 +288,6 @@ public class RobotContainer {
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
 
         autoIntakeNote.onTrue(AutoNotePickup);
-
-        // startClimb.onTrue(StartClimb);
 
         alignToRightStage.onTrue(goToStageRight);
         alignToRightStage.onFalse(new InstantCommand(() -> goToStageRight.cancel()));
@@ -348,37 +319,6 @@ public class RobotContainer {
             )
         );
 
-        // new JoystickButton(gamepad, 9).onTrue(stowWrist.withTimeout(2.5));
-
-        //mIConsume.onFalse(new InstantCommand(() -> intake.stopI())); // fight 2
-
-        // mSConsume.onTrue(new InstantCommand(() -> shooter.setSSpeed(0.25)));
-        // mSConsume.onFalse(new InstantCommand(() -> shooter.stopS()));
-
-        mIEject.onTrue(new InstantCommand(() -> 
-            intake.setISpeed(-0.25, false, false)
-            // ext.setPowerArm(0.25)
-            //wrist.setPowerWrist(0.25)
-            ));
-        mIEject.onFalse(new InstantCommand(() -> 
-            intake.stopI()
-            // ext.stopArm()
-            //wrist.stopWrist()
-        )); // fight 4
-
-        mSEject.onTrue(new SequentialCommandGroup(
-            new InstantCommand(()-> intake.checkContact()),
-            new WaitCommand(0.05),
-            new InstantCommand(() -> shooter.setSSpeed(-1.0))
-            // ext.setPowerArm(-0.25)
-            //wrist.setPowerWrist(-0.25)
-        )); // fight 1
-        mSEject.onFalse(new InstantCommand(() -> 
-            shooter.stopS()
-            // ext.stopArm()
-            //wrist.stopWrist()
-        ));
-
         pass.onTrue(new Passing(intake, roller, shooter)); // fight 6
         pass.onFalse(new ParallelCommandGroup(
             new InstantCommand(() -> shooter.stopS()),
@@ -386,34 +326,11 @@ public class RobotContainer {
             new InstantCommand(() -> roller.stopRoller())
         ));
 
-        defaultSpeaker.onTrue(new MoveArm(arm, -8.5));
+        passPosition.onTrue(PassPos);
+
+        amp.onTrue(AmpScore);
 
         
-        // pulse.onTrue(new InstantCommand(() -> intake.pulse(0.5, 4)).withTimeout(1));
-        //pulse.onTrue(new InstantCommand(() -> intake.stopI()));
-
-        // speaker.onTrue(new MoveArm(arm, -9.0));
-
-        //shooting.onTrue(new Shooting(intake));
-
-        // armUp.onTrue(new InstantCommand(() -> swerve.zeroGyro())); // logi 5
-        // // armUp.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
-
-        // armDown.onTrue(new InstantCommand(() -> swerve.resetModulesToAbsolute()));
-
-        // armDown.onTrue(new InstantCommand(() -> arm.armSpeed(-0.15))); // logi 6
-        // armDown.onFalse(new InstantCommand(() -> arm.armSpeed(0)));
-
-        collapsing.onTrue(PassPos.withTimeout(2));
-
-        armIntake.onTrue(new MoveArm(arm, 0.171).withTimeout(2)); //-21.4
-
-        // speaker.onTrue(SpeakerScore);
-
-        // alignSpeaker.whileTrue(new ParallelCommandGroup(
-        //     new InstantCommand(() -> teleopRotationOverride.run()),
-        //     new InstantCommand(() -> arm.setSupplier(swerve::getShootingAngle)),
-        //     new InstantCommand(()->arm.setArmFollow())));
 
         alignSpeaker.whileTrue(new ParallelCommandGroup(
             new InstantCommand(() -> teleopRotationOverride.run()),
@@ -423,12 +340,6 @@ public class RobotContainer {
             new InstantCommand(()-> arm.stopFollowSpeaker()),
             new InstantCommand(() -> teleopRotationOverride.stop(true))
         ));
-
-        ampScore.onTrue(AmpScore);
-        trapScore.onTrue(TrapScore);
-
-        manualSwiffer.onTrue(new InstantCommand(()-> ext.setPowerArm(gamepad.getY())));
-        manualSwiffer.onFalse(new InstantCommand(()-> ext.stopArm()));
 
         climberLUp.onTrue(new InstantCommand(() -> climber.setPower(0.5)));
         climberLUp.onFalse(new InstantCommand(() -> climber.setPower(0)));
@@ -442,115 +353,6 @@ public class RobotContainer {
 
         climberLock.onTrue(new InstantCommand(() -> climber.lock()));
         climberUnlock.onTrue(new InstantCommand(() -> climber.unlock()));
-
-        // new JoystickButton(fight, 3).onTrue(
-        //     new InstantCommand(()->climber.zeroRatchets()));
-
-        // new JoystickButton(fight, 9).whileTrue(
-        //     new RunCommand(()->ext.setPowerArm(-fight.getY())));
-                 
-        // new JoystickButton(fight, 9).onFalse(
-        //     new InstantCommand(()->ext.stopArm(), ext)); 
-
-        // new JoystickButton(fight, 10).whileTrue(
-        //    new PresetWrist(wrist, 2.4));
-
-        // new JoystickButton(fight, 10).whileTrue(
-        //     //new InstantCommand(()->ext.presetArm(13))
-        //     //AmpScore
-        //     new RunCommand(() -> wrist.setPowerWrist(fight.getY()/5), wrist)
-        // );
-        // new JoystickButton(fight, 10).onFalse(
-        //     new InstantCommand(() -> wrist.setPowerWrist(0), wrist)
-        // );
-                 
-        // new JoystickButton(fight, 10).onFalse(
-        //     new InstantCommand(()->ext.stopArm(), ext)); 
-
-        // new JoystickButton(swifferGamepad, 3).onTrue(
-        //     new PresetArm(ext, 0));
-        
-        // new JoystickButton(swifferGamepad, 4).onTrue(
-        //     new PresetArm(ext, -20));
-
-        rollerShoot.onTrue(new RunCommand(()->roller.setPowerRoller(-1, false), roller));
-
-        rollerShoot.onFalse(new RunCommand(()->roller.stopRoller(), roller));
-
-        // new JoystickButton(fight, 7).onTrue(
-        //     new RunCommand(()->roller.setPowerRoller(1.0, false), roller));
-
-        // new JoystickButton(fight, 7).onFalse(
-        //     new RunCommand(()->roller.stopRoller(), roller));
-
-        // new JoystickButton(gamepad, 3).whileTrue(
-        //     new RunCommand(()->intake.setIntakeRaw(0.3), swiffer));
-
-        // new JoystickButton(gamepad, 3).whileFalse(
-        //     new RunCommand(()->intake.stopI()));
-
-        // new JoystickButton(fight, 5).onTrue(
-        //     new InstantCommand(()->arm.setArmPos(-7)));
-
-        // new JoystickButton(fight, 5).onFalse(
-        //     new InstantCommand(()->arm.stopA()));
-
-        // new JoystickButton(joystick2, 6).onTrue(
-        //     new InstantCommand(()->climber.setPower(0.20)));
-        
-        // new JoystickButton(joystick2, 6).onFalse(
-        //     new InstantCommand(()->climber.stopClimber()));
-
-        // new JoystickButton(joystick2, 7).onTrue(
-        //     new InstantCommand(()->climber.setPower(-0.20)));
-        
-        // new JoystickButton(joystick2, 7).onFalse(
-        //     new InstantCommand(()->climber.stopClimber()));
-
-        new JoystickButton(joystick2, 11).onTrue(
-            new InstantCommand(()->climber.setPowerL(0.30)));
-        
-        new JoystickButton(joystick2, 11).onFalse(
-            new InstantCommand(()->climber.stopL()));
-
-        new JoystickButton(joystick2, 10).onTrue(
-            new InstantCommand(()->climber.setPowerL(-0.30)));
-        
-        new JoystickButton(joystick2, 10).onFalse(
-            new InstantCommand(()->climber.stopL()));
-
-        new JoystickButton(joystick2, 7).onTrue(
-            new InstantCommand(()->climber.setPowerR(0.30)));
-        
-        new JoystickButton(joystick2, 7).onFalse(
-            new InstantCommand(()->climber.stopR()));
-
-        new JoystickButton(joystick2, 6).onTrue(
-            new InstantCommand(()->climber.setPowerR(-0.30)));
-        
-        new JoystickButton(joystick2, 6).onFalse(
-            new InstantCommand(()->climber.stopR()));
-        
-        new JoystickButton(joystick2, 8).onTrue(
-            new InstantCommand(()->climber.lock()));
-
-        new JoystickButton(joystick2, 9).onTrue(
-            new InstantCommand(()->climber.unlock()));
-
-        new JoystickButton(joystick1, 11).onTrue(
-            new PresetClimb(climber, -99, 100));
-        
-        new JoystickButton(joystick1, 10).onTrue(
-            new PresetClimb(climber, 1, 5));
-
-        // new JoystickButton(joystick1, 6).onTrue(
-        //     new PresetClimb(climber, 104));
-
-        // new JoystickButton(joystick1, 7).onTrue(
-        //     new PresetClimb(climber, 1));
-
-        // new JoystickButton(gamepad,6).onTrue(
-        //     new InstantCommand(()->arm.armSpeed()));
     }
 
     public Command getAutonomousCommand() {
