@@ -162,12 +162,21 @@ public class RobotContainer {
             );
 
     private SequentialCommandGroup AutonomousSpeaker = new SequentialCommandGroup(
-        new MoveArm(arm, -18.5).withTimeout(0.5),
-        new InstantCommand(() -> shooter.setSSpeed(-1.0)),
-        new WaitCommand(1),
-        new InstantCommand(() -> intake.setIntakeRaw(-1)).withTimeout(1),
-        new InstantCommand(() -> shooter.stopS(), shooter),
-        new InstantCommand(() -> intake.stopI(), intake));
+        new InstantCommand(()-> intake.checkContact()),
+        new WaitCommand(0.05),
+        new ParallelCommandGroup(
+            new InstantCommand(()->arm.followSpeaker()),
+            new InstantCommand(() -> shooter.setSSpeed(-1.0)),
+            new WaitCommand(0.8)
+        ),
+        new InstantCommand(() -> intake.setIntakeRaw(-0.25)).withTimeout(1),
+        new WaitCommand(0.3),
+        new ParallelCommandGroup(
+            new InstantCommand(() -> shooter.stopS(), shooter),
+            new InstantCommand(() -> intake.stopI(), intake),
+            new InstantCommand(()-> arm.stopFollowSpeaker())
+        )
+    );
 
     private SequentialCommandGroup AutonomousSpeaker1 = new SequentialCommandGroup(
         new MoveArm(arm, -14).withTimeout(2),
@@ -365,7 +374,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return new PathPlannerAuto("Penguino");
+        return new PathPlannerAuto("rightToLeft");
         // return autoChooser.getSelected();
     }
 }
