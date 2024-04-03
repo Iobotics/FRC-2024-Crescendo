@@ -86,7 +86,7 @@ public class RobotContainer {
     private final JoystickButton rollerShoot = new JoystickButton(gamepad, 4);
     private final JoystickButton mSEject = new JoystickButton(gamepad, 5);
     private final JoystickButton mIEject = new JoystickButton(gamepad, 6);
-    private final JoystickButton defaultSpeaker = new JoystickButton(gamepad, 7);
+    private final JoystickButton shootWrist = new JoystickButton(gamepad, 7);
     private final JoystickButton trapScore = new JoystickButton(gamepad, 10);
     private final JoystickButton manualSwiffer = new JoystickButton(gamepad, 8);
     private final JoystickButton climbFirst = new JoystickButton(gamepad, 9);
@@ -177,23 +177,38 @@ public class RobotContainer {
 
     private SequentialCommandGroup AutonomousPickup = new SequentialCommandGroup(
         new InstantCommand(() -> shooter.setSSpeed(0.05)).withTimeout(0.1),
-        new InstantCommand(() -> arm.setArmPos(-22.0)).withTimeout(0.5),
+        new InstantCommand(()-> arm.setArmPos(0.171)),
         new Intaking(intake, false, false),
         new ParallelCommandGroup(
-            new MoveArm(arm, -15.5),
-            new InstantCommand(() -> intake.pulse(-0.5, 4))),
-        new ParallelCommandGroup(
-            new InstantCommand(() -> intake.setIntakeRaw(0.1)).withTimeout(0.15),
-            new InstantCommand(() -> shooter.setSSpeed(0.1)).withTimeout(0.15))
-            );
+            new InstantCommand(()-> arm.setArmPos(0.3)),
+            new InstantCommand(() -> intake.pulse(-0.5, 4))
+    ));
+
+
+
+        // new ParallelCommandGroup(
+        //     new MoveArm(arm, -15.5),
+        //     new InstantCommand(() -> intake.pulse(-0.5, 4)));
+        // new ParallelCommandGroup(
+        //     new InstantCommand(() -> intake.setIntakeRaw(0.1)).withTimeout(0.15),
+        //     new InstantCommand(() -> shooter.setSSpeed(0.1)).withTimeout(0.15));
 
     private SequentialCommandGroup AutonomousSpeaker = new SequentialCommandGroup(
-        new MoveArm(arm, -18.5).withTimeout(0.5),
-        new InstantCommand(() -> shooter.setSSpeed(-1.0)),
-        new WaitCommand(1),
-        new InstantCommand(() -> intake.setIntakeRaw(-1)).withTimeout(1),
-        new InstantCommand(() -> shooter.stopS(), shooter),
-        new InstantCommand(() -> intake.stopI(), intake));
+        new InstantCommand(()-> intake.checkContact()),
+        new WaitCommand(0.1),
+        new ParallelCommandGroup(
+            new InstantCommand(()->arm.followSpeaker()),
+            new InstantCommand(() -> shooter.setSSpeed(-1.0)),
+            new WaitCommand(0.8)
+        ),
+        new InstantCommand(() -> intake.setIntakeRaw(-0.25)).withTimeout(1),
+        new WaitCommand(0.3),
+        new ParallelCommandGroup(
+            new InstantCommand(() -> shooter.stopS(), shooter),
+            new InstantCommand(() -> intake.stopI(), intake),
+            new InstantCommand(()-> arm.stopFollowSpeaker())
+        )
+    );
 
     private SequentialCommandGroup AutonomousSpeaker1 = new SequentialCommandGroup(
         new MoveArm(arm, -14).withTimeout(2),
@@ -282,10 +297,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoIntakeNote", AutoNotePickup);
         NamedCommands.registerCommand("AutoSpeakerScore", AutoSpeakerScore);
         NamedCommands.registerCommand("AutonomousIntake", AutonomousIntake);
-        NamedCommands.registerCommand("AutonomousPickup", AutonomousPickup);
+        NamedCommands.registerCommand("AutoPickup", AutonomousPickup);
         NamedCommands.registerCommand("AutonomousSpeaker", AutonomousSpeaker);
         NamedCommands.registerCommand("AutonomousSpeaker1", AutonomousSpeaker1);
         NamedCommands.registerCommand("AutonomousSpeaker2", AutonomousSpeaker2);
+        NamedCommands.registerCommand("stowWrist", new PresetWrist(wrist,50));
         // NamedCommands.registerCommand("VisionSpeaker", VisionSpeaker);
 
         // autoChooser = AutoBuilder.buildAutoChooser();
@@ -386,7 +402,7 @@ public class RobotContainer {
             new InstantCommand(() -> roller.stopRoller())
         ));
 
-        defaultSpeaker.onTrue(new MoveArm(arm, -8.5));
+        shootWrist.onTrue(new PresetWrist(wrist, 50));
 
         
         // pulse.onTrue(new InstantCommand(() -> intake.pulse(0.5, 4)).withTimeout(1));
@@ -555,7 +571,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return new PathPlannerAuto("Penguino");
+        return new PathPlannerAuto("New Auto");
         // return autoChooser.getSelected();
     }
 }

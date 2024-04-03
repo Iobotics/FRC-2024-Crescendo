@@ -70,8 +70,8 @@ public class Swerve extends SubsystemBase {
             this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(8.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(6.0, 0.0, 0.0), // Rotation PID constants
+                    new PIDConstants(1.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(2.0, 0.0, 0.0), // Rotation PID constants
                     2.0, // Max module speed, in m/s
                     0.37268062902, // Drive base radius in meters. Distance from robot center to furthest module.
                     new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -222,9 +222,6 @@ public class Swerve extends SubsystemBase {
             // arctan(y1-y2/x1-x2)
             goalRotation = MathUtil.inputModulus(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX()))+Math.PI,-Math.PI,Math.PI);
         }
-        SmartDashboard.putNumber("goalrot", Math.toDegrees(goalRotation));
-        SmartDashboard.putNumber("goalX", currentPose.minus(goalPose).getX());
-        SmartDashboard.putNumber("goalY", currentPose.minus(goalPose).getY());
         return new Pose2d(currentPose.minus(goalPose).getTranslation(),new Rotation2d(goalRotation));
     }
     /**
@@ -249,6 +246,10 @@ public class Swerve extends SubsystemBase {
         double shootingAngle = 0;
         Pose2d poseToSpeaker = getPoseToSpeaker();
         double distanceToSpeaker = Math.hypot(poseToSpeaker.getX(),poseToSpeaker.getY());
+
+        if (DriverStation.isAutonomous()) {
+            distanceToSpeaker -= 0.2;
+        }
         if (distanceToSpeaker < 1.0) {
             shootingAngle = 5.2*(distanceToSpeaker-0.7)-22.0;
         } 
@@ -292,7 +293,6 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
-        getPoseToGoal(16.5793, 5.5479);
         swerveOdometry.update(getGyroYaw(), getModulePositions());
         poseEstimator.update(getGyroYaw(), getModulePositions());
         SmartDashboard.putNumber("X",getEstPose().getX());
