@@ -168,7 +168,7 @@ public class RobotContainer {
             );
 
     private SequentialCommandGroup AutonomousSpeaker = new SequentialCommandGroup(
-        new MoveArm(arm, -18.5).withTimeout(0.5),
+        new MoveArm(arm, -18.5),
         new InstantCommand(() -> shooter.setSSpeed(-1.0)),
         new WaitCommand(1),
         new InstantCommand(() -> intake.setIntakeRaw(-1)).withTimeout(1),
