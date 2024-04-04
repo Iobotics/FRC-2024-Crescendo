@@ -53,10 +53,9 @@ public class Extension extends SubsystemBase{
         arm.setSmartCurrentLimit(30); //limit or reduce power
  
         //setup PID
-        kPArm = 9e-4; //proportional gain
-        kIArm = 2e-6; //integral gain
-        // kIArm = 0.0;
-        kDArm = 0.0; //derivative gain
+        kPArm = 1e-3; //proportional gain
+        kIArm = 0; //integral gain
+        kDArm = 2e-6; //derivative gain
         kIzArm = 0.0; //don't touch this
         kFFArm = 0.000156; //don't touch this either
         kMaxOutputArm = 1; //maximum power

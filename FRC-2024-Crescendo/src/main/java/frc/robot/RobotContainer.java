@@ -86,6 +86,7 @@ public class RobotContainer {
     private final JoystickButton revRoller = new JoystickButton(gamepad, 10);
     private final JoystickButton wristShotPos = new JoystickButton(gamepad, 11);
     private final JoystickButton trapAssist = new JoystickButton(gamepad, 12);
+    private final JoystickButton stowWristClimb = new JoystickButton(gamepad, 9);
 
     //Manual Buttons
     private final JoystickButton climberLUp = new JoystickButton(fight, 4); //green
@@ -269,6 +270,8 @@ public class RobotContainer {
         /* Driver Buttons */
 
         /* SUBSYSTEMS */
+
+        stowWristClimb.onTrue(new PresetWrist(wrist, 30)); 
 
         plainSpeaker.onTrue(new MoveArm(arm, -18.5));
 
