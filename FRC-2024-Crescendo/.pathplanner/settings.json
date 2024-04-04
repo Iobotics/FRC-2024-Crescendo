@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "robotWidth": 0.9,
   "robotLength": 0.9,
   "holonomicMode": true,
@@ -8,5 +9,19 @@
   "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 360.0,
   "defaultMaxAngAccel": 360.0,
+=======
+  "robotWidth": 0.8,
+  "robotLength": 0.8,
+  "holonomicMode": true,
+  "pathFolders": [
+    "center",
+    "right"
+  ],
+  "autoFolders": [],
+  "defaultMaxVel": 1.0,
+  "defaultMaxAccel": 0.7,
+  "defaultMaxAngVel": 180.0,
+  "defaultMaxAngAccel": 90.0,
+>>>>>>> compControls
   "maxModuleSpeed": 2.0
 }

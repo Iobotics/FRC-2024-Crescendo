@@ -16,6 +16,33 @@
           "data": {
             "pathName": "Example Path"
           }
+<<<<<<< HEAD
+=======
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": null
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": null
+          }
+>>>>>>> compControls
         }
       ]
     }

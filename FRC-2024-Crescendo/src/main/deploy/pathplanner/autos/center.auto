@@ -1,0 +1,93 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 15.267147972018359,
+      "y": 5.55076982040085
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonomousSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "center1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoPickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "stowWrist"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonomousSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "center2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoPickup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "center3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutonomousSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "centerMid"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -2,6 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
+<<<<<<< HEAD
       "x": 15.5,
       "y": 6.75
     },
@@ -26,6 +27,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
+=======
+>>>>>>> compControls
       "x": 15.25,
       "y": 6.75
     },

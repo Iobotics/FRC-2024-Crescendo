@@ -3,12 +3,20 @@
   "waypoints": [
     {
       "anchor": {
+<<<<<<< HEAD
         "x": 15.5,
+=======
+        "x": 15.25,
+>>>>>>> compControls
         "y": 6.75
       },
       "prevControl": null,
       "nextControl": {
+<<<<<<< HEAD
         "x": 14.633974596215563,
+=======
+        "x": 14.383974596215563,
+>>>>>>> compControls
         "y": 6.250000000000001
       },
       "isLocked": false,
@@ -16,6 +24,7 @@
     },
     {
       "anchor": {
+<<<<<<< HEAD
         "x": 13.1567425039612,
         "y": 6.6456209102894395
       },
@@ -26,6 +35,18 @@
       "nextControl": {
         "x": 11.599435341813848,
         "y": 6.6456209102894395
+=======
+        "x": 11.91306696140573,
+        "y": 6.465729037652767
+      },
+      "prevControl": {
+        "x": 13.446715128509883,
+        "y": 6.19530548687822
+      },
+      "nextControl": {
+        "x": 10.379418794301579,
+        "y": 6.736152588427314
+>>>>>>> compControls
       },
       "isLocked": false,
       "linkedName": null
@@ -33,11 +54,19 @@
     {
       "anchor": {
         "x": 9.0,
+<<<<<<< HEAD
         "y": 5.740335089692736
       },
       "prevControl": {
         "x": 9.956943722469653,
         "y": 5.740335089692736
+=======
+        "y": 6.75
+      },
+      "prevControl": {
+        "x": 9.86602540378444,
+        "y": 6.25
+>>>>>>> compControls
       },
       "nextControl": null,
       "isLocked": false,
@@ -49,6 +78,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 1.0,
+<<<<<<< HEAD
     "maxAcceleration": 1.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 360.0
@@ -56,12 +86,25 @@
   "goalEndState": {
     "velocity": 0.0,
     "rotation": 180.0,
+=======
+    "maxAcceleration": 0.7,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 90.0
+  },
+  "goalEndState": {
+    "velocity": 1.0,
+    "rotation": 135.0,
+>>>>>>> compControls
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
+<<<<<<< HEAD
     "rotation": 120.0,
+=======
+    "rotation": 135.0,
+>>>>>>> compControls
     "velocity": 0
   },
   "useDefaultConstraints": true

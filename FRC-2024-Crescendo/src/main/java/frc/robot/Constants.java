@@ -6,7 +6,6 @@ package frc.robot;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -64,7 +63,7 @@ public final class Constants {
         public static final Pose2d redSource = new Pose2d(0.9088,0.5648,   new Rotation2d(Math.toRadians(-120)));
         public static final Pose2d redStageCenter = new Pose2d(11.2202, 4.1051, new Rotation2d(Math.toRadians(180)));
         public static final Pose2d redStageLeft = new Pose2d(11.9047, 3.7132, new Rotation2d(Math.toRadians(-60)));
-        public static final Pose2d redStageRight = new Pose2d(11.9047, 4.4983, new Rotation2d(Math.toRadians(60)));
+        public static final Pose2d redStageRight = new Pose2d(12.49047, 4.5983, new Rotation2d(Math.toRadians(120)));
         public static final Pose2d blueSpeaker = new Pose2d(-0.0381, 5.5479,   new Rotation2d(Math.toRadians(0)));
         public static final Pose2d blueAmp = new Pose2d(1.8415, 8.2042,  new Rotation2d(Math.toRadians(-90)));
         public static final Pose2d blueSource = new Pose2d(15.6323,0.5648,  new Rotation2d(Math.toRadians(-60)));
@@ -77,9 +76,12 @@ public final class Constants {
         public static final String kIntakeCameraName = "Intake_Camera";
         public static final int COLORED_SHAPE_PIPELINE = 0;
         public static final int APRILTAG_PIPELINE = 1;
-        public static final Transform3d kRobotToCam = 
-                new Transform3d(new Translation3d(0.0, 0.2079244, 0.0), new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
+        public static final Transform3d kRobotToSwifferCam = 
+                new Transform3d(new Translation3d(-0.224424, 0.0, 0.0), new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
         // 0.2079244, 0.2940558
+        public static final Transform3d kRobotToIntakeCam =
+                new Transform3d(new Translation3d(0.328276, 0.0, 0.0), new Rotation3d(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0)));
+
         public static final List<AprilTag> apriltags = Arrays.asList(
             new AprilTag(1, new Pose3d(new Translation3d(15.0795, 0.2459, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians(120.0)))),
             new AprilTag(2, new Pose3d(new Translation3d(16.1851, 0.8837, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians( 120.0)))),
@@ -119,11 +121,12 @@ public final class Constants {
          * meters.
          */
 
+        @SuppressWarnings("removal")
         public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
         .fill(
             0.1, // x
             0.1, // y
-            0.2 * Math.PI // theta
+            0.05 * Math.PI // theta
         );
 
         /**
@@ -132,6 +135,7 @@ public final class Constants {
          * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
          * radians.
          */
+        @SuppressWarnings("removal")
         public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
             .fill(
                 1, // x
@@ -153,10 +157,10 @@ public final class Constants {
 
     public static final class SwifferConstants{
         public static final int kArm = 23; //please change when ready
-        public static final int kWrist = 25; //please change when ready
-        public static final int kRoller = 24; //please change when ready
+        public static final int kWrist = 24; //please change when ready
+        public static final int kRoller = 25; //please change when ready
 
-        public static final int kDigitalInput = 2; //please change when ready
+        public static final int kDigitalInput = 1; //please change when ready
     }
 
     public static final class ClimberConstants{
@@ -238,9 +242,9 @@ public final class Constants {
         public static final double angleKF = chosenModule.angleKF;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.05; // TODO: This must be tuned to specific robot
-        public static final double driveKI = 0.0;
-        public static final double driveKD = 0.0;
+        public static final double driveKP = 0.025; // TODO: This must be tuned to specific robot
+        public static final double driveKI = 0.001;
+        public static final double driveKD = 0.015;
         public static final double driveKF = 0.0;
 
         /*
@@ -267,7 +271,7 @@ public final class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 3;
             public static final int canCoderID = 10;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(19.86);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(94.39);
             public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = true;
@@ -280,7 +284,7 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 11;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(16.17);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(73.12);
             public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = false;
@@ -293,7 +297,7 @@ public final class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(132.80);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(72.95);
             public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = true;
@@ -306,7 +310,7 @@ public final class Constants {
             public static final int driveMotorID = 8;
             public static final int angleMotorID = 9;
             public static final int canCoderID = 13;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(351.29);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(345.85);
             public static final double CANoffsets = 0;
             public static final boolean invertedA = true;
             public static final boolean invertedD = false;

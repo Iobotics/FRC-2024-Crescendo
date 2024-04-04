@@ -7,15 +7,10 @@ package frc.robot.Subsystems;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.Utils.Conversions;
 import frc.robot.Utils.SwerveModuleInterface;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -31,6 +26,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -75,9 +71,9 @@ public class Swerve extends SubsystemBase {
             this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
             new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(1, 0, 0), // Translation PID constants
-                    new PIDConstants(1, 0, 0), // Rotation PID constants
-                    1.0, // Max module speed, in m/s
+                    new PIDConstants(1.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(2.0, 0.0, 0.0), // Rotation PID constants
+                    2.0, // Max module speed, in m/s
                     0.37268062902, // Drive base radius in meters. Distance from robot center to furthest module.
                     new ReplanningConfig() // Default path replanning config. See the API for the options here
             ),
@@ -118,7 +114,6 @@ public class Swerve extends SubsystemBase {
                                     rotation)
                                 );
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveConstants.maxSpeed);
-        SmartDashboard.putNumber("desiredrot",speeds.omegaRadiansPerSecond);
 
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
@@ -128,13 +123,12 @@ public class Swerve extends SubsystemBase {
 
     // test for pathplanner
     public void driveRobotRelative(ChassisSpeeds desiredChassisSpeeds) {
-        SmartDashboard.putNumber("swerverotationout", desiredChassisSpeeds.omegaRadiansPerSecond);
         setModuleStates(Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(ChassisSpeeds.discretize(desiredChassisSpeeds, 0.02)));
     }
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, 1.0);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, 2.0);
         
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(desiredStates[mod.moduleNumber], true);
@@ -188,7 +182,6 @@ public class Swerve extends SubsystemBase {
     /** calls pose estimator for latest position
      * @return Pose2d in meters*/
     public Pose2d getEstPose() {
-        SmartDashboard.putNumber("estrot",poseEstimator.getEstimatedPosition().getRotation().getDegrees());
         return poseEstimator.getEstimatedPosition();
     }
 
@@ -228,9 +221,6 @@ public class Swerve extends SubsystemBase {
             // arctan(y1-y2/x1-x2)
             goalRotation = MathUtil.inputModulus(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX()))+Math.PI,-Math.PI,Math.PI);
         }
-        SmartDashboard.putNumber("goalrot", Math.toDegrees(goalRotation));
-        SmartDashboard.putNumber("goalX", currentPose.minus(goalPose).getX());
-        SmartDashboard.putNumber("goalY", currentPose.minus(goalPose).getY());
         return new Pose2d(currentPose.minus(goalPose).getTranslation(),new Rotation2d(goalRotation));
     }
     /**
@@ -243,6 +233,10 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPoseToSpeaker() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()){
+            return getPoseToGoal((alliance.get() == Alliance.Red) ? Constants.VisionConstants.redSpeaker : Constants.VisionConstants.blueSpeaker,false);
+        }
         return getPoseToGoal(Constants.VisionConstants.redSpeaker,false);
     }
     
@@ -255,20 +249,34 @@ public class Swerve extends SubsystemBase {
         double shootingAngle = 0;
         Pose2d poseToSpeaker = getPoseToSpeaker();
         double distanceToSpeaker = Math.hypot(poseToSpeaker.getX(),poseToSpeaker.getY());
-        if (distanceToSpeaker < 2.0) {
-            shootingAngle = 2.0*(distanceToSpeaker-0.8)-9.0;
+
+        distanceToSpeaker -= 0.2;
+        if (distanceToSpeaker < 1.0) {
+            shootingAngle = 5.2*(distanceToSpeaker-0.7)-22.0;
+        } 
+        else if (distanceToSpeaker < 1.5) {
+            shootingAngle = 4.8*(distanceToSpeaker-0.7)-22.0;
+        }
+        else if (distanceToSpeaker < 2.0) {
+            shootingAngle = 4.6*(distanceToSpeaker-0.7)-22.0;
+        }
+        else if (distanceToSpeaker < 2.5) {
+            shootingAngle = 4.3*(distanceToSpeaker-0.7)-22.0;
+        }
+        else if (distanceToSpeaker < 3.0) {
+            shootingAngle = 4.1*(distanceToSpeaker-0.7)-22.0;
+        }
+        else if (distanceToSpeaker < 3.5) {
+            shootingAngle = 3.5*(distanceToSpeaker-0.7)-22.0;
+        }
+        else if (distanceToSpeaker < 4.0) {
+            shootingAngle = 3.3*(distanceToSpeaker-0.7)-22.0;
         }
         else {
-            shootingAngle = 1.3*(distanceToSpeaker-0.8)-9.0;
+            shootingAngle = (-1.5*Math.pow(distanceToSpeaker/2.8 - 3,2)) - 10;
         }
-        /*
-         * 0.8, -9
-         * 2.79240671479449, -6.409871270767164 too high, 
-         * 3.015658735575344, -6.119643643752052
-         * 4.118724891630674, -4.685657640880123 too low
-         * 4.284403100159929, -5.51559689984007 too high
-         * 5.073239844268676, -4.299436171304455
-         */
+
+        shootingAngle = (shootingAngle/78.853)+0.45;
         SmartDashboard.putNumber("distanceToSpeaker", distanceToSpeaker);
         SmartDashboard.putNumber("Estimated Shooter Angle", shootingAngle);
         return shootingAngle;
@@ -276,23 +284,21 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
-        getPoseToGoal(16.5793, 5.5479);
         swerveOdometry.update(getGyroYaw(), getModulePositions());
         poseEstimator.update(getGyroYaw(), getModulePositions());
-        SmartDashboard.putNumber("X",getEstPose().getX());
-        SmartDashboard.putNumber("Y",getEstPose().getY());
-        SmartDashboard.putNumber("Rotation",getEstPose().getRotation().getDegrees());
-        SmartDashboard.putNumber("Gyro", MathUtil.inputModulus(getGyroYaw().getDegrees(),-180,180));
+        // SmartDashboard.putNumber("X",getEstPose().getX());
+        // SmartDashboard.putNumber("Y",getEstPose().getY());
+        // SmartDashboard.putNumber("Rotation",getEstPose().getRotation().getDegrees());
+        // SmartDashboard.putNumber("Gyro", MathUtil.inputModulus(getGyroYaw().getDegrees(),-180,180));
         m_field.setRobotPose(poseEstimator.getEstimatedPosition());
         SmartDashboard.putData("Field", m_field);
         
 
         // for(SwerveModuleInterface mod : mSwerveMods){
         //     var moduleNumber = mod.getModuleNumber();
-        //     SmartDashboard.putNumber("Mod " + moduleNumber + " CANcoder", mod.getCANcoder().getDegrees()*360);
+        //     SmartDashboard.putNumber("Mod " + moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
         //     SmartDashboard.putNumber("Mod " + moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
         //     SmartDashboard.putNumber("Mod " + moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
-        //     SmartDashboard.putNumber("Mod " + moduleNumber + " Absolute", Conversions.sparkToDegrees(mod.getAbsolutePosition(), Constants.SwerveConstants.angleGearRatio));
         // }
     }
 }
