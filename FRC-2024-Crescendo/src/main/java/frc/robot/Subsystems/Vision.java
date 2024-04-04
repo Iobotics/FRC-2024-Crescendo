@@ -19,10 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 public class Vision extends SubsystemBase{
     public final PhotonCamera swifferCamera;
     public final PhotonCamera intakeCamera;
-    @SuppressWarnings("unused")
-    private int intakeCameraPipeline;
     public boolean intakeCameraFree;
-    public double latestAngle;
 
     private AprilTagFieldLayout aprilTagFieldLayout;
     public final PhotonPoseEstimator swifferPoseEstimator;
@@ -48,10 +45,8 @@ public class Vision extends SubsystemBase{
             aprilTagFieldLayout, 
             PoseStrategy.CLOSEST_TO_LAST_POSE, 
             intakeCamera, 
-            VisionConstants.kRobotToIntakeCam);
-
-
-        this.intakeCameraPipeline = 0;
+            VisionConstants.kRobotToIntakeCam
+            );
         swifferPoseEstimator.setLastPose(new Pose2d(15.2,5.5,new Rotation2d(Math.toRadians(180))));
         intakePoseEstimator.setLastPose(new Pose2d(15.2,5.5,new Rotation2d(Math.toRadians(180))));
     } 
@@ -68,34 +63,6 @@ public class Vision extends SubsystemBase{
         return Optional.empty();
     }
 
-    // public double getEstimatedYaw() {
-    //     if (this.latestEstimatedPose == null) {
-    //         return 0;
-    //     }
-    //     double estimatedYaw = -Math.toDegrees(this.latestEstimatedPose.estimatedPose.getRotation().getZ());
-    //     SmartDashboard.putNumber("estimatedYaw", estimatedYaw);
-    //     return estimatedYaw;
-    // }
-
-    // public double getAngleToGoal(double goalX, double goalY) {
-    //     Pose2d goalPose = new Pose2d(goalX, goalY, new Rotation2d());
-    //     Pose2d currentPose = swerve.getEstPose();
-    //     double goalRotation = Math.toDegrees(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX())));
-    //     SmartDashboard.putNumber("toSpeaker", goalRotation);
-    //     SmartDashboard.putNumber("goalX", currentPose.minus(goalPose).getX());
-    //     SmartDashboard.putNumber("goalY", currentPose.minus(goalPose).getY());
-    //     return goalRotation;
-    // }
-
-    // public double getEstimatedYaw() {
-    //     var estimatedPose = getEstimatedRobotPose();
-    //     if (estimatedPose.isPresent()) {
-    //         SmartDashboard.putNumber("estimatedrots", estimatedPose.get().estimatedPose.getRotation().getZ());
-    //         return estimatedPose.get().estimatedPose.getRotation().getAngle();
-    //     }
-    //     return 0;
-    // }
-
     @Override
     public void periodic(){
         var swifferResult = this.swifferCamera.getLatestResult();
@@ -105,7 +72,6 @@ public class Vision extends SubsystemBase{
             Pose3d bestEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToSwifferCam);
             // Pose3d altEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getAlternateCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToCam);
             
-            this.latestAngle = bestEstimate.toPose2d().getRotation().getDegrees();
             var estimatedPose = swifferPoseEstimator.update(swifferResult);
         
             if (estimatedPose.isPresent() && this.swifferCamera.getLatestResult().hasTargets() && !DriverStation.isAutonomousEnabled()){
@@ -113,24 +79,18 @@ public class Vision extends SubsystemBase{
             }
         }
 
-        SmartDashboard.putBoolean("intakeline", intakeCameraFree);
-
-        // if (intakeCameraFree) {
-        //     var intakeResult = this.intakeCamera.getLatestResult();
-
-        //     if (intakeResult.hasTargets()) {
-        //         var target = intakeResult.getBestTarget();
-        //         Pose3d bestEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToIntakeCam);
-        //         // Pose3d altEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getAlternateCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToCam);
-                
-        //         this.latestAngle = bestEstimate.toPose2d().getRotation().getDegrees();
-        //         var estimatedPose = swifferPoseEstimator.update(intakeResult);
+        var intakeResult = this.intakeCamera.getLatestResult();
+        if (intakeResult.hasTargets()) {
+            var target = intakeResult.getBestTarget();
+            Pose3d bestEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToIntakeCam);
+            // Pose3d altEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getAlternateCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToCam);
             
-        //         if (estimatedPose.isPresent() && this.intakeCamera.getLatestResult().hasTargets() && !DriverStation.isAutonomousEnabled()){
-        //             swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);
-        //         }
-        //     }
-        // }
+            var estimatedPose = swifferPoseEstimator.update(intakeResult);
+        
+            if (estimatedPose.isPresent() && this.intakeCamera.getLatestResult().hasTargets() && !DriverStation.isAutonomousEnabled()){
+                swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);
+            }
+        }
     }
     
     /* tag id to location

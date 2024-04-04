@@ -77,10 +77,10 @@ public final class Constants {
         public static final int COLORED_SHAPE_PIPELINE = 0;
         public static final int APRILTAG_PIPELINE = 1;
         public static final Transform3d kRobotToSwifferCam = 
-                new Transform3d(new Translation3d(0.0, 0.2079244, 0.0), new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
+                new Transform3d(new Translation3d(-0.224424, 0.0, 0.0), new Rotation3d(0, Math.toRadians(25), Math.toRadians(180)));
         // 0.2079244, 0.2940558
         public static final Transform3d kRobotToIntakeCam =
-                new Transform3d(new Translation3d(0.0, -0.2079244, 0.0), new Rotation3d(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0)));
+                new Transform3d(new Translation3d(0.328276, 0.0, 0.0), new Rotation3d(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0)));
 
         public static final List<AprilTag> apriltags = Arrays.asList(
             new AprilTag(1, new Pose3d(new Translation3d(15.0795, 0.2459, 1.3559), new Rotation3d(0.0, 0.0, Math.toRadians(120.0)))),

@@ -20,12 +20,12 @@
         "y": 5.765307408477413
       },
       "prevControl": {
-        "x": 14.224731492630326,
-        "y": 6.069363324387629
+        "x": 14.106249255152543,
+        "y": 6.409865331579004
       },
       "nextControl": {
-        "x": 13.779254220482802,
-        "y": 5.6238860522401035
+        "x": 13.865341586070693,
+        "y": 5.57311440787955
       },
       "isLocked": false,
       "linkedName": "rightPathCenterPickup"
@@ -65,7 +65,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": null,
+  "folder": "right",
   "previewStartingState": {
     "rotation": 141.20344790199024,
     "velocity": 0

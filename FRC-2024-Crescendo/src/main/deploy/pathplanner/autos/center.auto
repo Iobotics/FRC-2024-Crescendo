@@ -80,22 +80,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "centerMid"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoPickup"
-                }
-              }
-            ]
+            "pathName": "centerMid"
           }
         }
       ]

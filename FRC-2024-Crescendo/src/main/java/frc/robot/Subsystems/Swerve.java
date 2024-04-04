@@ -26,6 +26,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -113,7 +114,6 @@ public class Swerve extends SubsystemBase {
                                     rotation)
                                 );
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveConstants.maxSpeed);
-        SmartDashboard.putNumber("desiredrot",speeds.omegaRadiansPerSecond);
 
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
@@ -128,7 +128,7 @@ public class Swerve extends SubsystemBase {
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.SwerveConstants.maxSpeed / 4);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, 2.0);
         
         for(SwerveModule mod : mSwerveMods){
             mod.setDesiredState(desiredStates[mod.moduleNumber], true);
@@ -182,7 +182,6 @@ public class Swerve extends SubsystemBase {
     /** calls pose estimator for latest position
      * @return Pose2d in meters*/
     public Pose2d getEstPose() {
-        SmartDashboard.putNumber("estrot",poseEstimator.getEstimatedPosition().getRotation().getDegrees());
         return poseEstimator.getEstimatedPosition();
     }
 
@@ -234,6 +233,10 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPoseToSpeaker() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()){
+            return getPoseToGoal((alliance.get() == Alliance.Red) ? Constants.VisionConstants.redSpeaker : Constants.VisionConstants.blueSpeaker,false);
+        }
         return getPoseToGoal(Constants.VisionConstants.redSpeaker,false);
     }
     
@@ -247,9 +250,7 @@ public class Swerve extends SubsystemBase {
         Pose2d poseToSpeaker = getPoseToSpeaker();
         double distanceToSpeaker = Math.hypot(poseToSpeaker.getX(),poseToSpeaker.getY());
 
-        if (DriverStation.isAutonomous()) {
-            distanceToSpeaker -= 0.2;
-        }
+        distanceToSpeaker -= 0.2;
         if (distanceToSpeaker < 1.0) {
             shootingAngle = 5.2*(distanceToSpeaker-0.7)-22.0;
         } 
@@ -275,18 +276,9 @@ public class Swerve extends SubsystemBase {
             shootingAngle = (-1.5*Math.pow(distanceToSpeaker/2.8 - 3,2)) - 10;
         }
 
-        // shootingAngle = (-1.5*Math.pow(distanceToSpeaker/2.8 - 3,2)) - 10;
-        /*
-         * 0.8, -9
-         * 2.79240671479449, -6.409871270767164 too high, 
-         * 3.015658735575344, -6.119643643752052
-         * 4.118724891630674, -4.685657640880123 too low
-         * 4.284403100159929, -5.51559689984007 too high
-         * 5.073239844268676, -4.299436171304455
-         */
+        shootingAngle = (shootingAngle/78.853)+0.45;
         SmartDashboard.putNumber("distanceToSpeaker", distanceToSpeaker);
         SmartDashboard.putNumber("Estimated Shooter Angle", shootingAngle);
-        shootingAngle = (shootingAngle/78.853)+0.45;
         return shootingAngle;
     }
 
@@ -294,10 +286,10 @@ public class Swerve extends SubsystemBase {
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
         poseEstimator.update(getGyroYaw(), getModulePositions());
-        SmartDashboard.putNumber("X",getEstPose().getX());
-        SmartDashboard.putNumber("Y",getEstPose().getY());
-        SmartDashboard.putNumber("Rotation",getEstPose().getRotation().getDegrees());
-        SmartDashboard.putNumber("Gyro", MathUtil.inputModulus(getGyroYaw().getDegrees(),-180,180));
+        // SmartDashboard.putNumber("X",getEstPose().getX());
+        // SmartDashboard.putNumber("Y",getEstPose().getY());
+        // SmartDashboard.putNumber("Rotation",getEstPose().getRotation().getDegrees());
+        // SmartDashboard.putNumber("Gyro", MathUtil.inputModulus(getGyroYaw().getDegrees(),-180,180));
         m_field.setRobotPose(poseEstimator.getEstimatedPosition());
         SmartDashboard.putData("Field", m_field);
         

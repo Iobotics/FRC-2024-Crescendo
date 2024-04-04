@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 15.884222302795749,
-      "y": 6.673969989161352
+      "x": 15.23454117998284,
+      "y": 5.583099697005081
     },
-    "rotation": 120.0
+    "rotation": -178.8982938847936
   },
   "command": {
     "type": "sequential",
@@ -31,6 +31,12 @@
                 "type": "named",
                 "data": {
                   "name": "AutoPickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "stowWrist"
                 }
               }
             ]
@@ -78,15 +84,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "AutoPickup"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutonomousSpeaker"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoPickup"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutonomousSpeaker"
+                      }
+                    }
+                  ]
                 }
               }
             ]

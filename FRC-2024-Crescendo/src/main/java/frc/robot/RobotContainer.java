@@ -140,26 +140,14 @@ public class RobotContainer {
         new PresetWrist(wrist, 25.666).withTimeout(3)
     );
 
-    private SequentialCommandGroup AutoNotePickup = new SequentialCommandGroup(
-            new InstantCommand(()-> arm.setArmPos(-20.8)).withTimeout(2),
-            new ParallelCommandGroup(new AutoIntakeNote(vision,swerve,intake), 
-            new Intaking(intake, false, false)),
-            new MoveArm(arm, 0.17),
-            new InstantCommand(() -> intake.pulse(-0.5, 4)));
-
-    private Command AutonomousIntake = new InstantCommand(()-> arm.setArmPos(0.17)).withTimeout(2);
-
     private SequentialCommandGroup AutonomousPickup = new SequentialCommandGroup(
         new InstantCommand(() -> shooter.setSSpeed(0.05)).withTimeout(0.1),
-        new InstantCommand(() -> arm.setArmPos(-22.0)).withTimeout(0.5),
+        new InstantCommand(()-> arm.setArmPos(0.171)),
         new Intaking(intake, false, false),
         new ParallelCommandGroup(
-            new MoveArm(arm, -15.5),
-            new InstantCommand(() -> intake.pulse(-0.5, 4))),
-        new ParallelCommandGroup(
-            new InstantCommand(() -> intake.setIntakeRaw(0.1)).withTimeout(0.15),
-            new InstantCommand(() -> shooter.setSSpeed(0.1)).withTimeout(0.15))
-            );
+            new InstantCommand(()-> arm.setArmPos(0.3)),
+            new InstantCommand(() -> intake.pulse(-0.5, 4))
+    ));
 
     private SequentialCommandGroup AutonomousSpeaker = new SequentialCommandGroup(
         new InstantCommand(()-> intake.checkContact()),
@@ -178,36 +166,8 @@ public class RobotContainer {
         )
     );
 
-    private SequentialCommandGroup AutonomousSpeaker1 = new SequentialCommandGroup(
-        new MoveArm(arm, -14).withTimeout(2),
-        new InstantCommand(() -> shooter.setSSpeed(-1.0)),
-        new WaitCommand(1),
-        new InstantCommand(() -> intake.setIntakeRaw(-1)).withTimeout(1),
-        new InstantCommand(() -> shooter.stopS(), shooter),
-        new InstantCommand(() -> intake.stopI(), intake));
-
-    private SequentialCommandGroup AutonomousSpeaker2 = new SequentialCommandGroup(
-        new MoveArm(arm, -13.4).withTimeout(2),
-        new InstantCommand(() -> shooter.setSSpeed(-1.0)).withTimeout(1),
-        new WaitCommand(1),
-        new InstantCommand(() -> intake.setIntakeRaw(-1)).withTimeout(1),
-        new InstantCommand(() -> shooter.stopS(), shooter),
-        new InstantCommand(() -> intake.stopI(), intake));
-
-
-    private SequentialCommandGroup AutoSpeakerScore = new SequentialCommandGroup(
-        new InstantCommand(() -> shooter.setSSpeed(-1.0)),
-        new RunCommand(()->arm.setArmPos(swerve.getShootingAngle())).withTimeout(1.5),
-        new WaitCommand(1.0),
-        new InstantCommand(() -> intake.setISpeed(-0.25, false, false)),
-        new InstantCommand(() -> shooter.stopS()),
-        new InstantCommand(() -> intake.stopI())
-    );
-
-    private Command goToStageRight = new gotoGoal(VisionConstants.redStageRight,swerve);
-
     //Allows for Autos to be chosen in Shuffleboard
-    SendableChooser<Command> autoChooser;
+    private final SendableChooser<String> autoChooser;
     
     TeleopSwerve teleopSwerve = new TeleopSwerve(
                 swerve, 
@@ -242,14 +202,9 @@ public class RobotContainer {
         swerve.resetModulesToAbsolute();
         arm.setDefaultCommand(new InstantCommand(() -> arm.brake(), arm));
 
-        // NamedCommands.registerCommand("exampleCommand", subsystem.exampleCommand);
-        NamedCommands.registerCommand("AutoIntakeNote", AutoNotePickup);
-        NamedCommands.registerCommand("AutoSpeakerScore", AutoSpeakerScore);
-        NamedCommands.registerCommand("AutonomousIntake", AutonomousIntake);
-        NamedCommands.registerCommand("AutonomousPickup", AutonomousPickup);
+        NamedCommands.registerCommand("AutoPickup", AutonomousPickup);
         NamedCommands.registerCommand("AutonomousSpeaker", AutonomousSpeaker);
-        NamedCommands.registerCommand("AutonomousSpeaker1", AutonomousSpeaker1);
-        NamedCommands.registerCommand("AutonomousSpeaker2", AutonomousSpeaker2);
+        NamedCommands.registerCommand("stowWrist", new PresetWrist(wrist, 50));
         // NamedCommands.registerCommand("VisionSpeaker", VisionSpeaker);
 
         // autoChooser = AutoBuilder.buildAutoChooser();
@@ -262,6 +217,11 @@ public class RobotContainer {
         // Configure the controller bindings
         arm.configureSpeakerFollow(swerve::getShootingAngle);
         configureBindings();
+
+        autoChooser = new SendableChooser<>();
+        autoChooser.setDefaultOption("center", "center");
+        autoChooser.addOption("rightToLeft", "rightToLeft");
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     public void configureBindings() {
@@ -275,13 +235,6 @@ public class RobotContainer {
         resetWheels.onTrue(new InstantCommand(() -> swerve.resetModulesToAbsolute()));
 
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
-
-        autoIntakeNote.onTrue(AutoNotePickup);
-
-        alignToRightStage.onTrue(goToStageRight);
-        alignToRightStage.onFalse(new InstantCommand(() -> goToStageRight.cancel()));
-
-        cancelAutoSwerveCommands.onTrue(new InstantCommand(()->AutoNotePickup.cancel()));
 
         manualRollerIn.onTrue(new RunCommand(()->roller.setPowerRoller(1.0,false), roller));
         manualRollerIn.onFalse(new RunCommand(()->roller.stopRoller(),roller));
@@ -374,7 +327,6 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return new PathPlannerAuto("rightToLeft");
-        // return autoChooser.getSelected();
+        return new PathPlannerAuto(autoChooser.getSelected());
     }
 }
