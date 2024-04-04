@@ -266,12 +266,12 @@ public class RobotContainer {
             )
         );
 
-    //     pass.onTrue(new Passing(intake, roller, shooter)); // fight 6
-    //     pass.onFalse(new ParallelCommandGroup(
-    //         new InstantCommand(() -> shooter.stopS()),
-    //         new InstantCommand(() -> intake.stopI()),
-    //         new InstantCommand(() -> roller.stopRoller())
-    //     ));
+        pass.onTrue(new Passing(intake, roller, shooter)); // fight 6
+        pass.onFalse(new ParallelCommandGroup(
+            new InstantCommand(() -> shooter.stopS()),
+            new InstantCommand(() -> intake.stopI()),
+            new InstantCommand(() -> roller.stopRoller())
+        ));
 
         passPosition.onTrue(PassPos);
 
