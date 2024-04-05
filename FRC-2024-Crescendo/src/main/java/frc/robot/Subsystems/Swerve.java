@@ -245,20 +245,15 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPoseToSpeaker() {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()){
-            if (allianceColor == "red") {
-                SmartDashboard.putString("alliance","red");
-                return getPoseToGoal(VisionConstants.redSpeaker, false);
-            }
-            else {
-                SmartDashboard.putString("alliance","blue");
-                return getPoseToGoal(VisionConstants.blueSpeaker, false);
-            }
-            // return getPoseToGoal((alliance.get() == Alliance.Red) ? Constants.VisionConstants.redSpeaker : Constants.VisionConstants.blueSpeaker,false);
+        if (allianceColor == "red") {
+            SmartDashboard.putString("alliance","red");
+            return getPoseToGoal(VisionConstants.redSpeaker, false);
         }
-        SmartDashboard.putString("alliance","none");
-        return getPoseToGoal(Constants.VisionConstants.redSpeaker,false);
+        else {
+            SmartDashboard.putString("alliance","blue");
+            return getPoseToGoal(VisionConstants.blueSpeaker, false);
+        }
+        // return getPoseToGoal((alliance.get() == Alliance.Red) ? Constants.VisionConstants.redSpeaker : Constants.VisionConstants.blueSpeaker,false);
     }
     
     public double getRotationToSpeaker() {
