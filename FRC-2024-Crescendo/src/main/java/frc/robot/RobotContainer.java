@@ -137,7 +137,7 @@ public class RobotContainer {
 
     private ParallelCommandGroup TrapScore = new ParallelCommandGroup(
         new PresetExt(ext, -71.5).withTimeout(5),
-        new PresetWrist(wrist, 25.666).withTimeout(3)
+        new PresetWrist(wrist, 26.76).withTimeout(3)
     );
 
     private SequentialCommandGroup AutonomousPickup = new SequentialCommandGroup(
@@ -221,7 +221,14 @@ public class RobotContainer {
         autoChooser = new SendableChooser<>();
         autoChooser.setDefaultOption("center", "center");
         autoChooser.addOption("rightToLeft", "rightToLeft");
+        autoChooser.addOption("ignoreMid1", "ignoreMid1");
+        autoChooser.addOption("ignoreMid2", "ignoreMid2");
+        autoChooser.addOption("none", "none");
         SmartDashboard.putData("Auto Chooser", autoChooser);
+    }
+
+    public Swerve getSwerve(){
+        return swerve;
     }
 
     public void configureBindings() {

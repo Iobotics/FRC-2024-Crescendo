@@ -84,7 +84,7 @@ public class Swerve extends SubsystemBase {
 
               var alliance = DriverStation.getAlliance();
               if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
+                return alliance.get() == DriverStation.Alliance.Blue;
               }
               return false;
             },
@@ -235,8 +235,18 @@ public class Swerve extends SubsystemBase {
     public Pose2d getPoseToSpeaker() {
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()){
-            return getPoseToGoal((alliance.get() == Alliance.Red) ? Constants.VisionConstants.redSpeaker : Constants.VisionConstants.blueSpeaker,false);
+            var allianceVal = alliance.get();
+            if (allianceVal == Alliance.Red) {
+                SmartDashboard.putString("alliance","red");
+                return getPoseToGoal(VisionConstants.redSpeaker, false);
+            }
+            else {
+                SmartDashboard.putString("alliance","blue");
+                return getPoseToGoal(VisionConstants.blueSpeaker, false);
+            }
+            // return getPoseToGoal((alliance.get() == Alliance.Red) ? Constants.VisionConstants.redSpeaker : Constants.VisionConstants.blueSpeaker,false);
         }
+        SmartDashboard.putString("alliance","none");
         return getPoseToGoal(Constants.VisionConstants.redSpeaker,false);
     }
     
@@ -250,7 +260,7 @@ public class Swerve extends SubsystemBase {
         Pose2d poseToSpeaker = getPoseToSpeaker();
         double distanceToSpeaker = Math.hypot(poseToSpeaker.getX(),poseToSpeaker.getY());
 
-        distanceToSpeaker -= 0.2;
+        distanceToSpeaker -= 0.4;
         if (distanceToSpeaker < 1.0) {
             shootingAngle = 5.2*(distanceToSpeaker-0.7)-22.0;
         } 
@@ -273,7 +283,7 @@ public class Swerve extends SubsystemBase {
             shootingAngle = 3.3*(distanceToSpeaker-0.7)-22.0;
         }
         else {
-            shootingAngle = (-1.5*Math.pow(distanceToSpeaker/2.8 - 3,2)) - 10;
+            shootingAngle = -18;
         }
 
         shootingAngle = (shootingAngle/78.853)+0.45;
@@ -284,12 +294,23 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
+        // var alliance = DriverStation.getAlliance();
+        // if (alliance.isPresent()){
+        //     var allianceVal = alliance.get();
+        //     if (allianceVal == Alliance.Red) {
+        //         SmartDashboard.putString("alliance","red");
+        //     }
+        //     else {
+        //         SmartDashboard.putString("alliance","blue");
+        //     }
+        // }
         swerveOdometry.update(getGyroYaw(), getModulePositions());
         poseEstimator.update(getGyroYaw(), getModulePositions());
-        // SmartDashboard.putNumber("X",getEstPose().getX());
-        // SmartDashboard.putNumber("Y",getEstPose().getY());
-        // SmartDashboard.putNumber("Rotation",getEstPose().getRotation().getDegrees());
-        // SmartDashboard.putNumber("Gyro", MathUtil.inputModulus(getGyroYaw().getDegrees(),-180,180));
+        SmartDashboard.putNumber("goalrot", getRotationToSpeaker());
+        SmartDashboard.putNumber("X",getEstPose().getX());
+        SmartDashboard.putNumber("Y",getEstPose().getY());
+        SmartDashboard.putNumber("Rotation",getEstPose().getRotation().getDegrees());
+        SmartDashboard.putNumber("Gyro", MathUtil.inputModulus(getGyroYaw().getDegrees(),-180,180));
         m_field.setRobotPose(poseEstimator.getEstimatedPosition());
         SmartDashboard.putData("Field", m_field);
         

@@ -209,8 +209,8 @@ public final class Constants {
         public static final SensorDirectionValue canCoderInvert = chosenModule.cancoderInvert;
 
         /* Swerve Current Limiting */
-        public static final int angleContinuousCurrentLimit = 15;
-        public static final int anglePeakCurrentLimit = 30;
+        public static final int angleContinuousCurrentLimit = 25;
+        public static final int anglePeakCurrentLimit = 40;
         public static final double anglePeakCurrentDuration = 0.1;
         public static final boolean angleEnableCurrentLimit = true;
 
@@ -232,7 +232,7 @@ public final class Constants {
          * loop driving.
          * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc
          */
-        public static final double openLoopRamp = 0.25;
+        public static final double openLoopRamp = 0.1;
         public static final double closedLoopRamp = 0.0;
 
         /* Angle Motor PID Values */
@@ -242,9 +242,9 @@ public final class Constants {
         public static final double angleKF = chosenModule.angleKF;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.025; // TODO: This must be tuned to specific robot
+        public static final double driveKP = 0.050; // TODO: This must be tuned to specific robot
         public static final double driveKI = 0.001;
-        public static final double driveKD = 0.015;
+        public static final double driveKD = 0.010;
         public static final double driveKF = 0.0;
 
         /*
@@ -257,9 +257,9 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 2.0; // TODO: This must be tuned to specific robot
+        public static final double maxSpeed = 4.0; // TODO: This must be tuned to specific robot
         /** Radians per Second */
-        public static final double maxAngularVelocity = 2.0; // TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = 6.0; // TODO: This must be tuned to specific robot
 
         /* Neutral Modes */
         public static final IdleMode angleNeutralMode = IdleMode.kCoast;

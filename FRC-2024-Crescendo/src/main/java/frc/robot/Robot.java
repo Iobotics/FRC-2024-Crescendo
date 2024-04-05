@@ -67,6 +67,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.getSwerve().getPoseToSpeaker();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -79,6 +80,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() { 
+    m_robotContainer.getSwerve().getShootingAngle();
     // if(m_robotContainer.command() != m_robotContainer.check()){
     //   m_robotContainer.configureBindings();
     //   m_robotContainer.change();

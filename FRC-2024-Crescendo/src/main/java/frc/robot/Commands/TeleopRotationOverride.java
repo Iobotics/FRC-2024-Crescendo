@@ -29,7 +29,7 @@ public class TeleopRotationOverride {
 
         this.teleopSwerve.getIfOverriding = this::getIfOverride;
         this.teleopSwerve.rotationOverride = this::getRotation;
-        this.rotationController = new PIDController(2.0, 0.0, 0.0);
+        this.rotationController = new PIDController(1.0, 0.0, 0.0);
         this.rotationController.enableContinuousInput(-180, 180);
     }
 
