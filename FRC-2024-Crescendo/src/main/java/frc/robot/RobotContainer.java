@@ -168,6 +168,8 @@ public class RobotContainer {
 
     //Allows for Autos to be chosen in Shuffleboard
     private final SendableChooser<String> autoChooser;
+
+    private final SendableChooser<String> alliance;
     
     TeleopSwerve teleopSwerve = new TeleopSwerve(
                 swerve, 
@@ -205,6 +207,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoPickup", AutonomousPickup);
         NamedCommands.registerCommand("AutonomousSpeaker", AutonomousSpeaker);
         NamedCommands.registerCommand("stowWrist", new PresetWrist(wrist, 50));
+
+        NamedCommands.registerCommand("blue", new InstantCommand(() -> swerve.switchAlliance("blue")));
+        NamedCommands.registerCommand("red", new InstantCommand(() -> swerve.switchAlliance("red")));
         // NamedCommands.registerCommand("VisionSpeaker", VisionSpeaker);
 
         // autoChooser = AutoBuilder.buildAutoChooser();
@@ -225,6 +230,11 @@ public class RobotContainer {
         autoChooser.addOption("ignoreMid2", "ignoreMid2");
         autoChooser.addOption("none", "none");
         SmartDashboard.putData("Auto Chooser", autoChooser);
+
+        alliance = new SendableChooser<>();
+        alliance.setDefaultOption("blue", "blue");
+        alliance.addOption("red", "red");
+        SmartDashboard.putData("Alliance", alliance);
     }
 
     public Swerve getSwerve(){

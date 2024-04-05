@@ -38,6 +38,9 @@ public class Swerve extends SubsystemBase {
     public Pigeon2 gyro;
     public SwerveDrivePoseEstimator poseEstimator;
     public Vision vision;
+
+    String allianceColor = "red";
+
     public Swerve() {
         gyro = new Pigeon2(Constants.SwerveConstants.pigeonID, "Carnivore");
         
@@ -232,11 +235,19 @@ public class Swerve extends SubsystemBase {
         return getPoseToGoal(new Pose2d(goalX,goalY, new Rotation2d()), false);
     }
 
+    public void switchAlliance(String c){
+        if(c == "blue"){
+            allianceColor = "blue";
+        }
+        else{
+            allianceColor = "red";
+        }
+    }
+
     public Pose2d getPoseToSpeaker() {
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()){
-            var allianceVal = alliance.get();
-            if (allianceVal == Alliance.Red) {
+            if (allianceColor == "red") {
                 SmartDashboard.putString("alliance","red");
                 return getPoseToGoal(VisionConstants.redSpeaker, false);
             }
