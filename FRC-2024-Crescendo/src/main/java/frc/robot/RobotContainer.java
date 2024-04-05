@@ -257,7 +257,7 @@ public class RobotContainer {
         manualWristOut.onTrue(new InstantCommand(()->wrist.setPowerWrist(-0.4)));
         manualWristOut.onFalse(new InstantCommand(()->wrist.stopWrist()));
 
-        mIConsume.onTrue(
+        mIConsume.whileTrue(
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new MoveArm(arm, 0.17).withTimeout(0.5),
@@ -270,6 +270,13 @@ public class RobotContainer {
                     new InstantCommand(() -> intake.pulse(-0.5, 4)),
                     new InstantCommand(() -> shooter.stopS())
                 )
+            )
+        );
+
+        mIConsume.onFalse(
+            new ParallelCommandGroup(
+                new MoveArm(arm, 0.452),
+                new InstantCommand(() -> intake.stopI())
             )
         );
 
