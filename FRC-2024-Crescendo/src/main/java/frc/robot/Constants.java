@@ -64,7 +64,7 @@ public final class Constants {
         public static final Pose2d redStageCenter = new Pose2d(11.2202, 4.1051, new Rotation2d(Math.toRadians(180)));
         public static final Pose2d redStageLeft = new Pose2d(11.9047, 3.7132, new Rotation2d(Math.toRadians(-60)));
         public static final Pose2d redStageRight = new Pose2d(12.49047, 4.5983, new Rotation2d(Math.toRadians(120)));
-        public static final Pose2d blueSpeaker = new Pose2d(-0.0381, 5.5479,   new Rotation2d(Math.toRadians(0)));
+        public static final Pose2d blueSpeaker = new Pose2d(0.0, 5.5479,   new Rotation2d(Math.toRadians(0)));
         public static final Pose2d blueAmp = new Pose2d(1.8415, 8.2042,  new Rotation2d(Math.toRadians(-90)));
         public static final Pose2d blueSource = new Pose2d(15.6323,0.5648,  new Rotation2d(Math.toRadians(-60)));
         public static final Pose2d blueStageCenter = new Pose2d(5.3208, 4.1051, new Rotation2d(Math.toRadians(0)));
@@ -259,7 +259,7 @@ public final class Constants {
         /** Meters per Second */
         public static final double maxSpeed = 4.0; // TODO: This must be tuned to specific robot
         /** Radians per Second */
-        public static final double maxAngularVelocity = 6.0; // TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = 4.0; // TODO: This must be tuned to specific robot
 
         /* Neutral Modes */
         public static final IdleMode angleNeutralMode = IdleMode.kCoast;

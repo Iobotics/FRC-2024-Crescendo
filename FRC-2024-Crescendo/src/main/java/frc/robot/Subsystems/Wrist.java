@@ -28,7 +28,7 @@ public class Wrist extends SubsystemBase{
 
         wrist.restoreFactoryDefaults();
 
-        wrist.setOpenLoopRampRate(0.5);
+        wrist.setOpenLoopRampRate(0.15);
         wrist.setClosedLoopRampRate(0);
 
         wristPID = wrist.getPIDController();
@@ -40,15 +40,15 @@ public class Wrist extends SubsystemBase{
 
         // ---Wrist PID and Smart Motion Setup--- //
 
-        kPWrist = 7e-4; //proportional gain
+        kPWrist = 5e-4; //proportional gain
         kIWrist = 0; //integral gain
         kDWrist = 4e-5; //derivative gain
         kIzWrist = 0.0; //don't touch this
         kFFWrist = 0.000156; //don't touch this either
         kMaxOutputWrist = 1; //maximum power
         kMinOutputWrist = -1; //minimum power
-        maxVelWrist = 2000; //rpm
-        maxAccWrist = 1500; //rpm per second
+        maxVelWrist = 3000; //rpm
+        maxAccWrist = 3000; //rpm per second
         allowedErrWrist = 0.01; //revolutions
 
         wristPID.setP(kPWrist);
@@ -57,8 +57,8 @@ public class Wrist extends SubsystemBase{
         wristPID.setFF(kFFWrist);
         wristPID.setOutputRange(kMinOutputWrist, kMaxOutputWrist);
 
-        wristPID.setSmartMotionMaxVelocity(2000, 0); //tune the max cruise velocity (RPM)
-        wristPID.setSmartMotionMaxAccel(1500, 0); //tune the max smart motion acceleration (RPM per second)
+        wristPID.setSmartMotionMaxVelocity(maxVelWrist, 0); //tune the max cruise velocity (RPM)
+        wristPID.setSmartMotionMaxAccel(maxAccWrist, 0); //tune the max smart motion acceleration (RPM per second)
         wristPID.setSmartMotionAllowedClosedLoopError(allowedErrWrist, 0); //set the closed loop error
 
         wrist.burnFlash(); //flash the new parameters to the sparkmax

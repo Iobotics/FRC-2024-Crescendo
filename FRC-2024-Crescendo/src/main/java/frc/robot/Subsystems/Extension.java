@@ -38,7 +38,7 @@ public class Extension extends SubsystemBase{
 
         arm.setIdleMode(IdleMode.kBrake); //idle mode setting
          
-        arm.setOpenLoopRampRate(1); //ramprate controls
+        arm.setOpenLoopRampRate(0.15); //ramprate controls
         arm.setClosedLoopRampRate(0);
 
         //Set up bottom limit switch for the arm
@@ -53,15 +53,15 @@ public class Extension extends SubsystemBase{
         arm.setSmartCurrentLimit(30); //limit or reduce power
  
         //setup PID
-        kPArm = 1e-3; //proportional gain
+        kPArm = 2e-4; //proportional gain
         kIArm = 0; //integral gain
-        kDArm = 2e-6; //derivative gain
+        kDArm = 4e-6; //derivative gain
         kIzArm = 0.0; //don't touch this
         kFFArm = 0.000156; //don't touch this either
         kMaxOutputArm = 1; //maximum power
         kMinOutputArm = -1; //minimum power
-        maxVelArm = 1000; //rpm
-        maxAccArm = 500; //rpm per second
+        maxVelArm = 10000; //rpm
+        maxAccArm = 15000; //rpm per second
         allowedErrArm = 0.1; //inches
 
         //use pid for arm
@@ -70,9 +70,9 @@ public class Extension extends SubsystemBase{
         armPID.setD(kDArm);
         armPID.setOutputRange(kMinOutputArm, kMaxOutputArm);
 
-        armPID.setSmartMotionMaxVelocity(1000, smartMotionSlotArm); //tune the max cruise velocity (RPM)
+        armPID.setSmartMotionMaxVelocity(maxVelArm, smartMotionSlotArm); //tune the max cruise velocity (RPM)
         armPID.setSmartMotionMinOutputVelocity(0, smartMotionSlotArm); //minimum output velocity is 0... duh
-        armPID.setSmartMotionMaxAccel(1000, smartMotionSlotArm); //tune the max smart motion acceleration (RPM per second)
+        armPID.setSmartMotionMaxAccel(maxAccArm, smartMotionSlotArm); //tune the max smart motion acceleration (RPM per second)
         armPID.setSmartMotionAllowedClosedLoopError(allowedErrArm, smartMotionSlotArm); //set the closed loop error
 
         //burn into sparkmax

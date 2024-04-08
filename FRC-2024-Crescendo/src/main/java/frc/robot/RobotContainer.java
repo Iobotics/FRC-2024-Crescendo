@@ -1,8 +1,5 @@
 package frc.robot;
 
-import java.time.Instant;
-
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -12,23 +9,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.VisionConstants;
-import frc.robot.Commands.AutoIntakeNote;
 // import frc.robot.Commands.ApriltagAlign;
 import frc.robot.Commands.Intaking;
 import frc.robot.Commands.MoveArm;
 import frc.robot.Commands.Passing;
-import frc.robot.Commands.PresetClimb;
 import frc.robot.Commands.PresetExt;
 import frc.robot.Commands.PresetWrist;
 import frc.robot.Commands.TeleopRotationOverride;
 import frc.robot.Commands.TeleopSwerve;
-import frc.robot.Commands.gotoGoal;
 import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Climber;
 import frc.robot.Subsystems.Extension;
@@ -58,7 +50,7 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton alignSpeaker = new JoystickButton(joystick1, 1);
     private final JoystickButton autoIntakeNote = new JoystickButton(joystick1, 2);
-    private final JoystickButton plainSpeaker = new JoystickButton(joystick1, 3);
+    //private final JoystickButton plainSpeaker = new JoystickButton(joystick1, 3);
     private final JoystickButton zeroGyro = new JoystickButton(joystick1, 8);
     private final JoystickButton mIConsume = new JoystickButton(joystick2, 1);
     private final JoystickButton resetWheels = new JoystickButton(joystick1, 6);
@@ -94,8 +86,8 @@ public class RobotContainer {
     private final JoystickButton climberRDown = new JoystickButton(fight, 1); //red
     private final JoystickButton climberLock = new JoystickButton(fight, 5); //r1
     private final JoystickButton climberUnlock = new JoystickButton(fight, 6); //l1
-    private final JoystickButton manualRollerIn = new JoystickButton(fight, 7);
-    private final JoystickButton manualRollerOut = new JoystickButton(fight, 8);
+    private final JoystickButton manualSpeaker = new JoystickButton(joystick1, 2);
+    //private final JoystickButton manualRollerOut = new JoystickButton(fight, 8);
     private final JoystickButton manualWristOut = new JoystickButton(fight, 9);
     private final JoystickButton manualWristIn = new JoystickButton(fight, 10);
 
@@ -249,17 +241,13 @@ public class RobotContainer {
 
         stowWristClimb.onTrue(new PresetWrist(wrist, 30)); 
 
-        plainSpeaker.onTrue(new MoveArm(arm, -18.5));
+        // plainSpeaker.onTrue(new MoveArm(arm, -18.5));
 
         resetWheels.onTrue(new InstantCommand(() -> swerve.resetModulesToAbsolute()));
 
         zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroGyro())); 
 
-        manualRollerIn.onTrue(new RunCommand(()->roller.setPowerRoller(1.0,false), roller));
-        manualRollerIn.onFalse(new RunCommand(()->roller.stopRoller(),roller));
-
-        manualRollerOut.onTrue(new RunCommand(()->roller.setPowerRoller(-1.0,false), roller));
-        manualRollerOut.onFalse(new RunCommand(()->roller.stopRoller(),roller));
+        manualSpeaker.onTrue(new MoveArm(arm, 0.19));
 
         manualWristIn.onTrue(new InstantCommand(()->wrist.setPowerWrist(0.4)));
         manualWristIn.onFalse(new InstantCommand(()->wrist.stopWrist()));
@@ -270,7 +258,7 @@ public class RobotContainer {
         mIConsume.whileTrue(
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                    new MoveArm(arm, 0.17).withTimeout(0.5),
+                    new MoveArm(arm, 0.17).withTimeout(0.75),
                     new InstantCommand(() -> shooter.setSSpeed(0.01)),
                     new Intaking(intake, false, false)
                 ),
@@ -297,7 +285,10 @@ public class RobotContainer {
             new InstantCommand(() -> roller.stopRoller())
         ));
 
-        passPosition.onTrue(PassPos);
+        passPosition.onTrue(new ParallelCommandGroup(
+            PassPos,
+            new InstantCommand( ()->arm.stopFollowSpeaker())
+        ));
 
         amp.onTrue(AmpScore);
 
@@ -342,7 +333,7 @@ public class RobotContainer {
         climberLDown.onTrue(new InstantCommand( () -> climber.setPower(-0.5)));
         climberLDown.onFalse(new InstantCommand(() -> climber.setPower(0)));
 
-        climberRUp.onTrue(new InstantCommand(() -> climber.setPower(0.5)));
+        climberRUp.onTrue(new InstantCommand(() -> climber.setPower(0.8)));
         climberRUp.onFalse(new InstantCommand(() -> climber.setPower(0)));
         climberRDown.onTrue(new InstantCommand( () -> climber.setPower(-0.5)));
         climberRDown.onFalse(new InstantCommand(() -> climber.setPower(0)));

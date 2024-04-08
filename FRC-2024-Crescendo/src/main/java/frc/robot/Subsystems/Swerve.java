@@ -39,7 +39,7 @@ public class Swerve extends SubsystemBase {
     public SwerveDrivePoseEstimator poseEstimator;
     public Vision vision;
 
-    String allianceColor = "red";
+    String allianceColor = "blue";
 
     public Swerve() {
         gyro = new Pigeon2(Constants.SwerveConstants.pigeonID, "Carnivore");
@@ -222,7 +222,7 @@ public class Swerve extends SubsystemBase {
         double goalRotation = goalPose.getRotation().getRadians();
         if (!returnParallelAngle) {
             // arctan(y1-y2/x1-x2)
-            goalRotation = MathUtil.inputModulus(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX()))+Math.PI,-Math.PI,Math.PI);
+            goalRotation = MathUtil.inputModulus(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX())),-Math.PI,Math.PI);
         }
         return new Pose2d(currentPose.minus(goalPose).getTranslation(),new Rotation2d(goalRotation));
     }
@@ -236,23 +236,24 @@ public class Swerve extends SubsystemBase {
     }
 
     public void switchAlliance(String c){
-        if(c == "blue"){
-            allianceColor = "blue";
+        if(c == "red"){
+            allianceColor = "red";
         }
         else{
-            allianceColor = "red";
+            allianceColor = "blue";
         }
     }
 
     public Pose2d getPoseToSpeaker() {
-        if (allianceColor == "red") {
-            SmartDashboard.putString("alliance","red");
-            return getPoseToGoal(VisionConstants.redSpeaker, false);
-        }
-        else {
-            SmartDashboard.putString("alliance","blue");
-            return getPoseToGoal(VisionConstants.blueSpeaker, false);
-        }
+        return getPoseToGoal(VisionConstants.redSpeaker, false);
+        // if (allianceColor == "red") {
+        //     SmartDashboard.putString("alliance","red");
+        //     return getPoseToGoal(VisionConstants.redSpeaker, false);
+        // }
+        // else {
+        //     SmartDashboard.putString("alliance","blue");
+        //     return getPoseToGoal(VisionConstants.redSpeaker, false);
+        // }
         // return getPoseToGoal((alliance.get() == Alliance.Red) ? Constants.VisionConstants.redSpeaker : Constants.VisionConstants.blueSpeaker,false);
     }
     
