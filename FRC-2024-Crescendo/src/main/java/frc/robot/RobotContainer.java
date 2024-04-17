@@ -56,8 +56,11 @@ public class RobotContainer {
     private final JoystickButton mIConsume = new JoystickButton(joystick2, 1);
     private final JoystickButton resetWheels = new JoystickButton(joystick1, 6);
     private final JoystickButton alignToRightStage = new JoystickButton(joystick1, 7);
+    private final JoystickButton rotateToAmp = new JoystickButton(joystick2, 2);
 
     private final JoystickButton cancelAutoSwerveCommands = new JoystickButton(joystick1, 5);
+
+    private final JoystickButton sourcePassing = new JoystickButton(joystick2, 3);
 
     //private final JoystickButton autoAim = new JoystickButton(joystick2, 1);
     //private final JoystickButton zeroGyro = new JoystickButton(joystick1, 1);
@@ -92,6 +95,10 @@ public class RobotContainer {
     private final JoystickButton manualWristOut = new JoystickButton(fight, 9);
     private final JoystickButton manualWristIn = new JoystickButton(fight, 10);
 
+    private final JoystickButton manualArmOut = new JoystickButton(joystick2, 7);
+    private final JoystickButton manualArmIn = new JoystickButton(joystick2, 8);
+
+
 
     //private final JoystickButton mSConsume = new JoystickButton(fight, 3);
     //private final JoystickButton shooting = new JoystickButton(gamepad, 5);
@@ -125,7 +132,7 @@ public class RobotContainer {
     ); 
 
     private ParallelCommandGroup AmpScore = new ParallelCommandGroup(
-        new PresetExt(ext, -40).withTimeout(3),
+        new PresetExt(ext, -30).withTimeout(3),
         new PresetWrist(wrist, 25.9).withTimeout(3)
     );
 
@@ -151,7 +158,7 @@ public class RobotContainer {
             new InstantCommand(() -> shooter.setSSpeed(-1.0)),
             new WaitCommand(0.8)
         ),
-        new InstantCommand(() -> intake.setIntakeRaw(-0.25)).withTimeout(1),
+        new InstantCommand(() -> intake.setIntakeRaw(-0.25)),
         new WaitCommand(0.3),
         new ParallelCommandGroup(
             new InstantCommand(() -> shooter.stopS(), shooter),
@@ -162,8 +169,6 @@ public class RobotContainer {
 
     //Allows for Autos to be chosen in Shuffleboard
     private final SendableChooser<String> autoChooser;
-
-    private final SendableChooser<String> alliance;
     
     TeleopSwerve teleopSwerve = new TeleopSwerve(
                 swerve, 
@@ -224,16 +229,8 @@ public class RobotContainer {
         autoChooser.addOption("ignoreMid2", "ignoreMid2");
         autoChooser.addOption("none", "none");
         SmartDashboard.putData("Auto Chooser", autoChooser);
-
-        alliance = new SendableChooser<>();
-        alliance.setDefaultOption("blue", "blue");
-        alliance.addOption("red", "red");
-        SmartDashboard.putData("Alliance", alliance);
     }
 
-    public Swerve getSwerve(){
-        return swerve;
-    }
 
     public void configureBindings() {
 
@@ -277,7 +274,8 @@ public class RobotContainer {
         mIConsume.onFalse(
             new ParallelCommandGroup(
                 new MoveArm(arm, 0.452),
-                new InstantCommand(() -> intake.stopI())
+                new InstantCommand(() -> intake.stopI()),
+                new InstantCommand(() -> candle.clear())
             )
         );
 
@@ -285,8 +283,7 @@ public class RobotContainer {
         pass.onFalse(new ParallelCommandGroup(
             new InstantCommand(() -> shooter.stopS()),
             new InstantCommand(() -> intake.stopI()),
-            new InstantCommand(() -> roller.stopRoller()),
-            new InstantCommand(() -> candle.custom(255, 0, 255))
+            new InstantCommand(() -> roller.stopRoller())
         ));
 
         passPosition.onTrue(new ParallelCommandGroup(
@@ -296,11 +293,25 @@ public class RobotContainer {
 
         amp.onTrue(AmpScore);
 
-        rollerShoot.onTrue(new ParallelCommandGroup(
-            new InstantCommand(() -> roller.setPowerRoller(-1, false)),
-            new InstantCommand(() -> candle.clear())
+        sourcePassing.onTrue(new ParallelCommandGroup(
+            new InstantCommand(()->shooter.setSSpeed(-0.9)),
+            new MoveArm(arm, 0.2)
         ));
+        sourcePassing.onFalse(new InstantCommand(()->shooter.stopS()));
+
+        rotateToAmp.onTrue(new InstantCommand(()->teleopRotationOverride.setOverride(()->(90.0))));
+        rotateToAmp.whileTrue(new InstantCommand(() -> teleopRotationOverride.run()));
+        rotateToAmp.onFalse(new InstantCommand(() -> teleopRotationOverride.stop(true)));
+
+        rollerShoot.onTrue(new InstantCommand(() -> roller.setPowerRoller(-1, false)));
         rollerShoot.onFalse(new InstantCommand(() -> roller.stopRoller()));
+
+        manualArmIn.onTrue(new InstantCommand(()->arm.armSpeed(-0.2)));
+        manualArmIn.onFalse(new InstantCommand(()->arm.stopA()));
+
+        manualArmOut.onTrue(new InstantCommand(()->arm.armSpeed(0.2)));
+        manualArmOut.onFalse(new InstantCommand(()->arm.stopA()));
+
 
         spinUp.onTrue(new SequentialCommandGroup(
             new InstantCommand(() -> intake.checkContact()),
@@ -325,7 +336,7 @@ public class RobotContainer {
 
         trapAssist.onTrue(TrapScore);
 
-
+        alignSpeaker.onTrue(new InstantCommand(()->teleopRotationOverride.setOverride(swerve::getRotationToSpeaker)));
         alignSpeaker.whileTrue(new ParallelCommandGroup(
             new InstantCommand(() -> teleopRotationOverride.run()),
             new InstantCommand(()->arm.followSpeaker())

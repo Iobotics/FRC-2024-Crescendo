@@ -96,10 +96,9 @@ public class Climber extends SubsystemBase {
     pid.setD(0);
     pid.setIZone(0);
     pid.setFF(0);
-    pid.setOutputRange(1, -1);
+    pid.setOutputRange(-1, 1);
 
     pid.setSmartMotionMaxVelocity(500, 0);
-    pid.setSmartMotionMinOutputVelocity(0, 0);
     pid.setSmartMotionMaxAccel(500, 0);
     pid.setSmartMotionAllowedClosedLoopError(0.1, 0);
 
