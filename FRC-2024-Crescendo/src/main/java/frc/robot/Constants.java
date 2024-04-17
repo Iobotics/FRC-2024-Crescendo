@@ -51,6 +51,7 @@ public final class Constants {
         public static int kJoystick2 = 2;
         public static int kFight = 3;
         public static int kSwifferGamepad = 4;
+        public static int kCandle = 30;
     }
 
     public static final class PIDConstants {

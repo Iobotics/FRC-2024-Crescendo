@@ -25,6 +25,7 @@ import frc.robot.Subsystems.Arm;
 import frc.robot.Subsystems.Climber;
 import frc.robot.Subsystems.Extension;
 import frc.robot.Subsystems.Intake;
+import frc.robot.Subsystems.LED;
 import frc.robot.Subsystems.Roller;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Swerve;
@@ -117,6 +118,7 @@ public class RobotContainer {
     private final Arm arm = new Arm();
     private final Extension ext = new Extension();
     private final Wrist wrist = new Wrist();
+    private final LED candle = new LED();
     
     private final Roller roller = new Roller();
     private final Climber climber = new Climber();
@@ -256,13 +258,14 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
                     new MoveArm(arm, 0.17).withTimeout(0.75),
+                    new InstantCommand(() -> candle.red()),
                     new InstantCommand(() -> shooter.setSSpeed(0.01)),
                     new Intaking(intake, false, false)
                 ),
                 new ParallelCommandGroup(
-                    new MoveArm(arm, 0.452),
-                    //0.452
-                    new InstantCommand(() -> intake.pulse(-0.5, 2)),
+                    new MoveArm(arm, 0.452), //0.452
+                    new InstantCommand(() -> candle.green()).withTimeout(1.5),
+                    new InstantCommand(() -> intake.pulse(-0.5, 4)),
                     new InstantCommand(() -> shooter.stopS())
                 )
             )
@@ -271,7 +274,8 @@ public class RobotContainer {
         mIConsume.onFalse(
             new ParallelCommandGroup(
                 new MoveArm(arm, 0.452),
-                new InstantCommand(() -> intake.stopI())
+                new InstantCommand(() -> intake.stopI()),
+                new InstantCommand(() -> candle.clear())
             )
         );
 
