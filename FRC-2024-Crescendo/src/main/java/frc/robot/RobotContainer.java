@@ -125,7 +125,7 @@ public class RobotContainer {
     ); 
 
     private ParallelCommandGroup AmpScore = new ParallelCommandGroup(
-        new PresetExt(ext, -30).withTimeout(3),
+        new PresetExt(ext, -40).withTimeout(3),
         new PresetWrist(wrist, 25.9).withTimeout(3)
     );
 
@@ -277,8 +277,7 @@ public class RobotContainer {
         mIConsume.onFalse(
             new ParallelCommandGroup(
                 new MoveArm(arm, 0.452),
-                new InstantCommand(() -> intake.stopI()),
-                new InstantCommand(() -> candle.clear())
+                new InstantCommand(() -> intake.stopI())
             )
         );
 
@@ -286,7 +285,8 @@ public class RobotContainer {
         pass.onFalse(new ParallelCommandGroup(
             new InstantCommand(() -> shooter.stopS()),
             new InstantCommand(() -> intake.stopI()),
-            new InstantCommand(() -> roller.stopRoller())
+            new InstantCommand(() -> roller.stopRoller()),
+            new InstantCommand(() -> candle.custom(255, 0, 255))
         ));
 
         passPosition.onTrue(new ParallelCommandGroup(
@@ -296,7 +296,10 @@ public class RobotContainer {
 
         amp.onTrue(AmpScore);
 
-        rollerShoot.onTrue(new InstantCommand(() -> roller.setPowerRoller(-1, false)));
+        rollerShoot.onTrue(new ParallelCommandGroup(
+            new InstantCommand(() -> roller.setPowerRoller(-1, false)),
+            new InstantCommand(() -> candle.clear())
+        ));
         rollerShoot.onFalse(new InstantCommand(() -> roller.stopRoller()));
 
         spinUp.onTrue(new SequentialCommandGroup(

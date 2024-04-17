@@ -21,9 +21,11 @@ public class LED extends SubsystemBase {
    // candle.configAllSettings(config);
 
     public LED() {
-        candle = new CANdle(OIConstants.kCandle, "canivore");
+        candle = new CANdle(OIConstants.kCandle);
         LedCount = 8;
         larsonAnimation = new LarsonAnimation(255, 70, 5, 0, 0.5, LedCount, BounceMode.Front, 4, 0);
+
+        candle.clearAnimation(0);
     }
 
     public void red() {
@@ -35,7 +37,7 @@ public class LED extends SubsystemBase {
     }
 
     public void green() {
-        candle.setLEDs(97, 84, 41);
+        candle.setLEDs(0, 255, 0);
     }
 
     public void custom(int r, int g, int b){
