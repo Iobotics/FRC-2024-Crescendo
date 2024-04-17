@@ -126,7 +126,7 @@ public final class Constants {
         .fill(
             0.1, // x
             0.1, // y
-            0.05 * Math.PI // theta
+            0.0 * Math.PI // theta
         );
 
         /**
@@ -242,9 +242,9 @@ public final class Constants {
         public static final double angleKF = chosenModule.angleKF;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.050; // TODO: This must be tuned to specific robot
-        public static final double driveKI = 0.001;
-        public static final double driveKD = 0.010;
+        public static final double driveKP = 0.01; // TODO: This must be tuned to specific robot
+        public static final double driveKI = 0.00;
+        public static final double driveKD = 0.00;
         public static final double driveKF = 0.0;
 
         /*

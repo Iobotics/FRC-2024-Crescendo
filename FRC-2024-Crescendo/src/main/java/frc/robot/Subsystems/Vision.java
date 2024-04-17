@@ -79,18 +79,18 @@ public class Vision extends SubsystemBase{
             }
         }
 
-        var intakeResult = this.intakeCamera.getLatestResult();
-        if (intakeResult.hasTargets()) {
-            var target = intakeResult.getBestTarget();
-            Pose3d bestEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToIntakeCam);
-            // Pose3d altEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getAlternateCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToCam);
+        // var intakeResult = this.intakeCamera.getLatestResult();
+        // if (intakeResult.hasTargets()) {
+        //     var target = intakeResult.getBestTarget();
+        //     Pose3d bestEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToIntakeCam);
+        //     // Pose3d altEstimate = PhotonUtils.estimateFieldToRobotAprilTag(target.getAlternateCameraToTarget(),this.aprilTagFieldLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kRobotToCam);
             
-            var estimatedPose = swifferPoseEstimator.update(intakeResult);
+        //     var estimatedPose = swifferPoseEstimator.update(intakeResult);
         
-            if (estimatedPose.isPresent() && this.intakeCamera.getLatestResult().hasTargets() && !DriverStation.isAutonomousEnabled()){
-                swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);
-            }
-        }
+        //     if (estimatedPose.isPresent() && this.intakeCamera.getLatestResult().hasTargets() && !DriverStation.isAutonomousEnabled()){
+        //         swerve.poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), estimatedPose.get().timestampSeconds);
+        //     }
+        // }
     }
     
     /* tag id to location

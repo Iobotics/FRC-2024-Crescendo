@@ -11,6 +11,9 @@ import frc.robot.Utils.SwerveModuleInterface;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.MathUtil;
+
+import java.sql.Driver;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -64,7 +67,7 @@ public class Swerve extends SubsystemBase {
                 SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions(), getPose(),
                 VisionConstants.STATE_STANDARD_DEVIATIONS,
                 VisionConstants.VISION_MEASUREMENT_STANDARD_DEVIATIONS);
-        poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(13.5, 5.5, new Rotation2d(Math.PI)));
+        // poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(13.5, 5.5, new Rotation2d(Math.PI)));
     }
 
     public void configureAutoBuilder() {
@@ -102,11 +105,18 @@ public class Swerve extends SubsystemBase {
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+        var alliance = DriverStation.getAlliance();
+        double angle = 0;
+        if (alliance.isPresent()) {
+            if (alliance.get() == DriverStation.Alliance.Red) {
+                angle = Math.PI;
+            }
+        }
         ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                                     translation.getX(), 
                                     translation.getY(), 
                                     rotation, 
-                                    getGyroYaw()
+                                    getGyroYaw().plus(new Rotation2d(angle))
                                 );
         SwerveModuleState[] swerveModuleStates =
             Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(
@@ -175,7 +185,16 @@ public class Swerve extends SubsystemBase {
     }
 
     public void zeroGyro(){
-        gyro.setYaw(0);
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            if (alliance.get() == DriverStation.Alliance.Blue) {
+                gyro.setYaw(0);
+            } else {
+                gyro.setYaw(180);
+            }
+        } else {
+            gyro.setYaw(0);
+        }
     }
     
     public void setGyro(double newValue){
@@ -220,9 +239,16 @@ public class Swerve extends SubsystemBase {
     public Pose2d getPoseToGoal(Pose2d goalPose, boolean returnParallelAngle) {
         Pose2d currentPose = this.getEstPose();
         double goalRotation = goalPose.getRotation().getRadians();
+        var alliance = DriverStation.getAlliance();
+        double angle = 0;
         if (!returnParallelAngle) {
             // arctan(y1-y2/x1-x2)
-            goalRotation = MathUtil.inputModulus(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX())),-Math.PI,Math.PI);
+            if (alliance.isPresent()) {
+                if (alliance.get() == DriverStation.Alliance.Red) {
+                    angle = Math.PI;
+                }
+            }
+            goalRotation = MathUtil.inputModulus(Math.atan((currentPose.getY()-goalPose.getY())/(currentPose.getX()-goalPose.getX()))+angle,-Math.PI,Math.PI);
         }
         return new Pose2d(currentPose.minus(goalPose).getTranslation(),new Rotation2d(goalRotation));
     }
@@ -245,16 +271,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPoseToSpeaker() {
-        return getPoseToGoal(VisionConstants.redSpeaker, false);
-        // if (allianceColor == "red") {
-        //     SmartDashboard.putString("alliance","red");
-        //     return getPoseToGoal(VisionConstants.redSpeaker, false);
-        // }
-        // else {
-        //     SmartDashboard.putString("alliance","blue");
-        //     return getPoseToGoal(VisionConstants.redSpeaker, false);
-        // }
-        // return getPoseToGoal((alliance.get() == Alliance.Red) ? Constants.VisionConstants.redSpeaker : Constants.VisionConstants.blueSpeaker,false);
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return getPoseToGoal((alliance.get() == Alliance.Red) ? Constants.VisionConstants.redSpeaker : Constants.VisionConstants.blueSpeaker,false);
+        }
+        return getPoseToGoal(Constants.VisionConstants.blueSpeaker,false);
     }
     
     public double getRotationToSpeaker() {
