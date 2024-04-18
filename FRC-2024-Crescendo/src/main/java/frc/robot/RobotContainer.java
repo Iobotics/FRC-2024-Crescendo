@@ -17,6 +17,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Commands.Intaking;
 import frc.robot.Commands.MoveArm;
 import frc.robot.Commands.Passing;
+import frc.robot.Commands.PresetClimb;
 import frc.robot.Commands.PresetExt;
 import frc.robot.Commands.PresetWrist;
 import frc.robot.Commands.TeleopRotationOverride;
@@ -133,7 +134,7 @@ public class RobotContainer {
 
     private ParallelCommandGroup AmpScore = new ParallelCommandGroup(
         new PresetExt(ext, -30).withTimeout(3),
-        new PresetWrist(wrist, 25.9).withTimeout(3)
+        new PresetWrist(wrist, 20.9).withTimeout(3)
     );
 
     private ParallelCommandGroup TrapScore = new ParallelCommandGroup(
@@ -227,6 +228,8 @@ public class RobotContainer {
         autoChooser.addOption("rightToLeft", "rightToLeft");
         autoChooser.addOption("ignoreMid1", "ignoreMid1");
         autoChooser.addOption("ignoreMid2", "ignoreMid2");
+        autoChooser.addOption("LeaveSourceSpeaker", "LeaveSourceSpeaker");
+        autoChooser.addOption("LeaveAmpSpeaker", "LeaveAmpSpeaker");
         autoChooser.addOption("none", "none");
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
@@ -351,10 +354,15 @@ public class RobotContainer {
         climberLDown.onTrue(new InstantCommand( () -> climber.setPower(-0.5)));
         climberLDown.onFalse(new InstantCommand(() -> climber.setPower(0)));
 
-        climberRUp.onTrue(new InstantCommand(() -> climber.setPower(0.8)));
-        climberRUp.onFalse(new InstantCommand(() -> climber.setPower(0)));
-        climberRDown.onTrue(new InstantCommand( () -> climber.setPower(-0.5)));
-        climberRDown.onFalse(new InstantCommand(() -> climber.setPower(0)));
+        climberRUp.onTrue(new SequentialCommandGroup(
+            new InstantCommand(()->climber.unlock()),
+            new PresetClimb(climber,100.0,100.0).withTimeout(1.5)));
+        // climberRUp.onFalse(new PresetClimb(climber,0.0,0.0));
+
+        // climberRUp.onTrue(new InstantCommand(() -> climber.setPower(0.8)));
+        // climberRUp.onFalse(new InstantCommand(() -> climber.setPower(0)));
+        
+        climberRDown.onTrue(new PresetClimb(climber,0.0,0.0).withTimeout(1.5));
 
         climberLock.onTrue(new InstantCommand(() -> climber.lock()));
         climberUnlock.onTrue(new InstantCommand(() -> climber.unlock()));

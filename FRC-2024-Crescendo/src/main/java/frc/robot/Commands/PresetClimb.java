@@ -40,6 +40,9 @@ public class PresetClimb extends Command {
   public void end(boolean interrupted) {
     SmartDashboard.putBoolean("Climber", true);
     climber.stopClimber();
+    if (climber.isClimbWithinError(0.0, 0.0, 3.0) && !interrupted) {
+      climber.lock();
+    }
   }
 
   // Returns true when the command should end.

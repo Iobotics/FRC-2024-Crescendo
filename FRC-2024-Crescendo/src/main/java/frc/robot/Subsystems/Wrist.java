@@ -40,15 +40,15 @@ public class Wrist extends SubsystemBase{
 
         // ---Wrist PID and Smart Motion Setup--- //
 
-        kPWrist = 5e-4; //proportional gain
+        kPWrist = 1e-4; //proportional gain
         kIWrist = 0; //integral gain
         kDWrist = 4e-5; //derivative gain
         kIzWrist = 0.0; //don't touch this
         kFFWrist = 0.000156; //don't touch this either
         kMaxOutputWrist = 1; //maximum power
         kMinOutputWrist = -1; //minimum power
-        maxVelWrist = 3000; //rpm
-        maxAccWrist = 3000; //rpm per second
+        maxVelWrist = 10000; //rpm
+        maxAccWrist = 6000; //rpm per second
         allowedErrWrist = 0.01; //revolutions
 
         wristPID.setP(kPWrist);

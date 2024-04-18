@@ -2,19 +2,25 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 15.1,
-      "y": 5.5
+      "x": 15.846471945788391,
+      "y": 4.452323847757683
     },
-    "rotation": 0
+    "rotation": -120.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "AutonomousSpeaker"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "LeaveSourceSpeaker"
           }
         }
       ]

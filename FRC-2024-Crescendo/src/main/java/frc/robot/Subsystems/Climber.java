@@ -91,7 +91,7 @@ public class Climber extends SubsystemBase {
 
    //sets up PID Controller
   public void PIDConfiguration(SparkPIDController pid){
-    pid.setP(1E-9);
+    pid.setP(1E-1);
     pid.setI(0);
     pid.setD(0);
     pid.setIZone(0);
@@ -99,7 +99,7 @@ public class Climber extends SubsystemBase {
     pid.setOutputRange(-1, 1);
 
     pid.setSmartMotionMaxVelocity(500, 0);
-    pid.setSmartMotionMaxAccel(500, 0);
+    pid.setSmartMotionMaxAccel(100, 0);
     pid.setSmartMotionAllowedClosedLoopError(0.1, 0);
 
   }
